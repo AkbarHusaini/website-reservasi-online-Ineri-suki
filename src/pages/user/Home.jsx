@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import '../../index.css';
 
 function Home() {
@@ -23,7 +24,7 @@ function Home() {
       try {
         setLoading(true);
         // Fetch Featured Items for Slider
-        const menuRes = await fetch('http://localhost:5000/api/featured-menu');
+        const menuRes = await fetch('/api/featured-menu');
         const menuData = await menuRes.json();
         if (menuData.success) {
           const mappedSlides = menuData.data.map(item => ({
@@ -41,7 +42,7 @@ function Home() {
         }
 
         // Fetch Specials for Chef's Specials section
-        const pkgRes = await fetch('http://localhost:5000/api/packages');
+        const pkgRes = await fetch('/api/packages');
         const pkgData = await pkgRes.json();
         if (pkgData.success) {
           setSpecials(pkgData.data.slice(0, 3)); // Take top 3
@@ -383,34 +384,7 @@ function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-neutral-950 w-full py-12 px-12">
-        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col gap-2 items-center md:items-start">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <span className="material-symbols-outlined text-2xl">forest</span>
-              <span className="text-lg font-black uppercase tracking-tighter">Inari Suki & Grill</span>
-            </div>
-            <p className="text-neutral-500 Manrope body-sm tracking-wide opacity-80 hover:opacity-100 transition-opacity">© 2024 Inari Suki & Grill. Modern Zen Mastery.</p>
-          </div>
-          <div className="flex gap-8">
-            <a className="text-neutral-500 hover:text-orange-400 transition-opacity Manrope body-sm tracking-wide hover:underline decoration-orange-600 underline-offset-4" href="#">Privacy Policy</a>
-            <a className="text-neutral-500 hover:text-orange-400 transition-opacity Manrope body-sm tracking-wide hover:underline decoration-orange-600 underline-offset-4" href="#">Terms of Service</a>
-            <a className="text-neutral-500 hover:text-orange-400 transition-opacity Manrope body-sm tracking-wide hover:underline decoration-orange-600 underline-offset-4" href="#">Sustainability</a>
-          </div>
-          <div className="flex gap-6">
-            <a className="text-neutral-500 hover:text-orange-400 transition-all scale-100 hover:scale-110" href="#">
-              <span className="material-symbols-outlined">public</span>
-            </a>
-            <a className="text-neutral-500 hover:text-orange-400 transition-all scale-100 hover:scale-110" href="#">
-              <span className="material-symbols-outlined">alternate_email</span>
-            </a>
-            <a className="text-neutral-500 hover:text-orange-400 transition-all scale-100 hover:scale-110" href="#">
-              <span className="material-symbols-outlined">local_fire_department</span>
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

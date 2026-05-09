@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { loginUser } from '../../authController';
 import { useAuth } from '../../context/AuthContext';
+import Footer from '../../components/Footer';
 
 function Login() {
   const navigate = useNavigate();
@@ -148,18 +149,7 @@ function Login() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-neutral-950 w-full py-12 px-12 z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 max-w-screen-2xl mx-auto">
-          <div className="text-lg font-black text-neutral-500 tracking-tighter uppercase">Inari Suki & Grill</div>
-          <div className="flex gap-8">
-            <a className="text-neutral-500 hover:text-orange-400 font-medium text-sm tracking-wide transition-opacity hover:underline decoration-orange-600 underline-offset-4" href="#">Privacy Policy</a>
-            <a className="text-neutral-500 hover:text-orange-400 font-medium text-sm tracking-wide transition-opacity hover:underline decoration-orange-600 underline-offset-4" href="#">Terms of Service</a>
-            <a className="text-neutral-500 hover:text-orange-400 font-medium text-sm tracking-wide transition-opacity hover:underline decoration-orange-600 underline-offset-4" href="#">Sustainability</a>
-          </div>
-          <div className="text-neutral-500 font-medium text-sm tracking-wide">© 2024 Inari Suki & Grill. Modern Zen Mastery.</div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import '../../index.css';
 
 function Menu() {
@@ -267,25 +268,7 @@ function Menu() {
         </Link>
       )}
 
-      {/* Footer */}
-      <footer className="bg-neutral-950 w-full py-12 px-12">
-        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col gap-2 items-center md:items-start">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <span className="material-symbols-outlined text-2xl">forest</span>
-              <span className="text-lg font-black uppercase tracking-tighter">Inari Suki &amp; Grill</span>
-            </div>
-            <p className="text-neutral-500 text-sm opacity-80">© 2024 Inari Suki &amp; Grill. Modern Zen Mastery.</p>
-          </div>
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-neutral-400 hover:text-tertiary transition-colors font-medium text-sm"
-          >
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
-            Back to Home
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

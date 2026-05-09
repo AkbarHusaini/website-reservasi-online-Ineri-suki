@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import '../../index.css';
 
 function About() {
@@ -165,22 +166,7 @@ function About() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#0a0a0a] w-full py-12 px-12 border-t border-[#42474b]/15">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col gap-2 items-center md:items-start">
-            <div className="flex items-center gap-2 text-[#ffb59a]">
-              <span className="material-symbols-outlined text-2xl">restaurant</span>
-              <span className="text-lg font-black uppercase tracking-tighter">Inari Suki & Grill</span>
-            </div>
-            <p className="text-slate-500 text-sm tracking-wide">© 2024 Inari Suki & Grill Jember. All rights reserved.</p>
-          </div>
-          <a href="https://www.instagram.com/inerisuki.jember/" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-slate-400 hover:text-[#ffb59a] transition-colors font-medium text-sm">
-            Follow our Instagram
-            <span className="material-symbols-outlined text-sm">open_in_new</span>
-          </a>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

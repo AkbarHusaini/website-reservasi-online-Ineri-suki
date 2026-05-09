@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import '../../index.css';
 
 function formatIDR(num) {
@@ -263,24 +264,7 @@ function Cart() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full py-12 bg-neutral-950">
-        <div className="flex flex-col items-center gap-6 px-8">
-          <div className="flex items-center gap-2 text-neutral-500">
-            <span className="material-symbols-outlined text-2xl">forest</span>
-            <span className="text-xl font-black uppercase tracking-tighter">Inari Suki &amp; Grill</span>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8 text-sm uppercase tracking-widest text-neutral-500">
-            <a className="hover:text-tertiary transition-colors" href="#">Privacy Policy</a>
-            <a className="hover:text-tertiary transition-colors" href="#">Terms of Service</a>
-            <a className="hover:text-tertiary transition-colors" href="#">Contact</a>
-            <a className="hover:text-tertiary transition-colors" href="#">Allergens</a>
-          </div>
-          <p className="text-neutral-600 text-[10px] tracking-tighter opacity-60">
-            © 2024 Inari Suki &amp; Grill. Precision in Every Ember.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

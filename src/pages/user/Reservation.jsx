@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import '../../index.css';
 
 const MAX_PER_TABLE = 4;
@@ -40,13 +41,13 @@ function Reservation() {
 
   // Fetch packages & tables
   useEffect(() => {
-    fetch('http://localhost:5000/api/packages')
+    fetch('/api/packages')
       .then(r => r.json())
       .then(d => { if (d.success) setPackages(d.data); })
       .catch(() => {})
       .finally(() => setPkgLoading(false));
 
-    fetch('http://localhost:5000/api/tables')
+    fetch('/api/tables')
       .then(r => r.json())
       .then(d => {
         if (d.success) {
@@ -64,7 +65,7 @@ function Reservation() {
   useEffect(() => {
     if (!selectedDate || !selectedTime) return;
     
-    fetch(`http://localhost:5000/api/booked?date=${selectedDate}&time=${selectedTime}`)
+    fetch(`/api/booked?date=${selectedDate}&time=${selectedTime}`)
       .then(r => r.json())
       .then(d => {
         if (d.success) {
@@ -449,17 +450,7 @@ function Reservation() {
         </div>
       </main>
 
-      <footer className="bg-neutral-950 w-full py-12 px-12">
-        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2 text-neutral-500">
-            <span className="material-symbols-outlined text-2xl">forest</span>
-            <span className="text-lg font-black uppercase tracking-tighter">Inari Suki &amp; Grill</span>
-          </div>
-          <Link to="/" className="flex items-center gap-2 text-neutral-400 hover:text-tertiary transition-colors font-medium text-sm">
-            <span className="material-symbols-outlined text-sm">arrow_back</span>Back to Home
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

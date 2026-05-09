@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 
 function MyOrders() {
   const { user, logout } = useAuth();
@@ -355,18 +356,7 @@ function MyOrders() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-neutral-950 w-full py-12 px-12 mt-12 border-t border-white/5">
-        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col gap-2 items-center md:items-start">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <span className="material-symbols-outlined text-2xl">forest</span>
-              <span className="text-lg font-black uppercase tracking-tighter">Inari Suki & Grill</span>
-            </div>
-            <p className="text-neutral-500 text-sm opacity-80">© 2024 Inari Suki & Grill. Modern Zen Mastery.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
       {selectedRefundOrder && (
         <RefundModal 
           order={selectedRefundOrder} 
