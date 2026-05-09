@@ -6,117 +6,159 @@ import '../../index.css';
 
 function About() {
   const { user, logout } = useAuth();
+  
   return (
-    <div className="bg-background text-on-surface font-body selection:bg-tertiary/30">
+    <div className="bg-[#131313] text-[#e5e2e1] font-['Manrope'] selection:bg-[#ffb59a]/30">
       <Navbar activePage="about" />
 
       <main>
         {/* Hero Section */}
         <section className="relative h-[90vh] flex items-center justify-center overflow-hidden pt-20">
-          <img alt="Chef at work" className="absolute inset-0 w-full h-full object-cover editorial-image-mask opacity-60" data-alt="Close-up of a master sushi chef meticulously preparing nigiri with dramatic side lighting and rising steam in a dark high-end kitchen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4uN7m6PPv5NJFaeiFQ9camS9z7NPXxgvsQnPex03zR8E42qKdVdhgm8Ht-9YlLNNwdNgndpjQpzYViSUAo2yjcSPIFHZshuX0jaxwOgNr7MzQMRcZFZk_oqYB100o8QXDHGXEWT3cCp_C4WzVTDx8ONsEphmqtZAldEX9y8d90EgXLGEvxaNwopQcWQMN3LdAGQ2oW4l1cu8x4tpu7UBsLxtauqqddfl0WL7Tbt-xUU5L1Lto-cVFfIvb7-cvGdblzLSb1ywDncsa" />
-          <div className="relative z-10 text-center px-6">
-            <span className="text-tertiary text-xs tracking-[0.4em] uppercase mb-8 block">Our Philosophy</span>
-            <h1 className="text-6xl md:text-9xl font-extralight tracking-tighter text-on-surface mb-6">
-              Zen Mastery
+          <img 
+            alt="Suki and Grill" 
+            className="absolute inset-0 w-full h-full object-cover opacity-30" 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgKAOzBaUVcmpYxQoihpdqJdx7KxNA7JWmbM1ef6sAuUpJhM9Cm1lSQZSNDLYzlcHMMjEFFABXVtA-tmV-8i8OmSeMJW49osuspjFxlsfFe0BzDzMRF9JFn6iMhSPWNBgec4OS923lJjs-UKFBtontRDjaUqpO48JTVQa2qbEGScMaDMoyfj1HT4zcM5yoONjPjA83Jsnnh9qVRG6avW_CSJgSl2Iss3UqL_vE6wOvPMUlMYp-bkEfHVYPbI_NwZJ0V6dCjQpn11d8" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#131313]"></div>
+          <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <span className="text-[#ffb59a] text-xs font-bold tracking-[0.4em] uppercase mb-8 block animate-fade-in">Inari Suki & Grill Jember</span>
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-[#e5e2e1] mb-6 leading-tight">
+              Makan Ala Resto,<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ffb59a] to-[#ffbea7]">Harga Ramah di Kantong.</span>
             </h1>
+            <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mt-6">
+              Pilihan favorit anak muda dan keluarga di Jember untuk menikmati Suki, Grill, Bento, dan Dimsum berkualitas.
+            </p>
           </div>
         </section>
 
-        {/* The Inari Story - Simplified whitespace layout */}
-        <section className="py-40 px-8 md:px-24">
-          <div className="max-w-5xl mx-auto flex flex-col md:flex-row gap-24 items-start">
-            <div className="md:w-1/2 space-y-12">
-              <h2 className="text-zinc-500 text-xs tracking-[0.3em] uppercase">The Story</h2>
-              <div className="space-y-8 text-on-surface text-xl md:text-2xl font-light leading-relaxed">
-                <p>Founded on the principles of precision and patience, Inari represents a convergence of traditional Japanese soul and modern culinary innovation.</p>
-                <p className="text-zinc-500">Our journey began with a simple vision: to honor the seasonal rhythms of the earth through the medium of fire and vinegared rice. Every cut of fish is selected daily, and every ember in our grill is managed with intensity.</p>
+        {/* The Inari Story */}
+        <section className="py-32 px-8 md:px-24">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-20 items-center">
+            <div className="md:w-1/2 space-y-8">
+              <div className="inline-block bg-[#1c1b1b] border border-[#42474b]/30 px-4 py-2 rounded-full">
+                <span className="text-[#ffb59a] text-[10px] font-black tracking-[0.3em] uppercase">Cerita Kami</span>
+              </div>
+              <h2 className="text-4xl font-extrabold tracking-tight">Hadir Untuk Warga Jember</h2>
+              <div className="space-y-6 text-slate-400 text-lg leading-relaxed">
+                <p>
+                  Berawal dari keinginan untuk menyajikan pengalaman makan ala restoran mewah yang bisa dinikmati oleh semua kalangan, <strong className="text-[#e5e2e1]">Inari Suki & Grill</strong> hadir di Jember.
+                </p>
+                <p>
+                  Kami percaya bahwa kebersamaan saat memanggang daging atau menikmati hangatnya kuah suki tidak harus mahal. Dengan paket berdua mulai dari <strong className="text-[#ffb59a]">Rp 80.000-an</strong>, Inari menjadi solusi tempat makan yang nyaman, lezat, dan terjangkau untuk mahasiswa (anak kos) maupun keluarga.
+                </p>
               </div>
             </div>
-            <div className="md:w-1/2 pt-20">
-              <img className="w-full grayscale hover:grayscale-0 transition-all duration-1000" data-alt="Artisanal high-quality Wagyu beef slices with intricate marbling on a dark slate platter decorated with microgreens and sea salt." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuubmmh6cjl6mQPSmYs2R3K9tN66aYHsPFO2W6QX4H5py72NK7B5FNH5Mc0BRxQBNIX7PWrE2BF64UOx_zSUd4dm11tXladzVYgh0XVFE70LaRyy7ZWIn1ZfnAM-bTr2PR0CAg7o5KIKgB3GFJwwylKB9Swz20vzYrqTR1a_kKFOOMqnar98-WUA1TTJc0Rsr64Re09nn8sD1dPVGV51Oq32t9mgMSe5CX7MUGr_aVclnii2S6y9-6RVGoTV8BRitpxA1LuYjFMr8K" />
-            </div>
-          </div>
-        </section>
-
-        {/* Full Width Blended Image */}
-        <section className="w-full h-[70vh] relative overflow-hidden">
-          <img className="absolute inset-0 w-full h-full object-cover grayscale opacity-40" data-alt="Close-up of a sizzling binchotan charcoal grill with skewers of premium chicken and vegetables emitting soft golden glow and smoke." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgKAOzBaUVcmpYxQoihpdqJdx7KxNA7JWmbM1ef6sAuUpJhM9Cm1lSQZSNDLYzlcHMMjEFFABXVtA-tmV-8i8OmSeMJW49osuspjFxlsfFe0BzDzMRF9JFn6iMhSPWNBgec4OS923lJjs-UKFBtontRDjaUqpO48JTVQa2qbEGScMaDMoyfj1HT4zcM5yoONjPjA83Jsnnh9qVRG6avW_CSJgSl2Iss3UqL_vE6wOvPMUlMYp-bkEfHVYPbI_NwZJ0V6dCjQpn11d8" />
-        </section>
-
-        {/* Our Values - Typography Focused */}
-        <section className="py-40 px-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
-              {/* Quality */}
-              <div className="space-y-6">
-                <h3 className="text-on-surface text-xs tracking-[0.2em] uppercase font-bold">Quality</h3>
-                <p className="text-zinc-500 font-light leading-relaxed">Sourcing only the finest, sustainable ingredients from local purveyors and international markets daily.</p>
-              </div>
-              {/* Authenticity */}
-              <div className="space-y-6">
-                <h3 className="text-on-surface text-xs tracking-[0.2em] uppercase font-bold">Authenticity</h3>
-                <p className="text-zinc-500 font-light leading-relaxed">Preserving age-old techniques while respecting the lineage of Japanese culinary heritage.</p>
-              </div>
-              {/* Innovation */}
-              <div className="space-y-6">
-                <h3 className="text-on-surface text-xs tracking-[0.2em] uppercase font-bold">Innovation</h3>
-                <p className="text-zinc-500 font-light leading-relaxed">Pushing boundaries with unique flavor profiles and modern presentation that surprises and delights.</p>
-              </div>
+            <div className="md:w-1/2 relative group">
+              <div className="absolute inset-0 bg-[#ffb59a] blur-[100px] opacity-20 group-hover:opacity-40 transition-opacity duration-1000"></div>
+              <img 
+                className="w-full rounded-3xl relative z-10 border border-[#42474b]/30 shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]" 
+                alt="Grill and Suki experience" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuubmmh6cjl6mQPSmYs2R3K9tN66aYHsPFO2W6QX4H5py72NK7B5FNH5Mc0BRxQBNIX7PWrE2BF64UOx_zSUd4dm11tXladzVYgh0XVFE70LaRyy7ZWIn1ZfnAM-bTr2PR0CAg7o5KIKgB3GFJwwylKB9Swz20vzYrqTR1a_kKFOOMqnar98-WUA1TTJc0Rsr64Re09nn8sD1dPVGV51Oq32t9mgMSe5CX7MUGr_aVclnii2S6y9-6RVGoTV8BRitpxA1LuYjFMr8K" 
+              />
             </div>
           </div>
         </section>
 
-        {/* Meet the Team - Minimalist */}
-        <section className="py-40 px-8 md:px-24 bg-surface-container-lowest">
+        {/* Layanan Kami */}
+        <section className="py-32 px-8 bg-[#0e0e0e] border-y border-[#42474b]/15">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-zinc-500 text-xs tracking-[0.3em] uppercase mb-24 text-center">The Curators</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-32">
-              {/* Executive Chef */}
-              <div className="group">
-                <div className="relative overflow-hidden mb-12">
-                  <img className="w-full grayscale group-hover:grayscale-0 transition-all duration-1000" data-alt="Elegant portrait of a professional Japanese executive chef in traditional white uniform looking thoughtfully at the camera in a moody studio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRpzvnn_SCNh0cfPzgeSMs6O9oYda2ndR61ZeANfm5Ldqc6xzs812Es-8lu1TGJTwU1DNl-IDJkDD0Px54L5ftbCW3yd5iaqD6fRj53a23HJse-wVBoHbrQ5wcAEqicSy0kib7CeD-CYVrUjfL0VSMSOsuZ6Gh--C00LIWZlNzGwTlYPTtUGrgXq9-tiMpDJDWwjO-EPXNxgmcwuuwSgeutgA3PTFH-9y4YkBt3dHqDQ-_cTjtExnfUQg1XL30xmjxs8YIebZ3vxin" />
+            <div className="text-center mb-20">
+              <h2 className="text-4xl font-extrabold tracking-tight mb-4">Layanan & Penawaran</h2>
+              <p className="text-slate-400">Pilihan lengkap untuk segala kebutuhan acara Anda.</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Suki & Grill */}
+              <div className="bg-[#1c1b1b] p-10 rounded-3xl border border-[#42474b]/20 hover:border-[#ffb59a]/50 transition-colors group">
+                <div className="w-16 h-16 rounded-full bg-[#3e5b68]/20 text-[#adcbda] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-3xl">local_fire_department</span>
                 </div>
-                <h3 className="text-on-surface text-xl font-light mb-2">Kenji Inari</h3>
-                <p className="text-tertiary text-xs uppercase tracking-widest mb-6">Founder & Executive Chef</p>
-                <p className="text-zinc-500 font-light leading-relaxed text-sm max-w-xs">With 25 years of experience in Tokyo's establishments, Chef Kenji brings an unparalleled eye for detail to every plate.</p>
+                <h3 className="text-2xl font-bold mb-4">Suki & Grill</h3>
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  Paket hemat berdua cuma 80rb-an. Nikmati daging grill berkualitas dan kuah suki yang kaya rasa.
+                </p>
               </div>
-              {/* Founder */}
-              <div className="group">
-                <div className="relative overflow-hidden mb-12">
-                  <img className="w-full grayscale group-hover:grayscale-0 transition-all duration-1000" data-alt="Professional portrait of a hospitality visionary in a charcoal suit, sitting in a modern restaurant setting with soft ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNsUZ0Zi_i6pOsbscHFqBg8r9vvUkswxigOGjHBJybjb0GjfjLpmaxANdjy4VBlDCc9N5KFUVzKQQ8Bnz0S0I_kXWe4QjBacjt6p61_LWkW_FOtT-0sGR7BegOhsKyTTsKQNaDxDaLbuUM8a87N2hktKjIStL2Mvi4k9YdirS8vZl-SnkgK3XjthbubMumCB0uxI4xxOdi8L0Tx8VKtmiORq0aurxaHz1R5-mTzMr5JT3lGrA1nlfEXwKEH5vrwPpOFxGvX5RXz3JN" />
+
+              {/* Bento & Dimsum */}
+              <div className="bg-[#1c1b1b] p-10 rounded-3xl border border-[#42474b]/20 hover:border-[#ffb59a]/50 transition-colors group">
+                <div className="w-16 h-16 rounded-full bg-[#9c3400]/20 text-[#ffb59a] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-3xl">restaurant</span>
                 </div>
-                <h3 className="text-on-surface text-xl font-light mb-2">Mika Yamamoto</h3>
-                <p className="text-tertiary text-xs uppercase tracking-widest mb-6">Director of Operations</p>
-                <p className="text-zinc-500 font-light leading-relaxed text-sm max-w-xs">Mika curates the "Zen" atmosphere, ensuring every guest feels the warmth of Japanese hospitality.</p>
+                <h3 className="text-2xl font-bold mb-4">Bento & Dimsum</h3>
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  Pilihan cepat dan lezat mulai dari @15ribu. Cocok untuk makan siang atau camilan ringan.
+                </p>
+              </div>
+
+              {/* Home Service & Catering */}
+              <div className="bg-[#1c1b1b] p-10 rounded-3xl border border-[#42474b]/20 hover:border-[#ffb59a]/50 transition-colors group">
+                <div className="w-16 h-16 rounded-full bg-[#3e5b68]/20 text-[#adcbda] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-3xl">takeout_dining</span>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">Home Service & Catering</h3>
+                <p className="text-slate-400 leading-relaxed mb-6">
+                  Catering kantor cuma @20ribu. Kami juga menyediakan Home Service (alat & bahan diantar ke rumah).
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Atmosphere - Open Layout */}
-        <section className="py-40 px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-              <div className="md:col-span-4 space-y-8">
-                <h2 className="text-on-surface text-4xl font-extralight tracking-tight">The Space</h2>
-                <p className="text-zinc-500 font-light leading-relaxed">A sanctuary from the urban rush—a place of reclaimed wood, dark stone, and the soft amber glow of fire.</p>
-                <a className="inline-block text-xs uppercase tracking-[0.2em] border-b border-zinc-700 pb-2 hover:border-zinc-100 transition-colors" href="#">View Gallery</a>
+        {/* Informasi Operasional */}
+        <section className="py-32 px-8">
+          <div className="max-w-6xl mx-auto bg-[#1c1b1b] rounded-3xl border border-[#42474b]/20 overflow-hidden flex flex-col md:flex-row">
+            <div className="md:w-1/2 p-12 md:p-20 bg-[#9c3400] text-[#ffbea7] flex flex-col justify-center">
+              <h2 className="text-4xl font-extrabold text-white mb-6">Buka Setiap Hari</h2>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <span className="material-symbols-outlined text-3xl text-[#ffb59a]">schedule</span>
+                  <div>
+                    <p className="font-bold text-white text-lg">Senin - Minggu</p>
+                    <p className="text-[#ffb59a] text-xl font-black">09.00 - 21.00 WIB</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="material-symbols-outlined text-3xl text-[#ffb59a]">info</span>
+                  <p className="font-medium text-white text-lg">Open Reservasi Dine-in & Home Service</p>
+                </div>
               </div>
-              <div className="md:col-span-8">
-                <img className="w-full grayscale hover:grayscale-0 transition-all duration-1000" data-alt="Wide shot of a modern minimalist restaurant interior with dark wooden tables, soft warm lighting, and a prominent open sushi bar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoFwPDo37zV2WEmKzQH1ZBxQ0mptRs4nUhyUNRAyS9c6wrVfKaIQKTbnNNLq-EQMc7qlCI1xEEdrU9y-LCIogwOH0sRNXdCeCKcBEs3gc0j7zD5MgYzMeMP8HtIegVRDgOF6JhLPY386w0xZo4C-NY1WEKK__D-rK8j3u3QN5mvuiXy0889dH4tAvVn0l0hftTQIfitXMU4MZ6I4zH-DjsepXKbe1tssuYET1C4oEkwCy0Tm7k-a-JMtVop2UcNQlFi7qaZGmA8Qkf" />
-              </div>
+            </div>
+            <div className="md:w-1/2 p-12 md:p-20 flex flex-col justify-center">
+              <h3 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                <span className="material-symbols-outlined text-[#ffb59a]">location_on</span>
+                Cabang Kami di Jember
+              </h3>
+              <ul className="space-y-6">
+                <li className="flex flex-col border-b border-[#42474b]/20 pb-4">
+                  <span className="font-bold text-lg text-[#e5e2e1]">Sumbersari / Roxy</span>
+                  <span className="text-slate-400 text-sm">Jl. Sriwijaya 18 No. 6</span>
+                </li>
+                <li className="flex flex-col border-b border-[#42474b]/20 pb-4">
+                  <span className="font-bold text-lg text-[#e5e2e1]">Kaliwates</span>
+                </li>
+                <li className="flex flex-col border-b border-[#42474b]/20 pb-4">
+                  <span className="font-bold text-lg text-[#e5e2e1]">Danau Toba</span>
+                </li>
+                <li className="flex flex-col pb-4">
+                  <span className="font-bold text-lg text-[#e5e2e1]">Unmuh Jember</span>
+                </li>
+              </ul>
             </div>
           </div>
         </section>
 
-        {/* CTA Section - Simple & Breathable */}
-        <section className="py-60 px-8 text-center bg-background">
-          <div className="max-w-3xl mx-auto space-y-12">
-            <h2 className="text-5xl md:text-7xl font-extralight text-on-surface tracking-tighter">Experience the Mastery</h2>
-            <p className="text-zinc-500 text-lg font-light tracking-wide">Reservations are highly recommended for dinner service.</p>
+        {/* CTA Section */}
+        <section className="py-40 px-8 text-center bg-[#0e0e0e] border-t border-[#42474b]/15 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[#ffb59a] blur-[150px] opacity-10 rounded-full mx-auto w-[600px] h-[600px] -top-[300px]"></div>
+          <div className="max-w-3xl mx-auto space-y-12 relative z-10">
+            <h2 className="text-5xl md:text-7xl font-black text-[#e5e2e1] tracking-tighter">Reservasi Sekarang</h2>
+            <p className="text-slate-400 text-lg font-medium tracking-wide">
+              Pilih cabang terdekat dan nikmati keseruan nge-grill bareng teman dan keluarga!
+            </p>
             <div className="pt-8">
-              <Link to="/reservation" className="bg-zinc-100 text-zinc-950 px-16 py-5 text-xs uppercase tracking-[0.3em] font-bold hover:bg-tertiary transition-all duration-500">
-                Book Table
+              <Link to="/reservation" className="bg-[#9c3400] text-white px-12 py-5 rounded-full text-sm font-bold hover:bg-[#ffb59a] hover:text-[#5b1b00] transition-all duration-300 shadow-[0_0_40px_rgba(156,52,0,0.4)] hover:shadow-[0_0_60px_rgba(255,181,154,0.6)]">
+                Pesan Meja
               </Link>
             </div>
           </div>
@@ -124,19 +166,19 @@ function About() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-neutral-950 w-full py-12 px-12">
-        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <footer className="bg-[#0a0a0a] w-full py-12 px-12 border-t border-[#42474b]/15">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col gap-2 items-center md:items-start">
-            <div className="flex items-center gap-2 text-neutral-500">
-              <span className="material-symbols-outlined text-2xl">forest</span>
+            <div className="flex items-center gap-2 text-[#ffb59a]">
+              <span className="material-symbols-outlined text-2xl">restaurant</span>
               <span className="text-lg font-black uppercase tracking-tighter">Inari Suki & Grill</span>
             </div>
-            <p className="text-neutral-500 Manrope body-sm tracking-wide opacity-80 hover:opacity-100 transition-opacity">© 2024 Inari Suki & Grill. Modern Zen Mastery.</p>
+            <p className="text-slate-500 text-sm tracking-wide">© 2024 Inari Suki & Grill Jember. All rights reserved.</p>
           </div>
-          <Link to="/" className="flex items-center gap-2 text-neutral-400 hover:text-tertiary transition-colors font-medium text-sm">
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
-            Back to Home
-          </Link>
+          <a href="https://www.instagram.com/inerisuki.jember/" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-slate-400 hover:text-[#ffb59a] transition-colors font-medium text-sm">
+            Follow our Instagram
+            <span className="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
         </div>
       </footer>
     </div>
