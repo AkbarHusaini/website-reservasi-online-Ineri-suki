@@ -123,3 +123,46 @@ exports.deleteMenuItem = async (req, res) => {
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };
+
+// ─── CATEGORY CRUD ───────────────────────────────────────────
+
+exports.createCategory = async (req, res) => {
+  const { label } = req.body;
+  if (!label) return res.status(400).json({ success: false, error: 'Label wajib diisi.' });
+  try {
+    const slug = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const [result] = await pool.query('INSERT INTO categories (slug, label) VALUES (?, ?)', [slug, label]);
+    res.json({ success: true, id: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+};
+
+exports.updateCategory = async (req, res) => {
+  const { id } = req.params;
+  const { label } = req.body;
+  try {
+    await pool.query('UPDATE categories SET label=? WHERE id=?', [label, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+};
+
+exports.deleteCategory = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Check if category is used in items
+    const [items] = await pool.query('SELECT id FROM items WHERE category_id = ? LIMIT 1', [id]);
+    if (items.length > 0) {
+      return res.status(400).json({ success: false, error: 'Kategori sedang digunakan oleh menu item.' });
+    }
+    await pool.query('DELETE FROM categories WHERE id = ?', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+};

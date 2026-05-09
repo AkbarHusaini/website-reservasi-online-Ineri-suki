@@ -8,6 +8,7 @@ function AdminSidebar({ active, onLogout, admin }) {
   const nav = [
     { label: 'Dashboard', icon: 'dashboard', to: '/admin/dashboard' },
     { label: 'Menu Management', icon: 'restaurant_menu', to: '/admin/menu' },
+    { label: 'Categories', icon: 'category', to: '/admin/categories' },
     { label: 'Reservations', icon: 'event_seat', to: '/admin/reservations' },
     { label: 'Orders', icon: 'receipt_long', to: '/admin/orders' },
     { label: 'Table Management', icon: 'table_restaurant', to: '/admin/tables' },

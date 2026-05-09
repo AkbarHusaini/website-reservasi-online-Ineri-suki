@@ -16,6 +16,7 @@ import AdminMenuManagement from './pages/admin/AdminMenuManagement.jsx'
 import AdminTableManagement from './pages/admin/AdminTableManagement.jsx'
 import AdminReservationManagement from './pages/admin/AdminReservationManagement.jsx'
 import AdminOrderManagement from './pages/admin/AdminOrderManagement.jsx'
+import AdminCategoryManagement from './pages/admin/AdminCategoryManagement.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { CartProvider } from './context/CartContext.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/admin/tables" element={<AdminTableManagement />} />
             <Route path="/admin/reservations" element={<AdminReservationManagement />} />
             <Route path="/admin/orders" element={<AdminOrderManagement />} />
+            <Route path="/admin/categories" element={<AdminCategoryManagement />} />
 
             {/* Protected Routes */}
             <Route path="/menu" element={

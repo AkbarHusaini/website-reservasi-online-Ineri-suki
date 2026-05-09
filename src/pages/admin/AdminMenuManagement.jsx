@@ -8,6 +8,7 @@ function AdminSidebar({ active, onLogout, admin }) {
   const nav = [
     { label: 'Dashboard', icon: 'dashboard', to: '/admin/dashboard' },
     { label: 'Menu Management', icon: 'restaurant_menu', to: '/admin/menu' },
+    { label: 'Categories', icon: 'category', to: '/admin/categories' },
     { label: 'Reservations', icon: 'event_seat', to: '/admin/reservations' },
     { label: 'Orders', icon: 'receipt_long', to: '/admin/orders' },
     { label: 'Table Management', icon: 'table_restaurant', to: '/admin/tables' },
@@ -84,11 +85,33 @@ function MenuItemModal({ item, categories, onClose, onSave }) {
         </div>
         <div className="p-6 space-y-4">
           {err && <p className="text-[#ffb4ab] text-sm bg-red-900/20 px-4 py-2 rounded-lg">{err}</p>}
+          {/* Image Preview Area */}
+          <div className="w-full h-40 rounded-xl bg-[#201f1f] border border-[#42474b]/15 overflow-hidden flex items-center justify-center relative group">
+            {form.image_url ? (
+              <img 
+                src={form.image_url} 
+                alt="Preview" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                onError={(e) => { 
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div className={`w-full h-full items-center justify-center flex-col gap-2 ${form.image_url ? 'hidden' : 'flex'}`}>
+              <span className="material-symbols-outlined text-4xl text-slate-700">image_not_supported</span>
+              <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest">Link gambar tidak valid / kosong</p>
+            </div>
+            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] text-slate-300 font-bold border border-white/5">
+              LIVE PREVIEW
+            </div>
+          </div>
+
           {[
             { label: 'Nama Item', key: 'name', type: 'text', placeholder: 'Bluefin Otoro Nigiri' },
             { label: 'Deskripsi', key: 'description', type: 'text', placeholder: 'Deskripsi singkat...' },
             { label: 'Harga (Rp)', key: 'price', type: 'number', placeholder: '45000' },
-            { label: 'URL Gambar', key: 'image_url', type: 'text', placeholder: 'https://...' },
+            { label: 'URL Gambar', key: 'image_url', type: 'text', placeholder: 'Tips: Klik kanan gambar di Google > Salin alamat gambar' },
           ].map(f => (
             <div key={f.key}>
               <label className="text-[10px] font-bold uppercase tracking-widest text-[#ffb59a] mb-1 block">{f.label}</label>
@@ -104,7 +127,7 @@ function MenuItemModal({ item, categories, onClose, onSave }) {
             <select value={form.category_id} onChange={e => setForm(p => ({ ...p, category_id: e.target.value }))}
               className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-3 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a]">
               <option value="">-- Pilih Kategori --</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-3">
@@ -215,7 +238,7 @@ export default function AdminMenuManagement() {
               value={catFilter}
               onChange={e => setCatFilter(e.target.value)}>
               <option value="">All Categories</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
             </select>
           </div>
           <div className="flex items-center gap-4">
@@ -280,12 +303,19 @@ export default function AdminMenuManagement() {
                       <td className="px-6 py-4">
                         <div className="w-20 h-14 rounded-lg overflow-hidden bg-[#201f1f] relative">
                           {item.image_url || item.img_path ? (
-                            <img src={item.image_url || item.img_path} alt={item.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <span className="material-symbols-outlined text-slate-600">restaurant</span>
-                            </div>
-                          )}
+                            <img 
+                              src={item.image_url || item.img_path} 
+                              alt={item.name} 
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div className={`w-full h-full items-center justify-center bg-[#201f1f] ${item.image_url || item.img_path ? 'hidden' : 'flex'}`}>
+                            <span className="material-symbols-outlined text-slate-600 text-sm">restaurant</span>
+                          </div>
                           <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
                         </div>
                       </td>

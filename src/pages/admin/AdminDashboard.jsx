@@ -49,6 +49,13 @@ function AdminDashboard() {
             Menu Management
           </Link>
           <Link
+            to="/admin/categories"
+            className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
+          >
+            <span className="material-symbols-outlined text-base">category</span>
+            Categories
+          </Link>
+          <Link
             to="/admin/reservations"
             className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
           >

@@ -13,4 +13,8 @@ router.post('/admin/menu', menuController.createMenuItem);
 router.put('/admin/menu/:id', menuController.updateMenuItem);
 router.delete('/admin/menu/:id', menuController.deleteMenuItem);
 
+router.post('/admin/categories', menuController.createCategory);
+router.put('/admin/categories/:id', menuController.updateCategory);
+router.delete('/admin/categories/:id', menuController.deleteCategory);
+
 module.exports = router;
