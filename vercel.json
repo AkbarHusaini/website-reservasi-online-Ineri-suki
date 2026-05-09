@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://website-reservasi-online-ineri-suki-hvik85h18.vercel.app/api/$1"
+      "destination": "https://website-reservasi-online-ineri-suki.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
