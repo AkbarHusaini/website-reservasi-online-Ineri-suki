@@ -176,15 +176,15 @@ export default function PaymentPage() {
                             </div>
 
                             <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                                {order?.items_json && JSON.parse(order.items_json).map((item, idx) => (
+                                {order?.items && order.items.map((item, idx) => (
                                     <div key={idx} className="flex justify-between items-center group">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-xs font-bold text-on-surface-variant group-hover:bg-tertiary/20 group-hover:text-tertiary transition-colors">
-                                                {item.qty}x
+                                                {item.quantity}x
                                             </div>
-                                            <span className="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">{item.name}</span>
+                                            <span className="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">{item.item_name}</span>
                                         </div>
-                                        <span className="text-sm font-bold text-on-surface">Rp {(item.price * item.qty).toLocaleString('id-ID')}</span>
+                                        <span className="text-sm font-bold text-on-surface">Rp {item.subtotal.toLocaleString('id-ID')}</span>
                                     </div>
                                 ))}
                             </div>
