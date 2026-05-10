@@ -1,8 +1,12 @@
 {
+  "builds": [
+    { "src": "package.json", "use": "@vercel/static-build" },
+    { "src": "server/index.js", "use": "@vercel/node" }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://website-reservasi-online-ineri-suki.vercel.app/api/$1"
+      "destination": "/server/index.js"
     },
     {
       "source": "/(.*)",
