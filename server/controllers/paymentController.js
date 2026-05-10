@@ -28,7 +28,9 @@ exports.createTransaction = async (req, res) => {
         let items = [];
         try {
             if (order.items_json) {
-                const cartItems = JSON.parse(order.items_json);
+                const cartItems = typeof order.items_json === 'string' 
+                    ? JSON.parse(order.items_json) 
+                    : order.items_json;
                 items = cartItems.map(item => ({
                     id: item.id,
                     price: Math.round(Number(item.price)),

@@ -27,7 +27,9 @@ exports.getMyOrders = async (req, res) => {
       let items = [];
       try {
         if (order.items_json) {
-          items = JSON.parse(order.items_json);
+          items = typeof order.items_json === 'string' 
+            ? JSON.parse(order.items_json) 
+            : order.items_json;
         }
       } catch (e) {
         console.error('Failed to parse items_json', e);
