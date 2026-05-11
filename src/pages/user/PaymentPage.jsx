@@ -160,8 +160,8 @@ export default function PaymentPage() {
                     {/* Left Side: Order Summary */}
                     <div className="space-y-6">
                         <div>
-                            <h1 className="text-4xl font-black tracking-tighter text-white mb-2">Checkout</h1>
-                            <p className="text-on-surface-variant">Satu langkah lagi untuk menikmati hidangan Inari.</p>
+                            <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-white mb-2">Checkout</h1>
+                            <p className="text-sm md:text-base text-on-surface-variant">Satu langkah lagi untuk menikmati hidangan Inari.</p>
                         </div>
 
                         <div className="bg-surface-container-low border border-outline-variant/10 rounded-3xl p-6 space-y-6 backdrop-blur-md">
@@ -213,9 +213,9 @@ export default function PaymentPage() {
                             <div className="absolute -top-24 -right-24 w-48 h-48 bg-tertiary/20 rounded-full blur-3xl group-hover:bg-tertiary/30 transition-all duration-700"></div>
 
                             <div className="relative z-10">
-                                <p className="text-xs font-bold uppercase tracking-[0.2em] text-tertiary mb-2">Total Pembayaran</p>
-                                <h2 className="text-5xl font-black text-white mb-8 tracking-tighter">
-                                    <span className="text-xl font-medium text-on-surface-variant mr-2 italic">IDR</span>
+                                <p className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-black mb-1">Total Pembayaran</p>
+                                <h2 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-tighter">
+                                    <span className="text-lg font-medium text-on-surface-variant mr-2 italic">IDR</span>
                                     {grandTotal.toLocaleString('id-ID')}
                                 </h2>
 

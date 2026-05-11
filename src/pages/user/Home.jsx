@@ -156,18 +156,18 @@ function Home() {
                 <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
                 Best Seller Selection
               </div>
-              <h1 className="text-7xl font-extrabold tracking-tighter leading-[0.9] text-on-surface uppercase">
+              <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-[0.9] text-on-surface uppercase">
                 INARI SUKI<br /><span className="text-gradient-ember italic">& GRILL</span>
               </h1>
-              <p className="text-xl text-on-surface-variant max-w-lg leading-relaxed font-light">
+              <p className="text-base md:text-xl text-on-surface-variant max-w-lg leading-relaxed font-light">
                 Manjakan indra Anda dengan koleksi hidangan terpopuler kami yang dikurasi khusus untuk pecinta kuliner sejati.
               </p>
-              <div className="flex items-center gap-6 pt-4">
-                <Link to="/reservation" className="bg-tertiary-container text-on-tertiary-container px-8 py-4 rounded-xl font-bold text-lg hover:bg-tertiary transition-all shadow-xl shadow-black/40 group flex flex-row items-center">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 pt-4">
+                <Link to="/reservation" className="w-full sm:w-auto bg-tertiary-container text-on-tertiary-container px-8 py-4 rounded-xl font-bold text-lg hover:bg-tertiary transition-all shadow-xl shadow-black/40 group flex items-center justify-center">
                   Reservasi Sekarang
                   <span className="material-symbols-outlined align-middle ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </Link>
-                <Link to="/menu" className="flex items-center gap-2 text-on-surface font-semibold hover:text-tertiary transition-colors">
+                <Link to="/menu" className="flex items-center gap-2 text-on-surface font-semibold hover:text-tertiary transition-colors pl-2 sm:pl-0">
                   <span className="material-symbols-outlined">play_circle</span>
                   Lihat Menu
                 </Link>
@@ -229,7 +229,7 @@ function Home() {
                   <span className="w-12 h-px bg-tertiary"></span>
                   <span className="text-xs font-black tracking-[0.3em] uppercase">Limited Edition</span>
                 </div>
-                <h2 className="text-6xl font-black tracking-tighter uppercase text-on-surface leading-tight">Chef's Specials <br />&amp; <span className="text-gradient-ember">Seasonal Offers</span></h2>
+                <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase text-on-surface leading-tight">Chef's Specials <br />&amp; <span className="text-gradient-ember">Seasonal Offers</span></h2>
               </div>
               <p className="text-on-surface-variant max-w-sm text-lg font-light leading-relaxed">
                 Cita rasa musiman yang dikurasi khusus oleh Chef kami untuk memberikan pengalaman kuliner yang tak terlupakan bulan ini.
