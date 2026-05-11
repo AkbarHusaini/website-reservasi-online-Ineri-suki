@@ -15,7 +15,7 @@ exports.getCategories = async (req, res) => {
 exports.getMenu = async (req, res) => {
   try {
     const [items] = await pool.query(
-      `SELECT i.*, c.label AS category_name FROM items i
+      `SELECT i.*, c.label AS category_name FROM menu_items i
        LEFT JOIN categories c ON i.category_id = c.id
        WHERE i.is_available = 1 AND i.type = 'menu'
        ORDER BY i.sort_order`
@@ -31,7 +31,7 @@ exports.getMenu = async (req, res) => {
 exports.getPackages = async (req, res) => {
   try {
     const [items] = await pool.query(
-      `SELECT * FROM items WHERE is_available = 1 AND type = 'package' ORDER BY sort_order`
+      `SELECT * FROM menu_items WHERE is_available = 1 AND type = 'package' ORDER BY sort_order`
     );
     res.json({ success: true, data: items });
   } catch (err) {
@@ -44,7 +44,7 @@ exports.getPackages = async (req, res) => {
 exports.getFeaturedMenu = async (req, res) => {
   try {
     const [items] = await pool.query(
-      `SELECT * FROM items WHERE type='menu' AND (badge IS NOT NULL OR sort_order <= 5) ORDER BY sort_order LIMIT 8`
+      `SELECT * FROM menu_items WHERE type='menu' AND (badge IS NOT NULL OR sort_order <= 5) ORDER BY sort_order LIMIT 8`
     );
     res.json({ success: true, data: items });
   } catch (err) {
@@ -59,7 +59,7 @@ exports.getFeaturedMenu = async (req, res) => {
 exports.getAllMenuAdmin = async (req, res) => {
   try {
     const { search = '', category = '', type = '' } = req.query;
-    let sql = `SELECT i.*, c.label AS category_name FROM items i
+    let sql = `SELECT i.*, c.label AS category_name FROM menu_items i
                LEFT JOIN categories c ON i.category_id = c.id WHERE 1=1`;
     const params = [];
     if (search)   { sql += ' AND i.name LIKE ?';        params.push(`%${search}%`); }
@@ -68,7 +68,7 @@ exports.getAllMenuAdmin = async (req, res) => {
     sql += ' ORDER BY i.type, i.sort_order, i.id DESC';
 
     const [items] = await pool.query(sql, params);
-    const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM items');
+    const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM menu_items');
     const [[{ cats }]]  = await pool.query('SELECT COUNT(*) as cats FROM categories');
 
     res.json({ success: true, data: items, total, categories: cats });
@@ -86,7 +86,7 @@ exports.createMenuItem = async (req, res) => {
   }
   try {
     const [result] = await pool.query(
-      'INSERT INTO items (name, description, price, category_id, image_url, is_available, type, badge) VALUES (?,?,?,?,?,?,?,?)',
+      'INSERT INTO menu_items (name, description, price, category_id, image_url, is_available, type, badge) VALUES (?,?,?,?,?,?,?,?)',
       [name, description || '', price, category_id, image_url || '', is_available !== false ? 1 : 0, type || 'menu', badge || null]
     );
     res.json({ success: true, id: result.insertId });
@@ -102,7 +102,7 @@ exports.updateMenuItem = async (req, res) => {
   const { name, description, price, category_id, image_url, is_available, type, badge } = req.body;
   try {
     await pool.query(
-      'UPDATE items SET name=?, description=?, price=?, category_id=?, image_url=?, is_available=?, type=?, badge=? WHERE id=?',
+      'UPDATE menu_items SET name=?, description=?, price=?, category_id=?, image_url=?, is_available=?, type=?, badge=? WHERE id=?',
       [name, description, price, category_id, image_url, is_available ? 1 : 0, type || 'menu', badge || null, id]
     );
     res.json({ success: true });
@@ -116,7 +116,7 @@ exports.updateMenuItem = async (req, res) => {
 exports.deleteMenuItem = async (req, res) => {
   const { id } = req.params;
   try {
-    await pool.query('DELETE FROM items WHERE id = ?', [id]);
+    await pool.query('DELETE FROM menu_items WHERE id = ?', [id]);
     res.json({ success: true });
   } catch (err) {
     console.error(err);
@@ -155,7 +155,7 @@ exports.deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
     // Check if category is used in items
-    const [items] = await pool.query('SELECT id FROM items WHERE category_id = ? LIMIT 1', [id]);
+    const [items] = await pool.query('SELECT id FROM menu_items WHERE category_id = ? LIMIT 1', [id]);
     if (items.length > 0) {
       return res.status(400).json({ success: false, error: 'Kategori sedang digunakan oleh menu item.' });
     }

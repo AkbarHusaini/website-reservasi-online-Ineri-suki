@@ -179,8 +179,8 @@ function MyOrders() {
       <main className="pt-32 pb-24 px-6 md:px-12 max-w-5xl mx-auto">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter text-on-surface mb-2">Pesanan Saya</h1>
-            <p className="text-sm md:text-base text-on-surface-variant">Kelola dan pantau status pesanan Inari Anda di sini.</p>
+            <h1 className="text-4xl font-extrabold tracking-tighter text-on-surface mb-2">Pesanan Saya</h1>
+            <p className="text-on-surface-variant">Kelola dan pantau status pesanan Inari Anda di sini.</p>
           </div>
           <button 
             onClick={async () => {
@@ -233,15 +233,15 @@ function MyOrders() {
                 {/* Order Header */}
                 <div className="bg-surface-container/50 p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-outline-variant/10">
                   <div className="flex gap-4 items-center">
-                    <div className="w-12 h-12 md:w-14 md:h-14 bg-tertiary/10 rounded-2xl flex items-center justify-center text-tertiary flex-shrink-0">
-                      <span className="material-symbols-outlined text-2xl md:text-3xl">restaurant</span>
+                    <div className="w-14 h-14 bg-tertiary/10 rounded-2xl flex items-center justify-center text-tertiary">
+                      <span className="material-symbols-outlined text-3xl">restaurant</span>
                     </div>
                     <div>
-                      <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
-                        <h2 className="text-lg md:text-xl font-black text-on-surface tracking-tighter uppercase">ORDER #{order.id}</h2>
-                        <div className="scale-90 origin-left">{getStatusBadge(order.status, order.refund_status)}</div>
+                      <div className="flex items-center gap-3 mb-1">
+                        <h2 className="text-xl font-black text-on-surface tracking-tighter">ORDER #{order.id}</h2>
+                        {getStatusBadge(order.status, order.refund_status)}
                       </div>
-                      <p className="text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+                      <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">
                         {formatDate(order.created_at)}
                         {order.created_at && (
                           <> • {new Date(order.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</>
@@ -250,9 +250,9 @@ function MyOrders() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col md:items-end w-full md:w-auto pt-4 md:pt-0 border-t md:border-none border-outline-variant/10">
+                  <div className="flex flex-col md:items-end">
                     <p className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-black mb-1">Total Pembayaran</p>
-                    <p className="text-2xl md:text-3xl font-black text-tertiary tracking-tighter">IDR {formatPrice(order.total_price)}</p>
+                    <p className="text-3xl font-black text-tertiary tracking-tighter">IDR {formatPrice(order.total_price)}</p>
                     {order.status === 'pending' && (
                       <Link
                         to={`/payment/${order.id}`}
@@ -318,8 +318,8 @@ function MyOrders() {
                   
                   <div className="grid gap-6">
                     {order.items && order.items.map((item, idx) => (
-                      <div key={idx} className="flex items-start md:items-center gap-4 md:gap-6 p-4 rounded-2xl hover:bg-surface-container transition-colors border border-transparent hover:border-outline-variant/10">
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-surface-container-highest overflow-hidden flex-shrink-0 shadow-lg">
+                      <div key={idx} className="flex items-center gap-6 p-4 rounded-2xl hover:bg-surface-container transition-colors border border-transparent hover:border-outline-variant/10">
+                        <div className="w-20 h-20 rounded-2xl bg-surface-container-highest overflow-hidden flex-shrink-0 shadow-lg">
                           <img
                             src={
                               item.image_url || 
@@ -336,13 +336,13 @@ function MyOrders() {
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                             <div>
-                              <h4 className="font-bold text-base md:text-lg text-on-surface leading-tight mb-1 truncate">{item.item_name}</h4>
-                              <p className="text-xs md:text-sm font-medium text-on-surface-variant">
+                              <h4 className="font-bold text-lg text-on-surface leading-tight mb-1 truncate">{item.item_name}</h4>
+                              <p className="text-sm font-medium text-on-surface-variant">
                                 {item.quantity} x <span className="text-tertiary/80">IDR {formatPrice(item.unit_price)}</span>
                               </p>
                             </div>
-                            <div className="md:text-right">
-                              <p className="text-base md:text-lg font-black text-on-surface">IDR {formatPrice(item.subtotal)}</p>
+                            <div className="text-right">
+                              <p className="text-lg font-black text-on-surface">IDR {formatPrice(item.subtotal)}</p>
                             </div>
                           </div>
                         </div>

@@ -6,9 +6,9 @@ const pool = mysql.createPool({
   password: process.env.DB_PASS || '',
   database: process.env.DB_NAME || 'inari_db',
   port: process.env.DB_PORT || 3306,
-  // ssl: {
-  //   rejectUnauthorized: false
-  // },
+  ssl: {
+    rejectUnauthorized: false
+  },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
