@@ -116,29 +116,3 @@ export function getCurrentUser() {
 export function getToken() {
   return localStorage.getItem('inari_token');
 }
-/**
- * Login via Google (Simulasi/Mock).
- * @param {string} email
- * @param {string} name
- */
-export async function loginWithGoogle(email, name) {
-  try {
-    const response = await fetch(`${BASE_URL}/google-login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, name }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      localStorage.setItem('inari_token', data.token);
-      localStorage.setItem('inari_user', JSON.stringify(data.user));
-      return { success: true, user: data.user, token: data.token };
-    }
-
-    return { success: false, error: data.error || 'Google login gagal.' };
-  } catch (err) {
-    return { success: false, error: 'Tidak dapat terhubung ke server.' };
-  }
-}
