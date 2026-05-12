@@ -97,3 +97,39 @@ exports.adminLogin = async (req, res) => {
     res.status(500).json({ success: false, error: 'Server error' });
   }
 };
+exports.googleLogin = async (req, res) => {
+  const { email, name } = req.body;
+  if (!email) {
+    return res.status(400).json({ success: false, error: 'Email Google tidak valid.' });
+  }
+
+  try {
+    // Cari user berdasarkan email
+    let [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    let user;
+
+    if (users.length === 0) {
+      // Jika belum ada, buat user baru (Auto-register via Google)
+      const [result] = await pool.query(
+        'INSERT INTO users (name, email, role, password) VALUES (?, ?, ?, ?)',
+        [name || 'Google User', email, 'customer', 'google_authenticated_no_password']
+      );
+      const [newUsers] = await pool.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+      user = newUsers[0];
+    } else {
+      user = users[0];
+    }
+
+    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+    delete user.password;
+
+    res.json({
+      success: true,
+      token,
+      user
+    });
+  } catch (err) {
+    console.error('Google Login Error:', err);
+    res.status(500).json({ success: false, error: 'Terjadi kesalahan saat login dengan Google.' });
+  }
+};

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { loginUser } from '../../authController';
+import { loginUser, loginWithGoogle } from '../../authController';
 import { useAuth } from '../../context/AuthContext';
 import Footer from '../../components/Footer';
 
@@ -29,6 +29,24 @@ function Login() {
       } else {
         navigate(from, { replace: true });
       }
+    } else {
+      setError(result.error);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setError('');
+    setLoading(true);
+    // Simulasi: Menggunakan email Google default
+    const googleEmail = "akbar@gmail.com"; 
+    const googleName = "Akbar Google";
+
+    const result = await loginWithGoogle(googleEmail, googleName);
+    setLoading(false);
+
+    if (result.success) {
+      login(result.user);
+      navigate(from, { replace: true });
     } else {
       setError(result.error);
     }
@@ -121,14 +139,14 @@ function Login() {
             </div>
 
             {/* Social Logins */}
-            <div className="grid grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-3 bg-surface border border-outline-variant/20 hover:border-tertiary/40 py-3 rounded-lg transition-all group">
+            <div className="flex flex-col gap-4">
+              <button 
+                onClick={handleGoogleLogin}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-3 bg-surface border border-outline-variant/20 hover:border-tertiary/40 py-4 rounded-lg transition-all group disabled:opacity-50"
+              >
                 <img alt="Google" className="w-5 h-5 opacity-80 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9iIkruAumwldCVS_CtfmS6tXGANwcYGc8OFXfoV1tXjXaFn2JHGTD7BSI91zVZN8gbwObQKALJD2hiVl-nnu4NC50Slkhv-WULLgUQ9qM3SK_8Y1MfWG221LOwCokljpVOJJVIdMV5MzizCNBWLzXKd5Amtb-YVFhVVHfLIzezUuysmW4mq3iVH3hZW3_17C9QmitpUSZf5Ss2F-j4Ktm-Xsxo2LSZLjVzDrJrFW6_eCaFhhrNlUWQhtqjVb7pz4yw8piB4Ygzw7S" />
-                <span className="text-sm font-semibold">Google</span>
-              </button>
-              <button className="flex items-center justify-center gap-3 bg-surface border border-outline-variant/20 hover:border-tertiary/40 py-3 rounded-lg transition-all group">
-                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>ios</span>
-                <span className="text-sm font-semibold">Apple</span>
+                <span className="text-sm font-semibold">Sign in with Google</span>
               </button>
             </div>
           </div>
