@@ -26,44 +26,32 @@ exports.createTransaction = async (req, res) => {
 
         // 2. Prepare Item Details for Midtrans
         let items = [];
-        // 2. Prepare Item Details for Midtrans
-        let items = [];
         try {
             if (order.items_json) {
-                // Robust parsing for string or object
                 const cartItems = typeof order.items_json === 'string' 
                     ? JSON.parse(order.items_json) 
                     : order.items_json;
-                
-                if (Array.isArray(cartItems)) {
-                    items = cartItems.map(item => ({
-                        id: String(item.id || item.menu_id || Math.random().toString(36).substr(2, 9)),
-                        price: Math.round(Number(item.price || 0)),
-                        quantity: Number(item.qty || item.quantity || 1),
-                        name: (item.name || item.item_name || 'Menu Item').substring(0, 50)
-                    }));
-                }
+                items = cartItems.map(item => ({
+                    id: item.id,
+                    price: Math.round(Number(item.price)),
+                    quantity: item.qty,
+                    name: (item.name || 'Menu Item').substring(0, 50)
+                }));
             }
         } catch (e) {
-            console.error('Failed to parse items for Midtrans:', e);
-            // Fallback: If parsing fails, we might still have a total_price to use
+            console.error('Failed to parse items for Midtrans', e);
         }
 
         // Add Tax and Service Fee as item details if they are part of the gross_amount
+        // Note: The total gross_amount MUST match the sum of item_details
         const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        
-        // Use order.total_price as fallback if items array is empty
-        const effectiveSubtotal = items.length > 0 ? subtotal : Math.round(Number(order.total_price));
-        
-        const tax = Math.round(effectiveSubtotal * 0.1);
-        const serviceFee = Math.round(effectiveSubtotal * 0.05);
+        const tax = Math.round(subtotal * 0.1);
+        const serviceFee = Math.round(subtotal * 0.05);
         
         if (tax > 0) items.push({ id: 'TAX-10', price: tax, quantity: 1, name: 'Pajak (10%)' });
         if (serviceFee > 0) items.push({ id: 'SRV-5', price: serviceFee, quantity: 1, name: 'Biaya Layanan (5%)' });
 
-        const finalGrossAmount = items.length > 0 
-            ? items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-            : effectiveSubtotal + tax + serviceFee;
+        const finalGrossAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
         // 3. Prepare Midtrans parameter
         const midtransOrderId = `INARI-ORD-${orderId}-${Date.now()}`;
@@ -72,7 +60,7 @@ exports.createTransaction = async (req, res) => {
                 "order_id": midtransOrderId,
                 "gross_amount": finalGrossAmount
             },
-            "item_details": items.length > 0 ? items : undefined,
+            "item_details": items,
             "credit_card": {
                 "secure": true
             },
@@ -107,15 +95,9 @@ exports.createTransaction = async (req, res) => {
         if (err.ApiResponse) {
             console.error('Midtrans API Response:', JSON.stringify(err.ApiResponse));
         }
-        
-        // Return a more descriptive error message to the user
-        let friendlyMessage = 'Gagal menghubungi Midtrans';
-        if (err.message.includes('401')) friendlyMessage = 'API Key Midtrans tidak valid (Unauthorized)';
-        if (err.message.includes('gross_amount')) friendlyMessage = 'Kesalahan jumlah pembayaran (Gross Amount error)';
-        
         res.status(500).json({ 
             success: false, 
-            message: `${friendlyMessage}: ${err.message}`,
+            message: 'Gagal menghubungi Midtrans',
             error: err.message 
         });
     }
