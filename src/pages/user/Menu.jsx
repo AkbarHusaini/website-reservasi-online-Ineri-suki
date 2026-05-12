@@ -125,7 +125,7 @@ function Menu() {
               The Grill Master's Select
             </h1>
             <p className="text-tertiary text-sm md:text-lg font-light tracking-wide">
-              Experience the charcoal mastery of Inari.
+              Experience the charcoal mastery of Ineri.
             </p>
           </div>
         </section>
@@ -208,7 +208,7 @@ function Menu() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     src={item.image_url}
                     alt={item.name}
-                    onError={(e) => { e.target.src = 'https://placehold.co/400x400/1a1a2e/c9a96e?text=Inari'; }}
+                    onError={(e) => { e.target.src = 'https://placehold.co/400x400/1a1a2e/c9a96e?text=Ineri'; }}
                   />
                   {item.badge && (
                     <div

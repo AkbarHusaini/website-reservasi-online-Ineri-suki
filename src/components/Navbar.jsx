@@ -20,7 +20,7 @@ function Navbar({ activePage }) {
       <div className="flex justify-between items-center px-6 md:px-12 py-4 max-w-screen-2xl mx-auto">
         <Link to="/" className="flex items-center gap-2 md:gap-3 group">
           <span className="material-symbols-outlined text-tertiary text-2xl md:text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>forest</span>
-          <span className="text-lg md:text-xl font-bold tracking-tighter text-neutral-100 uppercase Manrope">Inari Suki & Grill</span>
+          <span className="text-lg md:text-xl font-bold tracking-tighter text-neutral-100 uppercase Manrope">Ineri Suki & Grill</span>
         </Link>
 
         {/* Desktop Nav */}

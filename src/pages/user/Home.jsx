@@ -130,7 +130,7 @@ function Home() {
   if (loading && slides.length === 0) {
     return (
       <div className="bg-background min-h-screen flex items-center justify-center">
-        <div className="text-tertiary animate-pulse text-2xl font-bold uppercase tracking-tighter">Inari Suki & Grill</div>
+        <div className="text-tertiary animate-pulse text-2xl font-bold uppercase tracking-tighter">Ineri Suki & Grill</div>
       </div>
     );
   }
@@ -157,7 +157,7 @@ function Home() {
                 Best Seller Selection
               </div>
               <h1 className="text-4xl md:text-7xl font-extrabold tracking-tighter leading-[0.9] text-on-surface uppercase">
-                INARI SUKI<br /><span className="text-gradient-ember italic">& GRILL</span>
+                Ineri SUKI<br /><span className="text-gradient-ember italic">& GRILL</span>
               </h1>
               <p className="text-base md:text-xl text-on-surface-variant max-w-lg leading-relaxed font-light">
                 Manjakan indra Anda dengan koleksi hidangan terpopuler kami yang dikurasi khusus untuk pecinta kuliner sejati.

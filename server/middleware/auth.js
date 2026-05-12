@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'inari_secret_key_2024';
+const JWT_SECRET = process.env.JWT_SECRET || 'Ineri_secret_key_2024';
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];

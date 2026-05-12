@@ -12,7 +12,7 @@ function MyOrders() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const token = localStorage.getItem('inari_token') || localStorage.getItem('inariToken');
+      const token = localStorage.getItem('Ineri_token') || localStorage.getItem('IneriToken');
       if (!token) {
         setError('Sesi Anda tidak valid atau token hilang. Silakan logout dan login kembali.');
         setLoading(false);
@@ -91,7 +91,7 @@ function MyOrders() {
     const handleSubmit = async (e) => {
       e.preventDefault();
       setSubmitting(true);
-      const token = localStorage.getItem('inari_token') || localStorage.getItem('inariToken');
+      const token = localStorage.getItem('Ineri_token') || localStorage.getItem('IneriToken');
       
       try {
         const res = await fetch(`/api/orders/${order.id}/submit-refund`, {
@@ -180,7 +180,7 @@ function MyOrders() {
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter text-on-surface mb-2">Pesanan Saya</h1>
-            <p className="text-sm md:text-base text-on-surface-variant">Kelola dan pantau status pesanan Inari Anda di sini.</p>
+            <p className="text-sm md:text-base text-on-surface-variant">Kelola dan pantau status pesanan Ineri Anda di sini.</p>
           </div>
           <button 
             onClick={async () => {

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 
 function AdminDashboard() {
   const navigate = useNavigate();
-  const adminRaw = localStorage.getItem('inari_admin') || localStorage.getItem('inari_user');
+  const adminRaw = localStorage.getItem('Ineri_admin') || localStorage.getItem('Ineri_user');
   const admin = adminRaw ? JSON.parse(adminRaw) : null;
 
   useEffect(() => {
@@ -14,10 +14,10 @@ function AdminDashboard() {
   }, [admin, navigate]);
 
   function handleLogout() {
-    localStorage.removeItem('inari_admin');
-    localStorage.removeItem('inari_admin_token');
-    localStorage.removeItem('inari_user');
-    localStorage.removeItem('inari_token');
+    localStorage.removeItem('Ineri_admin');
+    localStorage.removeItem('Ineri_admin_token');
+    localStorage.removeItem('Ineri_user');
+    localStorage.removeItem('Ineri_token');
     navigate('/login', { replace: true });
   }
 
@@ -29,8 +29,8 @@ function AdminDashboard() {
       {/* Sidebar */}
       <aside className="h-screen w-64 fixed left-0 top-0 bg-[#0e0e0e] flex flex-col border-r border-[#42474b]/15 z-50">
         <div className="p-8">
-          <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Inari Admin</span>
-          <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Inari Suki & Grill</p>
+          <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Ineri Admin</span>
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Ineri Suki & Grill</p>
         </div>
 
         <nav className="flex-1 px-4 space-y-1 mt-2">
@@ -123,7 +123,7 @@ function AdminDashboard() {
               <h1 className="text-4xl font-extrabold tracking-tight text-[#e5e2e1] leading-tight">
                 Admin <span className="text-[#ffb59a]">Dashboard</span>
               </h1>
-              <p className="text-slate-400 mt-2 font-medium">Kelola operasional Inari Suki & Grill dari sini.</p>
+              <p className="text-slate-400 mt-2 font-medium">Kelola operasional Ineri Suki & Grill dari sini.</p>
             </div>
           </div>
 

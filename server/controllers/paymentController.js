@@ -54,7 +54,7 @@ exports.createTransaction = async (req, res) => {
         const finalGrossAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
         // 3. Prepare Midtrans parameter
-        const midtransOrderId = `INARI-ORD-${orderId}-${Date.now()}`;
+        const midtransOrderId = `Ineri-ORD-${orderId}-${Date.now()}`;
         let parameter = {
             "transaction_details": {
                 "order_id": midtransOrderId,
@@ -108,7 +108,7 @@ exports.handleNotification = async (req, res) => {
 
     try {
         const statusResponse = await snap.transaction.notification(notification);
-        const orderIdFull = statusResponse.order_id; // INARI-ORD-ID-TIMESTAMP
+        const orderIdFull = statusResponse.order_id; // Ineri-ORD-ID-TIMESTAMP
         const orderId = orderIdFull.split('-')[2];
         const transactionStatus = statusResponse.transaction_status;
         const fraudStatus = statusResponse.fraud_status;

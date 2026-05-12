@@ -51,7 +51,7 @@ function Register() {
       <header className="fixed top-0 w-full z-50 bg-neutral-900/70 backdrop-blur-xl shadow-2xl shadow-black/20">
         <div className="flex justify-between items-center px-12 py-4 max-w-screen-2xl mx-auto">
           <div className="text-xl font-bold tracking-tighter text-neutral-100 uppercase Manrope">
-            Inari Suki & Grill
+            Ineri Suki & Grill
           </div>
           <Link className="text-neutral-300 font-medium hover:text-white transition-colors flex items-center gap-2" to="/">
             <span className="material-symbols-outlined text-sm">arrow_back</span>
@@ -108,7 +108,7 @@ function Register() {
                 <div className="relative group">
                   <label className="block text-[10px] uppercase tracking-widest text-tertiary font-bold mb-2">Email Address</label>
                   <div className="bg-surface-container-highest p-4 rounded-lg focus-within:border-b-2 focus-within:border-tertiary transition-all">
-                    <input name="email" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="arata@inari.culinary" type="email" value={form.email} onChange={handleChange} required />
+                    <input name="email" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="arata@Ineri.culinary" type="email" value={form.email} onChange={handleChange} required />
                   </div>
                 </div>
 

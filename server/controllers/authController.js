@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 const { authenticateToken } = require('../middleware/auth');
-const JWT_SECRET = process.env.JWT_SECRET || 'inari_secret_key_2024';
+const JWT_SECRET = process.env.JWT_SECRET || 'Ineri_secret_key_2024';
 
 exports.register = async (req, res) => {
   const { name, email, phone, password, confirmPassword } = req.body;

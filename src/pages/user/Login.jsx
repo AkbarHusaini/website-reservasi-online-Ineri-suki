@@ -53,8 +53,8 @@ function Login() {
                 <span className="material-symbols-outlined text-4xl text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>forest</span>
               </div>
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tighter uppercase text-on-surface mb-2">Inari Suki & Grill</h1>
-            <p className="text-on-surface-variant font-light tracking-wide text-sm">Welcome back to the Charcoal & Silk experience.</p>
+            <h1 className="text-3xl font-extrabold tracking-tighter uppercase text-on-surface mb-2">Ineri Suki & Grill</h1>
+            <p className="text-on-surface-variant font-light tracking-wide text-sm">Welcome to ineri suki & grill</p>
           </div>
 
           {/* Login Form Card */}
@@ -73,7 +73,7 @@ function Login() {
                 <label className="text-xs font-bold uppercase tracking-widest text-tertiary px-1">Email Address</label>
                 <input
                   className="w-full bg-surface-container-highest border-none focus:ring-0 text-on-surface px-4 py-4 rounded-lg placeholder:text-on-surface-variant/40 transition-all border-b-2 border-transparent focus:border-tertiary"
-                  placeholder="chef@inarisuki.com"
+                  placeholder="chef@Inerisuki.com"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -111,7 +111,7 @@ function Login() {
                 disabled={loading}
               >
                 {loading && <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>}
-                {loading ? 'Signing In...' : 'Sign In to Inari'}
+                {loading ? 'Signing In...' : 'Sign In to Ineri'}
               </button>
             </form>
 
@@ -120,7 +120,7 @@ function Login() {
 
           {/* Footer Link */}
           <p className="text-center mt-8 text-on-surface-variant text-sm">
-            New to the grill? 
+            New to the grill?
             <Link className="text-tertiary font-bold hover:underline underline-offset-4 ml-1" to="/register">Create an account</Link>
           </p>
         </div>

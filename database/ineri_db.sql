@@ -1,13 +1,13 @@
 -- ============================================================
---  INARI SUKI & GRILL — Database Schema
+--  Ineri SUKI & GRILL — Database Schema
 --  Versi: 1.0  |  Engine: InnoDB  |  Charset: utf8mb4
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS inari_db
+CREATE DATABASE IF NOT EXISTS Ineri_db
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE inari_db;
+USE Ineri_db;
 
 -- ============================================================
 -- 1. TABEL: users
@@ -270,7 +270,7 @@ CREATE TABLE admins (
 -- Password default: 'admin123' (ganti setelah setup!)
 -- Hash bcrypt dari 'admin123': $2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh7y
 INSERT INTO admins (name, email, password) VALUES
-  ('Admin Inari', 'admin@inarisuki.com',
+  ('Admin Ineri', 'admin@Inerisuki.com',
    '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lh7y');
 
 -- ============================================================

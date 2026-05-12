@@ -135,7 +135,7 @@ function Reservation() {
       time: selectedTime,
       guestCount: guestCount
     };
-    localStorage.setItem('inari_reservation_temp', JSON.stringify(reservationData));
+    localStorage.setItem('Ineri_reservation_temp', JSON.stringify(reservationData));
 
     setTimeout(() => { setConfirmed(false); navigate('/cart'); }, 1800);
   };

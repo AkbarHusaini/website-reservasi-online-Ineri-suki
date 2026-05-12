@@ -8,10 +8,10 @@ const Footer = () => {
         <div className="flex flex-col items-center md:items-start gap-2">
           <div className="flex items-center gap-2 text-[#ffb59a]">
             <span className="material-symbols-outlined text-2xl">restaurant</span>
-            <span className="text-lg font-black uppercase tracking-tighter">Inari Suki & Grill</span>
+            <span className="text-lg font-black uppercase tracking-tighter">Ineri Suki & Grill</span>
           </div>
           <p className="text-slate-500 text-sm tracking-wide">
-            © 2024 Inari Suki & Grill Jember. Semua Hak Dilindungi.
+            © 2024 Ineri Suki & Grill Jember. Semua Hak Dilindungi.
           </p>
         </div>
 

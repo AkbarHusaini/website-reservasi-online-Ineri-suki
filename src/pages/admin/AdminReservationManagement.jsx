@@ -16,8 +16,8 @@ function AdminSidebar({ active, onLogout, admin }) {
   return (
     <aside className="h-screen w-64 fixed left-0 top-0 bg-[#0e0e0e] flex flex-col border-r border-[#42474b]/15 z-50">
       <div className="p-8">
-        <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Inari Admin</span>
-        <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Inari Suki & Grill</p>
+        <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Ineri Admin</span>
+        <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Ineri Suki & Grill</p>
       </div>
       <nav className="flex-1 px-4 space-y-1 mt-2">
         {nav.map(n => (
@@ -128,7 +128,7 @@ function ReservationModal({ item, onClose, onSave, tables }) {
 // ─── Main Page ──────────────────────────────────────────────────
 export default function AdminReservationManagement() {
   const navigate = useNavigate();
-  const adminRaw = localStorage.getItem('inari_admin') || localStorage.getItem('inari_user');
+  const adminRaw = localStorage.getItem('Ineri_admin') || localStorage.getItem('Ineri_user');
   const admin = adminRaw ? JSON.parse(adminRaw) : null;
 
   const [reservations, setReservations] = useState([]);
@@ -190,7 +190,7 @@ export default function AdminReservationManagement() {
   }
 
   function handleLogout() {
-    ['inari_admin', 'inari_admin_token', 'inari_user', 'inari_token'].forEach(k => localStorage.removeItem(k));
+    ['Ineri_admin', 'Ineri_admin_token', 'Ineri_user', 'Ineri_token'].forEach(k => localStorage.removeItem(k));
     navigate('/login', { replace: true });
   }
 
@@ -219,7 +219,7 @@ export default function AdminReservationManagement() {
               <h1 className="text-4xl font-extrabold tracking-tight leading-tight">
                 Reservation <span className="text-[#ffb59a]">Management</span>
               </h1>
-              <p className="text-slate-400 mt-1 text-sm">Kelola jadwal dan meja pelanggan Inari Suki & Grill.</p>
+              <p className="text-slate-400 mt-1 text-sm">Kelola jadwal dan meja pelanggan Ineri Suki & Grill.</p>
             </div>
           </div>
 

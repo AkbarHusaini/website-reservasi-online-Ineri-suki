@@ -22,7 +22,7 @@ function Cart() {
   const grandTotal = subtotal + tax + serviceFee;
 
   const handleCheckout = async () => {
-    const token = localStorage.getItem('inari_token') || localStorage.getItem('inariToken');
+    const token = localStorage.getItem('Ineri_token') || localStorage.getItem('IneriToken');
     if (!token) {
       alert('Sesi Anda tidak valid atau token hilang. Silakan login kembali.');
       logout();
@@ -34,7 +34,7 @@ function Cart() {
       // Ambil data reservasi jika ada
       let reservationData = null;
       try {
-        const savedRes = localStorage.getItem('inari_reservation_temp');
+        const savedRes = localStorage.getItem('Ineri_reservation_temp');
         if (savedRes) {
           reservationData = JSON.parse(savedRes);
         }
@@ -55,7 +55,7 @@ function Cart() {
 
       if (data.success) {
         setCheckedOut(true);
-        localStorage.removeItem('inari_reservation_temp');
+        localStorage.removeItem('Ineri_reservation_temp');
         setTimeout(() => {
           setCheckedOut(false);
           clearCart();

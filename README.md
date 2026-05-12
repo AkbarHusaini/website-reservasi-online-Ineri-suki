@@ -1,5 +1,5 @@
-# inari-react
-React + Vite project for Inari Suki & Grill.
+# Ineri-react
+React + Vite project for Ineri Suki & Grill.
 
 ## Backend
 The backend is located in the `server` folder. To start the backend:

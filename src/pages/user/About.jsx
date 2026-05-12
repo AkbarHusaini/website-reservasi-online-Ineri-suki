@@ -22,7 +22,7 @@ function About() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#131313]"></div>
           <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-            <span className="text-[#ffb59a] text-xs font-bold tracking-[0.4em] uppercase mb-8 block animate-fade-in">Inari Suki & Grill Jember</span>
+            <span className="text-[#ffb59a] text-xs font-bold tracking-[0.4em] uppercase mb-8 block animate-fade-in">Ineri Suki & Grill Jember</span>
             <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-[#e5e2e1] mb-6 leading-tight">
               Makan Ala Resto,<br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ffb59a] to-[#ffbea7]">Harga Ramah di Kantong.</span>
@@ -33,7 +33,7 @@ function About() {
           </div>
         </section>
 
-        {/* The Inari Story */}
+        {/* The Ineri Story */}
         <section className="py-32 px-8 md:px-24">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-20 items-center">
             <div className="md:w-1/2 space-y-8">
@@ -43,10 +43,10 @@ function About() {
               <h2 className="text-4xl font-extrabold tracking-tight">Hadir Untuk Warga Jember</h2>
               <div className="space-y-6 text-slate-400 text-lg leading-relaxed">
                 <p>
-                  Berawal dari keinginan untuk menyajikan pengalaman makan ala restoran mewah yang bisa dinikmati oleh semua kalangan, <strong className="text-[#e5e2e1]">Inari Suki & Grill</strong> hadir di Jember.
+                  Berawal dari keinginan untuk menyajikan pengalaman makan ala restoran mewah yang bisa dinikmati oleh semua kalangan, <strong className="text-[#e5e2e1]">Ineri Suki & Grill</strong> hadir di Jember.
                 </p>
                 <p>
-                  Kami percaya bahwa kebersamaan saat memanggang daging atau menikmati hangatnya kuah suki tidak harus mahal. Dengan paket berdua mulai dari <strong className="text-[#ffb59a]">Rp 80.000-an</strong>, Inari menjadi solusi tempat makan yang nyaman, lezat, dan terjangkau untuk mahasiswa (anak kos) maupun keluarga.
+                  Kami percaya bahwa kebersamaan saat memanggang daging atau menikmati hangatnya kuah suki tidak harus mahal. Dengan paket berdua mulai dari <strong className="text-[#ffb59a]">Rp 80.000-an</strong>, Ineri menjadi solusi tempat makan yang nyaman, lezat, dan terjangkau untuk mahasiswa (anak kos) maupun keluarga.
                 </p>
               </div>
             </div>

@@ -9,7 +9,7 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
     // Load from local storage if available
-    const savedCart = localStorage.getItem('inariCart');
+    const savedCart = localStorage.getItem('IneriCart');
     if (savedCart) {
       try {
         return JSON.parse(savedCart);
@@ -22,7 +22,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     // Save to local storage whenever cart changes
-    localStorage.setItem('inariCart', JSON.stringify(cartItems));
+    localStorage.setItem('IneriCart', JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (item) => {

@@ -25,13 +25,13 @@ export async function loginUser(email, password) {
     const data = await response.json();
 
     if (data.success) {
-      localStorage.setItem('inari_token', data.token);
-      localStorage.setItem('inari_user', JSON.stringify(data.user));
+      localStorage.setItem('Ineri_token', data.token);
+      localStorage.setItem('Ineri_user', JSON.stringify(data.user));
       
       // Keep admin keys for compatibility with components that might use them specifically
       if (data.user.role === 'admin') {
-        localStorage.setItem('inari_admin_token', data.token);
-        localStorage.setItem('inari_admin', JSON.stringify(data.user));
+        localStorage.setItem('Ineri_admin_token', data.token);
+        localStorage.setItem('Ineri_admin', JSON.stringify(data.user));
       }
       return { success: true, user: data.user, token: data.token };
     }
@@ -72,13 +72,13 @@ export async function registerUser({ name, email, phone, password, confirmPasswo
     const data = await response.json();
 
     if (data.success) {
-      localStorage.setItem('inari_token', data.token);
-      localStorage.setItem('inari_user', JSON.stringify(data.user));
+      localStorage.setItem('Ineri_token', data.token);
+      localStorage.setItem('Ineri_user', JSON.stringify(data.user));
       
       // Keep admin keys for compatibility with components that might use them specifically
       if (data.user.role === 'admin') {
-        localStorage.setItem('inari_admin_token', data.token);
-        localStorage.setItem('inari_admin', JSON.stringify(data.user));
+        localStorage.setItem('Ineri_admin_token', data.token);
+        localStorage.setItem('Ineri_admin', JSON.stringify(data.user));
       }
       return { success: true, user: data.user, token: data.token };
     }
@@ -94,10 +94,10 @@ export async function registerUser({ name, email, phone, password, confirmPasswo
  * Logout user — hapus sesi dari localStorage.
  */
 export function logoutUser() {
-  localStorage.removeItem('inari_user');
-  localStorage.removeItem('inari_token');
-  localStorage.removeItem('inari_admin');
-  localStorage.removeItem('inari_admin_token');
+  localStorage.removeItem('Ineri_user');
+  localStorage.removeItem('Ineri_token');
+  localStorage.removeItem('Ineri_admin');
+  localStorage.removeItem('Ineri_admin_token');
 }
 
 /**
@@ -105,7 +105,7 @@ export function logoutUser() {
  * @returns {object|null}
  */
 export function getCurrentUser() {
-  const raw = localStorage.getItem('inari_user');
+  const raw = localStorage.getItem('Ineri_user');
   return raw ? JSON.parse(raw) : null;
 }
 
@@ -114,5 +114,5 @@ export function getCurrentUser() {
  * @returns {string|null}
  */
 export function getToken() {
-  return localStorage.getItem('inari_token');
+  return localStorage.getItem('Ineri_token');
 }

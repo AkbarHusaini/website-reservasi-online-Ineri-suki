@@ -17,7 +17,7 @@ export default function PaymentPage() {
 
     const fetchOrderDetails = async () => {
         try {
-            const token = localStorage.getItem('inari_token');
+            const token = localStorage.getItem('Ineri_token');
             if (!token) {
                 navigate('/login');
                 return;
@@ -48,7 +48,7 @@ export default function PaymentPage() {
 
     const createMidtransToken = async (orderData) => {
         try {
-            const userRaw = localStorage.getItem('inari_user');
+            const userRaw = localStorage.getItem('Ineri_user');
             const user = userRaw ? JSON.parse(userRaw) : {};
 
             const res = await fetch('/api/payments/create-transaction', {
@@ -161,7 +161,7 @@ export default function PaymentPage() {
                     <div className="space-y-6">
                         <div>
                             <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-white mb-2">Checkout</h1>
-                            <p className="text-sm md:text-base text-on-surface-variant">Satu langkah lagi untuk menikmati hidangan Inari.</p>
+                            <p className="text-sm md:text-base text-on-surface-variant">Satu langkah lagi untuk menikmati hidangan Ineri.</p>
                         </div>
 
                         <div className="bg-surface-container-low border border-outline-variant/10 rounded-3xl p-6 space-y-6 backdrop-blur-md">
