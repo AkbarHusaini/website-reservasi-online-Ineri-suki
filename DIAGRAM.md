@@ -110,7 +110,38 @@ sequenceDiagram
 
 ---
 
-## 4. Aturan Bisnis & Kebijakan Sistem (Operational Excellence)
+## 4. Sequence Diagram: Manajemen Admin & Kontrol Stok
+Menunjukkan bagaimana aksi Admin berdampak langsung pada ketersediaan sistem di sisi Pelanggan.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin
+    participant FE_A as Admin Panel (React)
+    participant BE as Backend (Node.js)
+    participant DB as MySQL Database
+    participant FE_U as User App (React)
+
+    Note over Admin, DB: AKTIVITAS ADMIN
+    Admin->>FE_A: Ubah Status Menu/Meja (is_available=0)
+    FE_A->>BE: PUT /api/admin/resource (is_available=0)
+    BE->>DB: UPDATE table SET is_available=0
+    DB-->>BE: Updated
+    BE-->>FE_A: Notifikasi Berhasil
+
+    Note over Admin, DB: DAMPAK REAL-TIME KE USER
+    actor User
+    User->>FE_U: Buka Halaman Reservasi
+    FE_U->>BE: GET /api/available-resources
+    BE->>DB: SELECT * FROM resources WHERE is_available=1
+    DB-->>BE: Data Terbaru
+    BE-->>FE_U: Kirim Data (Menu Habis/Meja Hilang)
+    FE_U->>User: Menampilkan data yang disaring
+```
+
+---
+
+## 5. Aturan Bisnis & Kebijakan Sistem (Operational Excellence)
 
 ### A. Kebijakan Waktu (Time Management)
 | Fitur | Durasi | Keterangan |
