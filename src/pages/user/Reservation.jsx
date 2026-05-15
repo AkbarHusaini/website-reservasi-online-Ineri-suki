@@ -140,6 +140,32 @@ function Reservation() {
     setTimeout(() => { setConfirmed(false); navigate('/cart'); }, 1800);
   };
 
+  const isTimePassed = (timeStr) => {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    if (selectedDate !== today) return false;
+
+    // Parse timeStr like "10:00 AM"
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    hours = parseInt(hours, 10);
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    const slotTime = new Date();
+    slotTime.setHours(hours, parseInt(minutes, 10), 0, 0);
+
+    return now > slotTime;
+  };
+
+  // Auto-select next available time if current is passed
+  useEffect(() => {
+    if (isTimePassed(selectedTime)) {
+      const nextAvailable = timeSlots.find(t => !isTimePassed(t));
+      if (nextAvailable) setSelectedTime(nextAvailable);
+    }
+  }, [selectedDate]);
+
   return (
     <div className="bg-background text-on-surface font-body min-h-screen selection:bg-tertiary/30">
       <Navbar activePage="reservation" />
@@ -323,12 +349,26 @@ function Reservation() {
 
               <label className="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-2 block">Pilih Waktu</label>
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                {timeSlots.map(time => (
-                  <button key={time} onClick={() => setSelectedTime(time)}
-                    className={`py-3 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 ${selectedTime === time ? 'bg-tertiary-container text-on-tertiary-container shadow-md shadow-tertiary/10' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'}`}>
-                    {time}
-                  </button>
-                ))}
+                {timeSlots.map(time => {
+                  const passed = isTimePassed(time);
+                  const isSel = selectedTime === time;
+
+                  return (
+                    <button 
+                      key={time} 
+                      disabled={passed}
+                      onClick={() => setSelectedTime(time)}
+                      className={`relative py-3 px-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 flex flex-col items-center justify-center gap-1 ${
+                        passed ? 'bg-neutral-800/40 text-neutral-600 cursor-not-allowed opacity-50' : 
+                        isSel ? 'bg-tertiary-container text-on-tertiary-container shadow-md shadow-tertiary/10' : 
+                        'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest'
+                      }`}
+                    >
+                      {time}
+                      {passed && <span className="text-[7px] text-neutral-500 block">Passed</span>}
+                    </button>
+                  );
+                })}
               </div>
             </section>
           </div>
