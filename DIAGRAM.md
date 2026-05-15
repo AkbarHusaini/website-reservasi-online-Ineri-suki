@@ -150,31 +150,76 @@ sequenceDiagram
 
 ---
 
-## 4. Full Admin System Sequence Diagram
-Diagram integrasi untuk seluruh akses manajemen admin.
+## 4. Sequence Diagram (Sisi Admin - Per Fitur)
+
+### A. Fitur Manajemen Menu & Kontrol Stok
+Menjelaskan bagaimana Admin mengelola menu dan bagaimana perubahannya berdampak pada sisi user.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Admin
-    participant FE as Admin Panel
+    participant FE as Admin Menu Page
     participant BE as Backend API
     participant DB as MySQL Database
 
-    Admin->>FE: Login Admin
-    FE->>BE: POST /api/auth/login
-    BE-->>FE: JWT Token Admin
+    Admin->>FE: Klik "Toggle Stok" (is_available)
+    FE->>BE: PUT /api/admin/menu/:id (payload: status)
+    BE->>BE: Verify Admin Token (JWT)
+    BE->>DB: UPDATE menu_items SET is_available = 0
+    DB-->>BE: Success Updated
+    BE-->>FE: Notifikasi: "Menu Dinonaktifkan"
     
-    Admin->>FE: Buka Dashboard
-    FE->>BE: GET /api/admin/stats
-    BE->>DB: COUNT Menu, Order, Reservation
-    DB-->>BE: Stats Data
-    BE-->>FE: Tampilkan Statistik
+    Note over Admin, FE: Menu otomatis hilang dari sisi pelanggan
+```
 
-    Admin->>FE: Update Status Menu (is_available)
-    FE->>BE: PUT /api/admin/menu/:id
-    BE->>DB: UPDATE menu_items SET is_available=0
-    BE-->>FE: Success
+### B. Fitur Monitoring & Konfirmasi Reservasi
+Menjelaskan alur Admin dalam memantau dan mengonfirmasi jadwal pelanggan.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin
+    participant FE as Admin Reservation Page
+    participant BE as Backend API
+    participant DB as MySQL Database
+
+    Admin->>FE: Buka Daftar Reservasi
+    FE->>BE: GET /api/admin/reservations
+    BE->>DB: SELECT * FROM reservations JOIN users
+    DB-->>BE: Data Reservasi [Pending]
+    BE-->>FE: Tampilkan Tabel Reservasi
+    
+    Admin->>FE: Klik "Konfirmasi" Reservasi
+    FE->>BE: PATCH /api/admin/reservations/:id (status='confirmed')
+    BE->>DB: UPDATE reservations SET status='confirmed'
+    DB-->>BE: Updated
+    BE-->>FE: Refresh UI (Status: Confirmed)
+```
+
+### C. Fitur Dashboard & Statistik Real-time
+Menjelaskan bagaimana dashboard menarik data ringkasan dari database.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin
+    participant FE as Admin Dashboard
+    participant BE as Backend API
+    participant DB as MySQL Database
+
+    Admin->>FE: Masuk ke Dashboard
+    FE->>BE: GET /api/admin/stats
+    
+    par Hitung Data
+        BE->>DB: SELECT COUNT(*) FROM menu_items
+        BE->>DB: SELECT COUNT(*) FROM reservations WHERE date=TODAY
+        BE->>DB: SELECT COUNT(*) FROM orders WHERE status='pending'
+    end
+
+    DB-->>BE: Data Ringkasan
+    BE-->>FE: Return JSON (stats)
+    FE->>Admin: Tampilkan Angka Statistik
 ```
 
 ---
