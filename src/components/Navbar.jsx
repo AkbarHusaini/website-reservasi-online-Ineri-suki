@@ -19,7 +19,11 @@ function Navbar({ activePage }) {
     <nav className="fixed top-0 w-full z-50 glass-nav shadow-2xl shadow-black/20" style={{ background: 'rgba(20, 19, 19, 0.85)', backdropFilter: 'blur(20px)' }}>
       <div className="flex justify-between items-center px-6 md:px-12 py-4 max-w-screen-2xl mx-auto">
         <Link to="/" className="flex items-center gap-2 md:gap-3 group">
-          <span className="material-symbols-outlined text-tertiary text-2xl md:text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>forest</span>
+          <img 
+            src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+            alt="Ineri Suki & Grill Logo" 
+            className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/10 shadow-lg group-hover:scale-105 transition-transform"
+          />
           <span className="text-lg md:text-xl font-bold tracking-tighter text-neutral-100 uppercase Manrope">Ineri Suki & Grill</span>
         </Link>
 

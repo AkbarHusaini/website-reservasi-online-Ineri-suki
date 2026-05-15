@@ -26,7 +26,7 @@ function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    
+
     if (form.password !== form.confirmPassword) {
       setError('Password and confirmation do not match.');
       return;
@@ -40,7 +40,7 @@ function Register() {
     setLoading(true);
     const result = await registerUser(form);
     setLoading(false);
-    
+
     if (result.success) {
       if (result.user?.role === 'admin') {
         navigate('/admin/dashboard', { replace: true });
@@ -54,163 +54,143 @@ function Register() {
   }
 
   return (
-    <div className="bg-surface text-on-surface min-h-screen flex flex-col overflow-x-hidden font-body selection:bg-tertiary/30">
-      <main className="flex-grow flex items-center justify-center relative px-6 py-20">
-        {/* Atmospheric Background Element */}
-        <div className="inset-0 z-0 overflow-hidden pointer-events-none fixed" style={{ zIndex: -1 }}>
-          <div className="absolute inset-0">
+    <div className="bg-background text-on-background font-body selection:bg-tertiary selection:text-on-tertiary min-h-screen flex flex-col">
+      {/* TopNavBar */}
+      <header className="fixed top-0 w-full z-50 bg-neutral-900/70 backdrop-blur-xl shadow-2xl shadow-black/20">
+        <div className="flex justify-between items-center px-12 py-4 max-w-screen-2xl mx-auto">
+          <div className="flex items-center gap-3">
             <img 
-              alt="Ineri Suki & Grill Atmosphere" 
-              className="w-full h-full object-cover" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs6mWxqSItrl9RdhRGFMphKZrbWS3dnoPg5s0s0xek4kPKBsW6OvlqL-4U0nUJHXDYv1LkdVtMBVtJsxj9OOxN4I_WAagrhFDgRcByBOzXStRHNMO7jljDQSZkvcM7evHYXZwZJ7Zc-9NnOMqJbWAi1E2_abl0w6YVA1WYkqFO1TWoHC-21Me0b8hu2_v7ZjPOLX48D7pIsr0k0GwBJh4qNKQ4ZgAM0ay5F-3h0jSkdeHs2wZ-JhtdPvHAPs3sCjfpqxFobfJOQE72" 
+              src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+              alt="Ineri Suki & Grill Logo" 
+              className="w-8 h-8 rounded-full border border-white/10"
             />
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-[2px] bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
+            <div className="text-xl font-bold tracking-tighter text-neutral-100 uppercase Manrope">
+              Ineri Suki & Grill
+            </div>
+          </div>
+          <Link className="text-neutral-300 font-medium hover:text-white transition-colors flex items-center gap-2" to="/">
+            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            Back to Home
+          </Link>
+        </div>
+      </header>
+
+      <main className="min-h-screen flex items-stretch pt-16 flex-grow">
+        {/* Visual Brand Side */}
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-surface-container-lowest">
+          <div className="absolute inset-0 z-0 bamboo-overlay-vertical opacity-20"></div>
+          <img className="absolute inset-0 w-full h-full object-cover opacity-60" alt="Ineri Suki & Grill Atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs6mWxqSItrl9RdhRGFMphKZrbWS3dnoPg5s0s0xek4kPKBsW6OvlqL-4U0nUJHXDYv1LkdVtMBVtJsxj9OOxN4I_WAagrhFDgRcByBOzXStRHNMO7jljDQSZkvcM7evHYXZwZJ7Zc-9NnOMqJbWAi1E2_abl0w6YVA1WYkqFO1TWoHC-21Me0b8hu2_v7ZjPOLX48D7pIsr0k0GwBJh4qNKQ4ZgAM0ay5F-3h0jSkdeHs2wZ-JhtdPvHAPs3sCjfpqxFobfJOQE72" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+          <div className="relative z-10 self-end p-20 max-w-xl">
+            <div className="w-20 h-20 mb-8 rounded-full border-2 border-tertiary overflow-hidden shadow-2xl">
+              <img 
+                src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+                alt="Ineri Suki & Grill Logo" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <h2 className="text-6xl font-headline font-extrabold tracking-tighter text-on-surface mb-6 leading-none uppercase">
+              SUKI & GRILL <br /><span className="text-tertiary">PALING NAGIH</span> <br />DI JEMBER!
+            </h2>
+            <p className="text-lg text-on-surface-variant leading-relaxed font-light italic">
+              "Makan enak gak harus mahal."
+            </p>
+            <p className="text-base text-on-surface-variant leading-relaxed font-light mt-4">
+              Nikmati kelezatan Suki & Grill pilihan terbaik dengan harga yang ramah di kantong, hanya di Ineri Suki & Grill.
+            </p>
+            <div className="mt-12 w-24 h-1 bg-tertiary-container"></div>
           </div>
         </div>
 
-        <div className="w-full max-w-lg z-10">
-          {/* Branding Header */}
-          <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center justify-center mb-4 hover:scale-105 transition-transform">
-              <div className="w-14 h-14 bg-tertiary-container flex items-center justify-center rounded-2xl shadow-2xl shadow-black/60 border border-white/5">
-                <span className="material-symbols-outlined text-3xl text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
-              </div>
-            </Link>
-            <h1 className="text-3xl font-black tracking-tighter uppercase text-on-surface mb-1">Ineri Suki & Grill</h1>
-            <p className="text-tertiary font-bold tracking-[0.2em] text-xs uppercase mb-2">Suki & Grill Paling Nagih di Jember!</p>
-            <p className="text-on-surface-variant font-light text-sm italic">"Makan Enak Gak Harus Mahal"</p>
-          </div>
-
-          {/* Registration Form Card */}
-          <div className="glass-panel p-8 md:p-10 rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-white/5">
-            <header className="mb-8">
-              <h2 className="text-2xl font-bold tracking-tight">Create Account</h2>
-              <p className="text-on-surface-variant text-sm font-light mt-1">Join us for a premium dining experience.</p>
+        {/* Registration Form Side */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-20 bg-surface">
+          <div className="w-full max-w-md space-y-10">
+            <header className="space-y-4">
+              <h1 className="text-4xl font-headline font-bold tracking-tight text-on-surface">Daftar Akun Baru</h1>
+              <p className="text-on-surface-variant font-light">Silakan isi data diri Anda untuk mulai menikmati layanan reservasi Ineri Suki & Grill.</p>
             </header>
 
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
+
+              {/* Error message */}
               {error && (
-                <div className="bg-error-container/20 border border-error/30 text-error rounded-xl px-4 py-3 text-sm flex items-center gap-2 animate-shake">
+                <div className="bg-error-container/30 border border-error/30 text-error rounded-lg px-4 py-3 text-sm flex items-center gap-2">
                   <span className="material-symbols-outlined text-base">error</span>
                   {error}
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-6">
                 {/* Full Name */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-tertiary/70 px-1">Full Name</label>
-                  <input
-                    name="name"
-                    className="w-full bg-surface-container-highest/50 border border-white/5 focus:ring-1 focus:ring-tertiary/30 text-on-surface px-4 py-3.5 rounded-xl placeholder:text-on-surface-variant/30 transition-all outline-none"
-                    placeholder="Enter your full name"
-                    type="text"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Email */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-tertiary/70 px-1">Email Address</label>
-                    <input
-                      name="email"
-                      className="w-full bg-surface-container-highest/50 border border-white/5 focus:ring-1 focus:ring-tertiary/30 text-on-surface px-4 py-3.5 rounded-xl placeholder:text-on-surface-variant/30 transition-all outline-none"
-                      placeholder="email@example.com"
-                      type="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-
-                  {/* Phone */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-tertiary/70 px-1">Phone Number</label>
-                    <input
-                      name="phone"
-                      className="w-full bg-surface-container-highest/50 border border-white/5 focus:ring-1 focus:ring-tertiary/30 text-on-surface px-4 py-3.5 rounded-xl placeholder:text-on-surface-variant/30 transition-all outline-none"
-                      placeholder="0812..."
-                      type="tel"
-                      value={form.phone}
-                      onChange={handleChange}
-                      required
-                    />
+                <div className="relative group">
+                  <label className="block text-[10px] uppercase tracking-widest text-tertiary font-bold mb-2">Nama Lengkap</label>
+                  <div className="bg-surface-container-highest p-4 rounded-lg focus-within:border-b-2 focus-within:border-tertiary transition-all">
+                    <input name="name" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="Masukkan nama lengkap" type="text" value={form.name} onChange={handleChange} required />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Email */}
+                <div className="relative group">
+                  <label className="block text-[10px] uppercase tracking-widest text-tertiary font-bold mb-2">Alamat Email</label>
+                  <div className="bg-surface-container-highest p-4 rounded-lg focus-within:border-b-2 focus-within:border-tertiary transition-all">
+                    <input name="email" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="email@contoh.com" type="email" value={form.email} onChange={handleChange} required />
+                  </div>
+                </div>
+
+                {/* Phone Number */}
+                <div className="relative group">
+                  <label className="block text-[10px] uppercase tracking-widest text-tertiary font-bold mb-2">Nomor Telepon</label>
+                  <div className="bg-surface-container-highest p-4 rounded-lg focus-within:border-b-2 focus-within:border-tertiary transition-all">
+                    <input name="phone" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="081234567890" type="tel" value={form.phone} onChange={handleChange} required />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Password */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-tertiary/70 px-1">Password</label>
-                    <input
-                      name="password"
-                      className="w-full bg-surface-container-highest/50 border border-white/5 focus:ring-1 focus:ring-tertiary/30 text-on-surface px-4 py-3.5 rounded-xl placeholder:text-on-surface-variant/30 transition-all outline-none"
-                      placeholder="••••••••"
-                      type="password"
-                      value={form.password}
-                      onChange={handleChange}
-                      required
-                    />
+                  <div className="relative group">
+                    <label className="block text-[10px] uppercase tracking-widest text-tertiary font-bold mb-2">Kata Sandi</label>
+                    <div className="bg-surface-container-highest p-4 rounded-lg focus-within:border-b-2 focus-within:border-tertiary transition-all">
+                      <input name="password" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="••••••••" type="password" value={form.password} onChange={handleChange} required />
+                    </div>
                   </div>
 
                   {/* Confirm Password */}
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-tertiary/70 px-1">Confirm</label>
-                    <input
-                      name="confirmPassword"
-                      className="w-full bg-surface-container-highest/50 border border-white/5 focus:ring-1 focus:ring-tertiary/30 text-on-surface px-4 py-3.5 rounded-xl placeholder:text-on-surface-variant/30 transition-all outline-none"
-                      placeholder="••••••••"
-                      type="password"
-                      value={form.confirmPassword}
-                      onChange={handleChange}
-                      required
-                    />
+                  <div className="relative group">
+                    <label className="block text-[10px] uppercase tracking-widest text-tertiary font-bold mb-2">Konfirmasi</label>
+                    <div className="bg-surface-container-highest p-4 rounded-lg focus-within:border-b-2 focus-within:border-tertiary transition-all">
+                      <input name="confirmPassword" className="w-full bg-transparent border-none p-0 text-on-surface placeholder:text-neutral-600 focus:ring-0 font-medium" placeholder="••••••••" type="password" value={form.confirmPassword} onChange={handleChange} required />
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* T&C */}
-              <div className="flex items-start gap-3 py-2 px-1">
-                <div className="pt-0.5">
-                  <input 
-                    name="terms" 
-                    className="w-4 h-4 rounded border-white/10 bg-surface-container-highest text-tertiary focus:ring-offset-black focus:ring-tertiary transition-colors" 
-                    id="terms" 
-                    type="checkbox" 
-                    checked={form.terms} 
-                    onChange={handleChange} 
-                  />
+              {/* T&C Checkbox */}
+              <div className="flex items-start gap-4 py-2">
+                <div className="pt-1">
+                  <input name="terms" className="w-5 h-5 rounded border-none bg-surface-container-highest text-tertiary-container focus:ring-offset-background focus:ring-tertiary" id="terms" type="checkbox" checked={form.terms} onChange={handleChange} />
                 </div>
-                <label className="text-xs text-on-surface-variant leading-relaxed" htmlFor="terms">
-                  I agree to the <a className="text-tertiary hover:underline" href="#">Terms & Conditions</a> and privacy policy.
+                <label className="text-sm text-on-surface-variant leading-tight" htmlFor="terms">
+                  Saya setuju dengan <a className="text-tertiary hover:underline" href="#">Syarat & Ketentuan</a> dan memahami <a className="text-tertiary hover:underline" href="#">Kebijakan Privasi</a> yang berlaku.
                 </label>
               </div>
 
               <button
-                className="w-full bg-tertiary text-on-tertiary font-bold py-4 rounded-xl transition-all duration-300 transform active:scale-95 shadow-xl shadow-tertiary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed group"
+                className="w-full py-5 bg-tertiary-container text-on-tertiary-container font-bold rounded-lg hover:bg-tertiary transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-tertiary-container/10 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={loading}
               >
-                {loading ? (
-                  <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
-                ) : (
-                  <>
-                    <span>Create Account</span>
-                    <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                  </>
-                )}
+                {loading && <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>}
+                {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
               </button>
             </form>
-          </div>
 
-          {/* Footer Link */}
-          <p className="text-center mt-8 text-on-surface-variant text-sm">
-            Already have an account?
-            <Link className="text-tertiary font-bold hover:underline underline-offset-4 ml-1" to="/login">Sign In instead</Link>
-          </p>
+            <footer className="pt-8 text-center">
+              <p className="text-on-surface-variant text-sm">
+                Sudah punya akun?
+                <Link className="text-on-surface font-bold hover:text-tertiary transition-colors ml-1" to="/login">Masuk di sini</Link>
+              </p>
+            </footer>
+          </div>
         </div>
       </main>
 
@@ -220,4 +200,5 @@ function Register() {
 }
 
 export default Register;
+
 

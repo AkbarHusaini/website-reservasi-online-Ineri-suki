@@ -49,8 +49,12 @@ function Login() {
           {/* Branding Header */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-tertiary-container flex items-center justify-center rounded-xl shadow-2xl shadow-black/60 border border-white/5">
-                <span className="material-symbols-outlined text-4xl text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>forest</span>
+              <div className="w-24 h-24 bg-tertiary-container flex items-center justify-center rounded-full shadow-2xl shadow-black/60 border border-white/5 overflow-hidden">
+                <img 
+                  src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+                  alt="Ineri Suki & Grill Logo" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tighter uppercase text-on-surface mb-2">Ineri Suki & Grill</h1>
