@@ -77,35 +77,62 @@ flowchart TD
 
 ---
 
-## 3. Sequence Diagram: Validasi Refund & Keamanan Transaksi
-Menjelaskan mengapa tombol refund hanya muncul pada kondisi tertentu (`was_paid`).
+## 3. Sequence Diagram: Full User Lifecycle (End-to-End)
+Diagram ini menjelaskan perjalanan pelanggan dari login, pemesanan, hingga pembayaran sukses.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant FE as Frontend (React)
+    participant FE as User App (React)
     participant BE as Backend (Node.js)
     participant DB as MySQL Database
+    participant PG as Midtrans Snap
 
+    Note over User, DB: FASE 1: AUTH & BROWSING
+    User->>FE: Login/Register
+    FE->>BE: POST /api/auth/login
+    BE->>DB: Verify User
+    DB-->>BE: User Valid
+    BE-->>FE: JWT Token & Profile
+    
+    User->>FE: Lihat Menu & Paket
+    FE->>BE: GET /api/menu
+    BE->>DB: SELECT * FROM items WHERE is_available=1
+    DB-->>BE: List Menu
+    BE-->>FE: Tampilkan Menu ke User
+
+    Note over User, DB: FASE 2: RESERVASI & CHECKOUT
+    User->>FE: Pilih Meja, Tanggal, & Sesi (90 Menit)
+    FE->>BE: GET /api/tables/available?date=...&time=...
+    BE->>DB: Check Conflict in reservations
+    DB-->>BE: List Meja Tersedia
+    FE->>User: Tampilkan Meja Hijau (Available)
+    
+    User->>FE: Klik Checkout
+    FE->>BE: POST /api/orders (Data Reservasi & Menu)
+    BE->>DB: INSERT orders & reservations (status='pending')
+    DB-->>BE: OrderID: 101
+    BE-->>FE: Return Success & OrderID
+
+    Note over User, PG: FASE 3: PEMBAYARAN (MIDTRANS)
+    FE->>BE: POST /api/payments/create-token
+    BE->>PG: Request Snap Token (Price, Expiry: 15m)
+    PG-->>BE: Snap Token Received
+    BE-->>FE: Kirim Snap Token ke Frontend
+    
+    User->>FE: Klik Bayar (Muncul Midtrans Modal)
+    User->>PG: Lakukan Pembayaran (Bank/E-wallet)
+    PG-->>BE: Webhook/Notification (Settlement)
+    BE->>DB: UPDATE orders SET status='paid', was_paid=1
+    BE->>DB: UPDATE reservations SET status='confirmed'
+    
+    Note over User, DB: FASE 4: RIWAYAT & SELESAI
     User->>FE: Buka Menu "Pesanan Saya"
     FE->>BE: GET /api/my-orders
     BE->>DB: SELECT * FROM orders WHERE user_id
-    DB-->>BE: Return Data (termasuk kolom was_paid)
-    
-    Note over BE, DB: Cek Eligibilitas Refund
-    alt Jika status='cancelled' DAN was_paid=1
-        BE-->>FE: Kirim flag refund_eligible=true
-        FE->>User: Tampilkan Tombol "Ajukan Refund"
-    else Jika Belum Bayar (was_paid=0)
-        BE-->>FE: Kirim flag refund_eligible=false
-        FE->>User: Sembunyikan Tombol Refund
-    end
-
-    User->>FE: Klik "Ajukan Refund"
-    FE->>BE: POST /api/refunds
-    BE->>DB: UPDATE orders SET refund_status='pending'
-    BE-->>FE: Success
+    DB-->>BE: List Pesanan Lunas
+    FE->>User: Tampilkan Struk & Status "Lunas"
 ```
 
 ---
