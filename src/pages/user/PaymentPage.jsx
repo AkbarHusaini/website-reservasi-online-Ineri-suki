@@ -79,21 +79,42 @@ export default function PaymentPage() {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const handlePayment = async () => {
-        // "Hit lunas" langsung saat tombol diklik (Permintaan User: Instant Payment)
+        if (!snapToken) return;
+
+        window.snap.pay(snapToken, {
+            onSuccess: async function (result) {
+                console.log('Midtrans Success:', result);
+                await updateStatusInstantly();
+            },
+            onPending: async function (result) {
+                console.log('Midtrans Pending:', result);
+                await updateStatusInstantly();
+            },
+            onError: function (result) {
+                console.error('Midtrans Error:', result);
+                setError("Pembayaran gagal. Silaka coba lagi.");
+            },
+            onClose: async function () {
+                console.log('Midtrans Popup Closed');
+                // Tetap update status ke lunas saat ditutup (permintaan simulasi instan)
+                await updateStatusInstantly();
+            }
+        });
+    };
+
+    const updateStatusInstantly = async () => {
         setLoading(true);
         try {
             const res = await fetch(`/api/payments/status/${orderId}?simulate=true`);
             const data = await res.json();
-            
             if (data.success) {
-                // Tampilkan modal sukses langsung
                 setShowSuccess(true);
             } else {
-                setError(`Gagal: ${data.message || 'Unknown error'} ${data.error ? '('+data.error+')' : ''}`);
+                setError(`Gagal memperbarui status: ${data.message}`);
             }
         } catch (e) {
             console.error("Gagal update status simulasi", e);
-            setError("Terjadi kesalahan koneksi ke server. Pastikan database cloud aktif.");
+            setError("Gagal sinkronisasi status. Silakan cek menu Pesanan Saya.");
         } finally {
             setLoading(false);
         }
