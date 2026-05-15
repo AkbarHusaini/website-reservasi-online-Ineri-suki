@@ -483,7 +483,7 @@ function Reservation() {
             <div className="flex-1 order-1 md:order-2 relative">
               <div className="absolute -inset-4 bg-tertiary/10 blur-3xl opacity-20 rounded-3xl" />
               <img className="w-full h-64 md:h-80 object-cover rounded-2xl shadow-2xl relative z-10 border border-white/5"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuubmmh6cjl6mQPSmYs2R3K9tN66aYHsPFO2W6QX4H5py72NK7B5FNH5Mc0BRxQBNIX7PWrE2BF64UOx_zSUd4dm11tXladzVYgh0XVFE70LaRyy7ZWIn1ZfnAM-bTr2PR0CAg7o5KIKgB3GFJwwylKB9Swz20vzYrqTR1a_kKFOOMqnar98-WUA1TTJc0Rsr64Re09nn8sD1dPVGV51Oq32t9mgMSe5CX7MUGr_aVclnii2S6y9-6RVGoTV8BRitpxA1LuYjFMr8K"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtiZaPq-tHhpJ9MXIDo0YSgNs7Wm-pC68GKxjO1bkwtO1zgosFuG5p7IgiZlybypo9Z8lArWYsRsbX-3nZ4upBwoQDqocdWESUtZmf7kUBnlQzGz-NVR7Dw7sYDEAAFsD7L0Iq4X0Mry7rYZ9GA8xAXa4wZGb-VbTgYQcYvFWfZDtagxQOfE5D6coy2SQHyaGrpbZVtcswhImiVVz4abSw-2DAjIpE6M2ZFxL8IsStPuMAAXGPgEGnlkz9Z1ALK45SjiOtiYxmvTri"
                 alt="Suasana Ineri Suki & Grill" />
             </div>
           </div>
