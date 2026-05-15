@@ -17,7 +17,7 @@ exports.getMyOrders = async (req, res) => {
 
     let imageMap = {};
     try {
-      const [menus] = await pool.query('SELECT name, image_url FROM menu_items');
+      const [menus] = await pool.query('SELECT name, image_url FROM menus');
       menus.forEach(m => imageMap[m.name] = m.image_url);
     } catch (imgErr) {
       console.error('Image lookup failed, continuing without fallback:', imgErr.message);

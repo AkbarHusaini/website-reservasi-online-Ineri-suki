@@ -71,7 +71,7 @@ exports.createTransaction = async (req, res) => {
             },
             "expiry": {
                 "unit": "minutes",
-                "duration": 60
+                "duration": 15
             }
         };
 
@@ -149,9 +149,22 @@ exports.checkTransactionStatus = async (req, res) => {
     try {
         // Jika ada flag simulate=true, langsung lunasin untuk testing
         if (simulate === 'true') {
-            const [orderRows] = await pool.query('SELECT reservation_id FROM orders WHERE id = ?', [orderId]);
+            const [orderRows] = await pool.query('SELECT reservation_id, created_at FROM orders WHERE id = ?', [orderId]);
             if (orderRows.length > 0) {
-                const resId = orderRows[0].reservation_id;
+                const order = orderRows[0];
+                const createdAt = new Date(order.created_at).getTime();
+                const now = new Date().getTime();
+                const diffMinutes = (now - createdAt) / (1000 * 60);
+
+                if (diffMinutes > 15) {
+                    await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
+                    if (order.reservation_id) {
+                        await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
+                    }
+                    return res.json({ success: false, message: 'Waktu pembayaran telah habis. Pesanan dibatalkan.', status: 'cancelled' });
+                }
+
+                const resId = order.reservation_id;
                 await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
                 if (resId) {
                     await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = ?", [resId]);
@@ -167,14 +180,31 @@ exports.checkTransactionStatus = async (req, res) => {
         }
 
         // 1. Dapatkan midtrans_order_id dari database
-        const [rows] = await pool.query('SELECT midtrans_order_id, status FROM orders WHERE id = ?', [orderId]);
+        const [rows] = await pool.query('SELECT midtrans_order_id, status, created_at, reservation_id FROM orders WHERE id = ?', [orderId]);
         const order = rows[0];
 
-        if (!order || !order.midtrans_order_id) {
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order tidak ditemukan' });
+        }
+
+        // Cek Expiry (15 menit)
+        const createdAt = new Date(order.created_at).getTime();
+        const now = new Date().getTime();
+        const diffMinutes = (now - createdAt) / (1000 * 60);
+
+        if (diffMinutes > 15 && order.status === 'pending') {
+            await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
+            if (order.reservation_id) {
+                await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
+            }
+            return res.json({ success: false, message: 'Waktu pembayaran telah habis. Pesanan dibatalkan.', status: 'cancelled' });
+        }
+
+        if (!order.midtrans_order_id) {
             return res.json({
                 success: true,
                 message: 'Belum ada transaksi Midtrans untuk order ini.',
-                status: order ? order.status : 'unknown'
+                status: order.status
             });
         }
 

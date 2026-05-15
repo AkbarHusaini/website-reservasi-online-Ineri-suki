@@ -119,6 +119,30 @@ export default function PaymentPage() {
         }
     };
 
+    const [timeLeft, setTimeLeft] = useState(null);
+
+    useEffect(() => {
+        if (!order || order.status !== 'pending') return;
+
+        const calculateTimeLeft = () => {
+            const createdAt = new Date(order.created_at).getTime();
+            const now = new Date().getTime();
+            const diff = Math.max(0, (createdAt + 15 * 60 * 1000) - now);
+            setTimeLeft(Math.floor(diff / 1000));
+        };
+
+        calculateTimeLeft();
+        const timer = setInterval(calculateTimeLeft, 1000);
+        return () => clearInterval(timer);
+    }, [order]);
+
+    const formatTime = (seconds) => {
+        if (seconds === null) return "--:--";
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
     if (loading) return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center">
             <div className="w-16 h-16 border-4 border-tertiary border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -228,6 +252,22 @@ export default function PaymentPage() {
                                     {grandTotal.toLocaleString('id-ID')}
                                 </h2>
 
+                                {/* Timer Component */}
+                                <div className="mb-6 p-4 bg-tertiary/5 border border-tertiary/20 rounded-2xl flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-tertiary/10 flex items-center justify-center">
+                                            <span className={`material-symbols-outlined text-sm ${timeLeft < 60 ? 'text-error animate-pulse' : 'text-tertiary'}`}>timer</span>
+                                        </div>
+                                        <div>
+                                            <p className="text-[8px] uppercase tracking-widest font-bold text-on-surface-variant">Sisa Waktu</p>
+                                            <p className="text-xs font-black text-white">Batas Pembayaran</p>
+                                        </div>
+                                    </div>
+                                    <div className={`text-xl font-black tracking-tighter ${timeLeft < 60 ? 'text-error animate-pulse' : 'text-white'}`}>
+                                        {formatTime(timeLeft)}
+                                    </div>
+                                </div>
+
                                 {error && (
                                     <div className="mb-6 p-4 bg-error-container/20 border border-error/30 rounded-2xl flex items-center gap-3 animate-shake">
                                         <span className="material-symbols-outlined text-error">warning</span>
@@ -235,14 +275,21 @@ export default function PaymentPage() {
                                     </div>
                                 )}
 
+                                {timeLeft === 0 && (
+                                    <div className="mb-6 p-4 bg-error/10 border border-error/20 rounded-2xl flex items-center gap-3">
+                                        <span className="material-symbols-outlined text-error">event_busy</span>
+                                        <p className="text-xs text-error font-bold italic">Waktu pembayaran telah habis. Pesanan dibatalkan.</p>
+                                    </div>
+                                )}
+
                                 <button
                                     onClick={handlePayment}
-                                    disabled={!snapToken || error}
-                                    className="w-full group/btn relative py-5 rounded-2xl font-black text-sm uppercase tracking-[0.3em] overflow-hidden transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={!snapToken || error || timeLeft === 0}
+                                    className="w-full group/btn relative py-5 rounded-2xl font-black text-sm uppercase tracking-[0.3em] overflow-hidden transition-all duration-500 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-tertiary via-orange-400 to-tertiary bg-[length:200%_100%] animate-gradient-x group-hover/btn:scale-105 transition-transform"></div>
                                     <span className="relative flex items-center justify-center gap-3 text-on-tertiary">
-                                        {snapToken ? 'Bayar Sekarang' : 'Menyiapkan...'}
+                                        {timeLeft === 0 ? 'Waktu Habis' : snapToken ? 'Bayar Sekarang' : 'Menyiapkan...'}
                                         <span className="material-symbols-outlined text-base group-hover/btn:translate-x-1 transition-transform">arrow_forward_ios</span>
                                     </span>
                                 </button>
