@@ -224,25 +224,25 @@ exports.submitRefundDetails = async (req, res) => {
     const refundInfo = `[REFUND REQUEST] Bank: ${sBankName}, No. Rek: ${sAccNo}, A/N: ${sAccName}`;
 
     try {
-      // Level 1: Coba cara ideal (semua kolom lengkap)
+      // Level 1: Coba cara ideal
       await pool.query(
-        'UPDATE orders SET refund_bank_name = ?, refund_account_number = ?, refund_account_name = ?, refund_status = "pending" WHERE id = ?',
+        'UPDATE `orders` SET `refund_bank_name` = ?, `refund_account_number` = ?, `refund_account_name` = ?, `refund_status` = "pending" WHERE `id` = ?',
         [sBankName, sAccNo, sAccName, id]
       );
     } catch (sqlErr) {
-      console.warn('Level 1 Fallback: Kolom khusus tidak lengkap.');
+      console.warn('Level 1 failed, trying Level 2...');
       try {
-        // Level 2: Coba simpan di notes + status refund (jika refund_status ada)
+        // Level 2: Coba simpan di notes + status refund
         await pool.query(
-          'UPDATE orders SET notes = CONCAT(IFNULL(notes, ""), ?), refund_status = "pending" WHERE id = ?',
-          [`\n${refundInfo}`, id]
+          'UPDATE `orders` SET `notes` = ?, `refund_status` = "pending" WHERE `id` = ?',
+          [refundInfo, id]
         );
       } catch (sqlErr2) {
-        console.warn('Level 2 Fallback: Kolom refund_status juga tidak ada.');
-        // Level 3: Hanya simpan di notes (Pasti Berhasil)
+        console.warn('Level 2 failed, trying Level 3...');
+        // Level 3: HANYA simpan di notes (Pasti Berhasil)
         await pool.query(
-          'UPDATE orders SET notes = CONCAT(IFNULL(notes, ""), ?) WHERE id = ?',
-          [`\n${refundInfo}`, id]
+          'UPDATE `orders` SET `notes` = ? WHERE `id` = ?',
+          [refundInfo, id]
         );
       }
     }
