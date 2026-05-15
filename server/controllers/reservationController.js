@@ -25,11 +25,12 @@ exports.updateReservation = async (req, res) => {
     );
 
     // Sinkronisasi status ke tabel orders
-    if (status === 'cancelled') {
-      await pool.query('UPDATE orders SET status = "cancelled" WHERE reservation_id = ?', [id]);
-    } else if (status === 'confirmed') {
-      // Jika dikonfirmasi admin, kita anggap order juga valid
-      // Namun status order biasanya bergantung pada pembayaran
+    if (status === 'cancelled' || status === 'confirmed') {
+      try {
+        await pool.query('UPDATE orders SET status = ? WHERE reservation_id = ?', [status, id]);
+      } catch (syncErr) {
+        console.error('Non-critical: Failed to sync status to orders table:', syncErr.message);
+      }
     }
 
     res.json({ success: true });
