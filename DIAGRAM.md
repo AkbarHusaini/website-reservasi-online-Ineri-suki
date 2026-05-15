@@ -2,7 +2,71 @@
 
 Dokumentasi ini dirancang untuk memenuhi standar teknis karya ilmiah/skripsi, menjelaskan interaksi antar komponen sistem secara mendalam.
 
-## 1. Sequence Diagram: Alur Utama Sistem (End-to-End)
+---
+
+## 1. Use Case Diagram
+Menjelaskan fungsionalitas sistem dari sudut pandang aktor (User & Admin).
+
+```mermaid
+useCaseDiagram
+    actor "User (Pelanggan)" as U
+    actor "Admin Restoran" as A
+
+    package "Sistem Reservasi Ineri" {
+        usecase "Registrasi & Login" as UC1
+        usecase "Melihat Menu" as UC2
+        usecase "Melakukan Reservasi Meja" as UC3
+        usecase "Melakukan Pembayaran (Midtrans)" as UC4
+        usecase "Melihat Riwayat Pesanan" as UC5
+        usecase "Mengelola Menu (CRUD)" as UC6
+        usecase "Mengelola Pesanan & Status" as UC7
+        usecase "Melihat Dashboard Laporan" as UC8
+    }
+
+    U --> UC1
+    U --> UC2
+    U --> UC3
+    U --> UC4
+    U --> UC5
+
+    A --> UC1
+    A --> UC6
+    A --> UC7
+    A --> UC8
+```
+
+---
+
+## 2. Activity Diagram: Alur Reservasi & Pembayaran
+Menjelaskan aliran aktivitas user dari mulai memilih menu hingga pembayaran selesai.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Login
+    Login --> BrowseMenu: Pilih Menu & Meja
+    BrowseMenu --> CheckAvailability: Klik Checkout
+    
+    state CheckAvailability <<choice>>
+    CheckAvailability --> BrowseMenu: Meja Penuh
+    CheckAvailability --> CreateOrder: Meja Tersedia
+    
+    CreateOrder --> PaymentProcess: Klik Bayar Sekarang
+    
+    state PaymentProcess {
+        [*] --> OpenSnap: Muncul Pop-up Midtrans
+        OpenSnap --> SelectMethod: Pilih Metode Bayar
+        SelectMethod --> ProcessPay: Proses Transaksi
+        ProcessPay --> [*]
+    }
+    
+    PaymentProcess --> UpdateStatus: Transaksi Selesai/Ditutup
+    UpdateStatus --> ShowSuccess: Muncul Modal Terimakasih
+    ShowSuccess --> [*]
+```
+
+---
+
+## 3. Sequence Diagram: Alur Utama Sistem (End-to-End)
 Diagram ini mencakup proses Autentikasi, Reservasi, Cek Ketersediaan, hingga Pembayaran.
 
 ```mermaid
@@ -61,28 +125,9 @@ sequenceDiagram
     FE->>User: Tampilkan Modal Sukses & Terimakasih
 ```
 
-## 2. Diagram Alir (Flowchart) Logika Bisnis
-Menjelaskan pengambilan keputusan dalam sistem.
+---
 
-```mermaid
-flowchart TD
-    Start([Mulai]) --> Login[Login User]
-    Login --> Browse[Pilih Menu & Meja]
-    Browse --> Check{Meja Tersedia?}
-    
-    Check -- Tidak --> Browse
-    Check -- Ya --> CreateOrder[Buat Pesanan & Reservasi]
-    
-    CreateOrder --> Payment[Proses Pembayaran Midtrans]
-    Payment --> Confirm{Status Pembayaran}
-    
-    Confirm -- Lunas --> Success[Update DB: Paid & Confirmed]
-    Confirm -- Pending/Gagal --> MyOrder[Masuk ke Menu 'Pesanan Saya']
-    
-    Success --> Done([Selesai: Muncul Notifikasi Berhasil])
-```
-
-## 3. Komponen Teknologi (Stack)
+## 4. Komponen Teknologi (Stack)
 - **Frontend**: React.js (Vite), TailwindCSS.
 - **Backend**: Node.js, Express.js.
 - **Database**: MySQL (Aiven Cloud / Local).
