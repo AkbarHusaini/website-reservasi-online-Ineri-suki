@@ -110,33 +110,51 @@ sequenceDiagram
 
 ---
 
-## 4. Sequence Diagram: Manajemen Admin & Kontrol Stok
-Menunjukkan bagaimana aksi Admin berdampak langsung pada ketersediaan sistem di sisi Pelanggan.
+## 4. Sequence Diagram: Full Admin Management System (End-to-End)
+Diagram ini menjelaskan siklus lengkap Admin dalam mengelola ekosistem Ineri Suki & Grill.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Admin
-    participant FE_A as Admin Panel (React)
+    participant FE as Admin Panel (React)
     participant BE as Backend (Node.js)
     participant DB as MySQL Database
-    participant FE_U as User App (React)
 
-    Note over Admin, DB: AKTIVITAS ADMIN
-    Admin->>FE_A: Ubah Status Menu/Meja (is_available=0)
-    FE_A->>BE: PUT /api/admin/resource (is_available=0)
-    BE->>DB: UPDATE table SET is_available=0
+    Note over Admin, DB: FASE 1: OTENTIKASI & INITIAL LOAD
+    Admin->>FE: Input Login Admin
+    FE->>BE: POST /api/auth/login (admin credentials)
+    BE->>DB: SELECT * FROM users WHERE email & role='admin'
+    DB-->>BE: User Data Found
+    BE-->>FE: Return JWT Token & Admin Profile
+    FE->>FE: Save Token to LocalStorage
+    
+    FE->>BE: GET /api/admin/dashboard-stats
+    BE->>DB: COUNT(orders), COUNT(items), COUNT(reservations)
+    DB-->>BE: Statistik Data
+    BE-->>FE: Return Stats (JSON)
+    FE->>Admin: Tampilkan Dashboard Utama
+
+    Note over Admin, DB: FASE 2: MANAJEMEN MENU & MEJA
+    Admin->>FE: Buka Menu Management -> Edit Item
+    FE->>BE: PUT /api/admin/menu/:id (Data Baru)
+    BE->>BE: Verify JWT Token
+    BE->>DB: UPDATE menu_items SET price, is_available...
     DB-->>BE: Updated
-    BE-->>FE_A: Notifikasi Berhasil
+    BE-->>FE: Success Notification
 
-    Note over Admin, DB: DAMPAK REAL-TIME KE USER
-    actor User
-    User->>FE_U: Buka Halaman Reservasi
-    FE_U->>BE: GET /api/available-resources
-    BE->>DB: SELECT * FROM resources WHERE is_available=1
-    DB-->>BE: Data Terbaru
-    BE-->>FE_U: Kirim Data (Menu Habis/Meja Hilang)
-    FE_U->>User: Menampilkan data yang disaring
+    Note over Admin, DB: FASE 3: KONTROL TRANSAKSI & RESERVASI
+    Admin->>FE: Lihat Reservasi Masuk
+    FE->>BE: GET /api/admin/reservations
+    BE->>DB: SELECT * FROM reservations JOIN users...
+    DB-->>BE: List Reservasi
+    BE-->>FE: Tampilkan Tabel Reservasi
+    
+    Admin->>FE: Klik "Konfirmasi" Reservasi
+    FE->>BE: PATCH /api/admin/reservations/:id (status='confirmed')
+    BE->>DB: UPDATE reservations SET status='confirmed'
+    DB-->>BE: Updated
+    BE-->>FE: Update UI & Status Real-time
 ```
 
 ---
