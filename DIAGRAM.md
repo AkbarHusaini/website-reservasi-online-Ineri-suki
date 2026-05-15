@@ -1,11 +1,11 @@
-# Dokumentasi Arsitektur Sistem Ineri Suki & Grill (Versi Skripsi)
+# Dokumentasi Arsitektur Sistem Ineri Suki & Grill (Edisi Final Skripsi)
 
-Dokumentasi ini dirancang untuk memenuhi standar teknis karya ilmiah/skripsi, menjelaskan interaksi antar komponen sistem secara mendalam termasuk fitur **Batas Waktu Pembayaran 15 Menit**.
+Dokumentasi ini dirancang untuk memenuhi standar teknis karya ilmiah, menjelaskan logika otomatisasi tingkat lanjut yang telah diimplementasikan dalam sistem.
 
 ---
 
 ## 1. Use Case Diagram
-Menjelaskan fungsionalitas sistem dari sudut pandang aktor (User & Admin).
+Menjelaskan interaksi antara Aktor (Pelanggan & Admin) dengan sistem.
 
 ```mermaid
 graph LR
@@ -15,17 +15,21 @@ graph LR
 
     subgraph "Sistem Reservasi Ineri"
         UC1(Registrasi & Login)
-        UC2(Melihat Menu)
-        UC3(Melakukan Reservasi Meja)
-        UC4(Melakukan Pembayaran)
-        UC5(Melihat Riwayat Pesanan)
-        UC6(Mengelola Menu CRUD)
-        UC7(Mengelola Pesanan & Pembatalan)
-        UC8(Dashboard Laporan)
+        UC2(Melihat Menu & Paket)
+        UC3(Reservasi Meja & Sesi)
+        UC4(Pembayaran Midtrans)
+        UC5(Riwayat & Ajukan Refund)
     end
 
     subgraph Admin
         A((Admin))
+    end
+
+    subgraph "Fitur Admin"
+        UC6(Manajemen Menu & Stok)
+        UC7(Manajemen Meja & Status)
+        UC8(Monitoring Pesanan)
+        UC9(Dashboard Statistik)
     end
 
     U --- UC1
@@ -38,97 +42,93 @@ graph LR
     A --- UC6
     A --- UC7
     A --- UC8
+    A --- UC9
 ```
 
 ---
 
-## 2. Activity Diagram: Alur Reservasi & Pembayaran (Update: Timer 15 Menit)
-Menjelaskan aliran aktivitas user termasuk penanganan kedaluwarsa pesanan.
+## 2. Activity Diagram: Alur Reservasi & Pembayaran (Timer 15 Menit)
+Menjelaskan logika *time-bound* untuk pembayaran dan pembersihan meja.
 
 ```mermaid
 flowchart TD
-    Start([Mulai]) --> Login[Login ke Sistem]
-    Login --> Browse[Pilih Menu & Meja]
-    Browse --> Check{Meja Tersedia?}
+    Start([Mulai]) --> Select[Pilih Meja & Waktu 90 Menit/Sesi]
+    Select --> Validate{Meja Tersedia?}
     
-    Check -- Tidak --> Browse
-    Check -- Ya --> Create[Buat Pesanan & Simpan Waktu Buat]
+    Validate -- Tidak --> Select
+    Validate -- Ya --> Order[Buat Pesanan: Status Pending]
     
-    Create --> Timer[Mulai Timer 15 Menit]
-    Timer --> Pay[Proses Bayar - Midtrans Snap]
+    Order --> Timer[Start Timer 15 Menit]
+    Timer --> Payment[Proses Pembayaran]
     
-    Pay --> ExpireCheck{Waktu Habis?}
-    ExpireCheck -- Ya --> Cancel[Status Otomatis: Dibatalkan]
-    ExpireCheck -- Tidak --> Result{Transaksi Sukses?}
+    Payment --> CheckExp{Waktu > 15 Menit?}
+    CheckExp -- Ya --> AutoCancel[Sistem: Otomatis Batalkan Pesanan]
+    CheckExp -- Tidak --> Success{Bayar Berhasil?}
     
-    Result -- Ya --> Update[Update DB: Lunas & Konfirmasi]
-    Result -- Tidak/Tutup --> MyOrder[Masuk Menu Pesanan Saya]
+    Success -- Ya --> Paid[Update DB: Paid & was_paid = 1]
+    Success -- Tidak --> MyOrder[Simpan di Menu Pesanan Saya]
     
-    Cancel --> End([Selesai])
-    Update --> SuccessModal[Muncul Modal Terimakasih]
-    SuccessModal --> End
+    Paid --> Confirmed[Meja Terkunci 90 Menit]
+    AutoCancel --> Release[Meja Kembali Tersedia]
+    
+    Confirmed --> End([Selesai])
+    Release --> End
 ```
 
 ---
 
-## 3. Sequence Diagram: Alur Utama dengan Pengecekan Expiry
-Diagram ini mencakup validasi waktu 15 menit di sisi Backend.
+## 3. Sequence Diagram: Validasi Refund & Keamanan Transaksi
+Menjelaskan mengapa tombol refund hanya muncul pada kondisi tertentu (`was_paid`).
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant FE as Frontend (React.js)
-    participant BE as Backend (Node.js/Express)
+    participant FE as Frontend (React)
+    participant BE as Backend (Node.js)
     participant DB as MySQL Database
-    participant PG as Midtrans Snap API
 
-    Note over User, DB: TAHAP 1: PEMESANAN
-    User->>FE: Klik Checkout
-    FE->>BE: POST /api/orders
-    BE->>DB: INSERT orders (created_at: NOW)
-    DB-->>BE: Order ID: 59
-    BE-->>FE: HTTP 201 (Order Created)
-
-    Note over User, DB: TAHAP 2: PEMBAYARAN & TIMER
-    FE->>FE: Jalankan Countdown Timer (15:00)
-    FE->>BE: POST /api/payments/create-transaction
-    BE->>PG: Request Snap Token (expiry: 15m)
-    PG-->>BE: Return Snap Token
-    BE-->>FE: Return Snap Token
-
-    Note over User, DB: TAHAP 3: VALIDASI KEDALUWARSA
-    User->>FE: Klik "Bayar Sekarang"
-    FE->>BE: GET /api/payments/status/:id?simulate=true
+    User->>FE: Buka Menu "Pesanan Saya"
+    FE->>BE: GET /api/my-orders
+    BE->>DB: SELECT * FROM orders WHERE user_id
+    DB-->>BE: Return Data (termasuk kolom was_paid)
     
-    BE->>DB: SELECT created_at FROM orders
-    DB-->>BE: 2024-05-15 12:00:00
-    
-    alt Jika Waktu > 15 Menit
-        BE->>DB: UPDATE orders SET status='cancelled'
-        BE-->>FE: Error (Waktu Habis)
-        FE->>User: Tampilkan Pesan Pesanan Dibatalkan
-    else Jika Waktu < 15 Menit
-        BE->>DB: UPDATE orders SET status='paid'
-        BE-->>FE: Success (Lunas)
-        FE->>User: Muncul Modal Terimakasih
+    Note over BE, DB: Cek Eligibilitas Refund
+    alt Jika status='cancelled' DAN was_paid=1
+        BE-->>FE: Kirim flag refund_eligible=true
+        FE->>User: Tampilkan Tombol "Ajukan Refund"
+    else Jika Belum Bayar (was_paid=0)
+        BE-->>FE: Kirim flag refund_eligible=false
+        FE->>User: Sembunyikan Tombol Refund
     end
+
+    User->>FE: Klik "Ajukan Refund"
+    FE->>BE: POST /api/refunds
+    BE->>DB: UPDATE orders SET refund_status='pending'
+    BE-->>FE: Success
 ```
 
 ---
 
-## 5. Kebijakan Waktu Reservasi (Optimasi Operasional)
-Untuk memastikan standar kebersihan (Hygiene) dan efisiensi pelayanan, sistem menerapkan aturan waktu sebagai berikut:
-- **Durasi Makan**: 60 Menit (1 Jam).
-- **Waktu Pembersihan (Cleaning Buffer)**: 30 Menit.
-- **Interval Sesi**: 90 Menit.
-- **Logika Sistem**: Jika meja dipilih pada Sesi A, maka meja tersebut otomatis dikunci (Lock) oleh sistem selama 90 menit agar tidak bisa dipesan oleh user lain hingga proses pembersihan selesai.
+## 4. Aturan Bisnis & Kebijakan Sistem (Operational Excellence)
+
+### A. Kebijakan Waktu (Time Management)
+| Fitur | Durasi | Keterangan |
+| :--- | :--- | :--- |
+| **Batas Bayar** | 15 Menit | Sejak pesanan dibuat. Jika lewat, meja otomatis dilepas. |
+| **Durasi Makan** | 60 Menit | Waktu standar pelanggan di meja. |
+| **Cleaning Buffer** | 30 Menit | Waktu bagi staf untuk membersihkan panggangan/meja. |
+| **Total Sesi** | 90 Menit | Jeda antar reservasi pada meja yang sama. |
+
+### B. Keamanan Database (Data Integrity)
+- **Flag `was_paid`**: Digunakan sebagai bukti permanen bahwa transaksi pernah sukses, mencegah manipulasi permintaan refund pada pesanan yang tidak pernah dibayar.
+- **Auto-Sync Table**: Jika pesanan dibatalkan (`cancelled`), status meja di tabel `dining_tables` otomatis kembali menjadi `available`.
 
 ---
 
-## 6. Komponen Teknologi (Stack)
-- **Frontend**: React.js (Vite), TailwindCSS.
-- **Backend**: Node.js, Express.js.
-- **Database**: MySQL (Aiven Cloud / Local).
-- **Payment Gateway**: Midtrans Snap API (dengan Expiry Parameter).
-- **Security**: JSON Web Token (JWT).
+## 5. Komponen Teknologi (Stack)
+- **Frontend**: React.js 18, TailwindCSS.
+- **Backend**: Node.js (Express), JWT Authentication.
+- **Database**: MySQL (Aiven Cloud/Local).
+- **Payment**: Midtrans Snap SDK.
+- **Diagrams**: Mermaid.js Integration.
