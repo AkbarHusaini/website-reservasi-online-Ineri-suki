@@ -208,15 +208,25 @@ export default function PaymentPage() {
                         </div>
 
                         <div className="bg-surface-container-low border border-outline-variant/10 rounded-3xl p-6 space-y-6 backdrop-blur-md">
-                            <div className="flex items-center gap-4 border-b border-outline-variant/10 pb-4">
-                                <div className="w-12 h-12 bg-tertiary/10 rounded-2xl flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-tertiary">shopping_bag</span>
+                                <div className="flex justify-between items-center mb-2">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 bg-tertiary/10 rounded-2xl flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-tertiary">shopping_bag</span>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-tertiary">Order ID</p>
+                                            <p className="text-lg font-black text-white">#ORD-{orderId}</p>
+                                        </div>
+                                    </div>
+                                    {order?.status === 'pending' && (
+                                        <div className="text-right bg-black/20 p-3 rounded-2xl border border-tertiary/20">
+                                            <p className="text-[10px] text-tertiary uppercase tracking-widest font-black mb-1">Sisa Waktu</p>
+                                            <div className={`text-xl font-mono font-black ${timeLeft < 60000 ? 'text-error animate-pulse' : 'text-white'}`}>
+                                                {formatTimeLeft(timeLeft)}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-widest text-tertiary">Order ID</p>
-                                    <p className="text-lg font-black text-white">#ORD-{orderId}</p>
-                                </div>
-                            </div>
 
                             <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                                 {order?.items && order.items.map((item, idx) => (
