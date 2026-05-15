@@ -120,16 +120,16 @@ exports.handleNotification = async (req, res) => {
                 // TODO set transaction status on your database to 'challenge'
             } else if (fraudStatus == 'accept') {
                 // TODO set transaction status on your database to 'success'
-                await pool.query('UPDATE orders SET status = "paid" WHERE id = ?', [orderId]);
-                await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [orderId]);
+                await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
+                await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
             }
         } else if (transactionStatus == 'settlement') {
             // TODO set transaction status on your database to 'success'
-            await pool.query('UPDATE orders SET status = "paid" WHERE id = ?', [orderId]);
-            await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [orderId]);
+            await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
+            await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
         } else if (transactionStatus == 'cancel' || transactionStatus == 'deny' || transactionStatus == 'expire') {
             // TODO set transaction status on your database to 'failure'
-            await pool.query('UPDATE orders SET status = "cancelled" WHERE id = ?', [orderId]);
+            await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
         } else if (transactionStatus == 'pending') {
             // TODO set transaction status on your database to 'pending'
         }
@@ -159,11 +159,11 @@ exports.checkTransactionStatus = async (req, res) => {
                 const resId = orderRows[0].reservation_id;
                 
                 // 2. Update status order
-                await pool.query('UPDATE orders SET status = "paid" WHERE id = ?', [orderId]);
+                await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
                 
                 // 3. Update status reservasi jika ada
                 if (resId) {
-                    await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = ?', [resId]);
+                    await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = ?", [resId]);
                 }
                 
                 return res.json({
@@ -214,9 +214,9 @@ exports.checkTransactionStatus = async (req, res) => {
             if (newStatus !== order.status) {
                 await pool.query('UPDATE orders SET status = ? WHERE id = ?', [newStatus, orderId]);
                 if (newStatus === 'paid') {
-                    await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [orderId]);
+                    await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
                 } else if (newStatus === 'cancelled') {
-                    await pool.query('UPDATE reservations SET status = "cancelled" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [orderId]);
+                    await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
                 }
             }
 
@@ -269,8 +269,8 @@ exports.refundOrder = async (req, res) => {
         }
 
         // 1. Update status di DB dulu
-        await pool.query('UPDATE orders SET status = "cancelled" WHERE id = ?', [orderId]);
-        await pool.query('UPDATE reservations SET status = "cancelled" WHERE id = ?', [order.reservation_id]);
+        await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
+        await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
 
         // 2. Panggil API Midtrans Refund
         try {
