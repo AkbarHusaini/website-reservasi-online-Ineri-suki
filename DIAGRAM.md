@@ -117,7 +117,16 @@ sequenceDiagram
 
 ---
 
-## 4. Komponen Teknologi (Stack)
+## 5. Kebijakan Waktu Reservasi (Optimasi Operasional)
+Untuk memastikan standar kebersihan (Hygiene) dan efisiensi pelayanan, sistem menerapkan aturan waktu sebagai berikut:
+- **Durasi Makan**: 60 Menit (1 Jam).
+- **Waktu Pembersihan (Cleaning Buffer)**: 30 Menit.
+- **Interval Sesi**: 90 Menit.
+- **Logika Sistem**: Jika meja dipilih pada Sesi A, maka meja tersebut otomatis dikunci (Lock) oleh sistem selama 90 menit agar tidak bisa dipesan oleh user lain hingga proses pembersihan selesai.
+
+---
+
+## 6. Komponen Teknologi (Stack)
 - **Frontend**: React.js (Vite), TailwindCSS.
 - **Backend**: Node.js, Express.js.
 - **Database**: MySQL (Aiven Cloud / Local).

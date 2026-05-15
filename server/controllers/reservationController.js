@@ -69,7 +69,7 @@ exports.getBookedTables = async (req, res) => {
         timeStr = `${String(hours).padStart(2, '0')}:${minutes}:00`;
       }
       
-      timeFilter = `AND (ABS(TIME_TO_SEC(TIMEDIFF(start_time, ?))) / 60 < 120)`;
+      timeFilter = `AND (ABS(TIME_TO_SEC(TIMEDIFF(start_time, ?))) / 60 < 90)`;
       params.push(timeStr);
     }
 
