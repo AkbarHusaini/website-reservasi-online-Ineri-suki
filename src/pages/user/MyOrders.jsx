@@ -266,7 +266,7 @@ function MyOrders() {
                     )}
                     {order.status === 'cancelled' && 
                      (!order.refund_status || order.refund_status === 'none') && 
-                     (!order.notes || !order.notes.includes('[REFUND REQUEST]')) &&
+                     (!order.notes || (!order.notes.includes('[REFUND REQUEST]') && !order.notes.includes('[REFUND PROCESSED]'))) &&
                      order.was_paid === 1 && (
                       <button
                         onClick={() => setSelectedRefundOrder(order)}
