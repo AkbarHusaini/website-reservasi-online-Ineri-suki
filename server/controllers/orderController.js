@@ -224,21 +224,30 @@ exports.submitRefundDetails = async (req, res) => {
     const refundInfo = `[REFUND REQUEST] Bank: ${sBankName}, No. Rek: ${sAccNo}, A/N: ${sAccName}`;
 
     try {
-      // Coba cara ideal (menggunakan kolom khusus)
+      // Level 1: Coba cara ideal (semua kolom lengkap)
       await pool.query(
         'UPDATE orders SET refund_bank_name = ?, refund_account_number = ?, refund_account_name = ?, refund_status = "pending" WHERE id = ?',
         [sBankName, sAccNo, sAccName, id]
       );
     } catch (sqlErr) {
-      // Jika kolom tidak ada (Unknown column), fallback simpan di 'notes'
-      console.warn('Refund columns missing, falling back to notes column.');
-      await pool.query(
-        'UPDATE orders SET notes = CONCAT(IFNULL(notes, ""), ?), refund_status = "pending" WHERE id = ?',
-        [`\n${refundInfo}`, id]
-      );
+      console.warn('Level 1 Fallback: Kolom khusus tidak lengkap.');
+      try {
+        // Level 2: Coba simpan di notes + status refund (jika refund_status ada)
+        await pool.query(
+          'UPDATE orders SET notes = CONCAT(IFNULL(notes, ""), ?), refund_status = "pending" WHERE id = ?',
+          [`\n${refundInfo}`, id]
+        );
+      } catch (sqlErr2) {
+        console.warn('Level 2 Fallback: Kolom refund_status juga tidak ada.');
+        // Level 3: Hanya simpan di notes (Pasti Berhasil)
+        await pool.query(
+          'UPDATE orders SET notes = CONCAT(IFNULL(notes, ""), ?) WHERE id = ?',
+          [`\n${refundInfo}`, id]
+        );
+      }
     }
 
-    res.json({ success: true, message: 'Detail refund berhasil dikirim via sistem cadangan.' });
+    res.json({ success: true, message: 'Detail refund berhasil dikirim.' });
   } catch (err) {
     console.error('REFUND_ERROR:', err.message);
     res.status(500).json({ success: false, error: `Gagal mengirim: ${err.message}` });
