@@ -79,35 +79,24 @@ export default function PaymentPage() {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const handlePayment = async () => {
-        if (!snapToken) return;
-
-        // "Hit lunas" langsung saat tombol diklik (permintaan user untuk testing)
+        // "Hit lunas" langsung saat tombol diklik (Permintaan User: Instant Payment)
+        setLoading(true);
         try {
-            await fetch(`/api/payments/status/${orderId}?simulate=true`);
+            const res = await fetch(`/api/payments/status/${orderId}?simulate=true`);
+            const data = await res.json();
+            
+            if (data.success) {
+                // Tampilkan modal sukses langsung
+                setShowSuccess(true);
+            } else {
+                setError("Gagal memproses pembayaran instan.");
+            }
         } catch (e) {
             console.error("Gagal update status simulasi", e);
+            setError("Terjadi kesalahan koneksi.");
+        } finally {
+            setLoading(false);
         }
-
-        window.snap.pay(snapToken, {
-            onSuccess: function (result) {
-                console.log('success', result);
-                setShowSuccess(true);
-            },
-            onPending: function (result) {
-                console.log('pending', result);
-                navigate('/my-orders');
-            },
-            onError: function (result) {
-                console.log('error', result);
-                setError("Pembayaran gagal. Silakan coba lagi.");
-            },
-            onClose: function () {
-                console.log('customer closed the popup without finishing the payment');
-                // Karena kita sudah "hit lunas" di awal, kita arahkan saja ke my-orders 
-                // agar user bisa melihat status yang sudah terupdate
-                navigate('/my-orders');
-            }
-        });
     };
 
     if (loading) return (
