@@ -210,21 +210,32 @@ exports.submitRefundDetails = async (req, res) => {
   const userId = req.user.id;
 
   try {
+    // Pastikan data adalah string untuk menghindari error database
+    const sBankName = String(bank_name || '').trim();
+    const sAccNo = String(account_number || '').trim();
+    const sAccName = String(account_name || '').trim();
+
+    if (!sBankName || !sAccNo || !sAccName) {
+      return res.status(400).json({ success: false, error: 'Semua data rekening wajib diisi.' });
+    }
+
     const [order] = await pool.query('SELECT * FROM orders WHERE id = ? AND user_id = ?', [id, userId]);
-    if (!order.length) return res.status(404).json({ success: false, error: 'Order not found' });
+    if (!order.length) return res.status(404).json({ success: false, error: 'Pesanan tidak ditemukan.' });
     
     if (order[0].status !== 'cancelled') {
-      return res.status(400).json({ success: false, error: 'Hanya pesanan yang dibatalkan yang dapat mengajukan refund manual.' });
+      return res.status(400).json({ success: false, error: 'Hanya pesanan yang dibatalkan yang dapat mengajukan refund.' });
     }
+
+    console.log(`Processing refund for Order #${id}...`);
 
     await pool.query(
       'UPDATE orders SET refund_bank_name = ?, refund_account_number = ?, refund_account_name = ?, refund_status = "pending" WHERE id = ?',
-      [bank_name, account_number, account_name, id]
+      [sBankName, sAccNo, sAccName, id]
     );
 
-    res.json({ success: true, message: 'Detail refund berhasil dikirim. Admin akan memprosesnya segera.' });
+    res.json({ success: true, message: 'Detail refund berhasil dikirim.' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Server error' });
+    console.error('REFUND_ERROR:', err.message);
+    res.status(500).json({ success: false, error: `Database error: ${err.message}` });
   }
 };
