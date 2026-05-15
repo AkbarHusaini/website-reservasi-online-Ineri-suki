@@ -1,64 +1,90 @@
-# Dokumentasi Alur Aplikasi Ineri Suki & Grill
+# Dokumentasi Arsitektur Sistem Ineri Suki & Grill (Versi Skripsi)
 
-Dokumentasi ini menggunakan **Mermaid** untuk menjelaskan alur logika sistem.
+Dokumentasi ini dirancang untuk memenuhi standar teknis karya ilmiah/skripsi, menjelaskan interaksi antar komponen sistem secara mendalam.
 
-## 1. Sequence Diagram: Proses Pembayaran (Snap Midtrans)
-Diagram ini menjelaskan urutan komunikasi antara User, Frontend, Backend, dan API Midtrans.
+## 1. Sequence Diagram: Alur Utama Sistem (End-to-End)
+Diagram ini mencakup proses Autentikasi, Reservasi, Cek Ketersediaan, hingga Pembayaran.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant Frontend as React App (PaymentPage)
-    participant Backend as Node.js (API Server)
+    participant FE as Frontend (React.js)
+    participant BE as Backend (Node.js/Express)
+    participant JWT as Middleware (Auth)
     participant DB as MySQL Database
-    participant Midtrans as Midtrans Snap API
+    participant PG as Midtrans Snap API
 
-    Note over User, DB: PERSIAPAN PEMBAYARAN
-    Frontend->>Backend: POST /api/payments/create-transaction (orderId)
-    Backend->>Midtrans: Request Snap Token
-    Midtrans-->>Backend: Return Snap Token
-    Backend->>DB: Simpan midtrans_order_id ke 'orders'
-    Backend-->>Frontend: Kirim Snap Token ke UI
+    Note over User, DB: TAHAP 1: AUTENTIKASI
+    User->>FE: Input Email & Password
+    FE->>BE: POST /api/login
+    BE->>DB: Query User Match?
+    DB-->>BE: User Data Found
+    BE->>BE: Generate JWT Token
+    BE-->>FE: HTTP 200 (JWT Token)
+    FE->>FE: Simpan Token di LocalStorage
 
-    Note over User, DB: PROSES TRANSAKSI (SNAP POP-UP)
-    User->>Frontend: Klik tombol "BAYAR SEKARANG"
-    Frontend->>Frontend: Panggil window.snap.pay(token)
-    Frontend->>Midtrans: Tampilkan Menu Pembayaran
-    User->>Midtrans: Lakukan Pembayaran / Tutup Menu
-    Midtrans-->>Frontend: Callback (Success/Close)
+    Note over User, DB: TAHAP 2: RESERVASI & PEMESANAN
+    User->>FE: Pilih Menu & Pilih Meja (Tanggal/Jam)
+    FE->>BE: POST /api/orders (Data Keranjang + Meja)
+    BE->>JWT: Validasi JWT Token
+    JWT-->>BE: Authorized (User ID)
+    
+    BE->>DB: SELECT * FROM reservations (Cek Konflik Meja)
+    alt Meja Tersedia
+        DB-->>BE: No Conflict
+        BE->>DB: INSERT INTO reservations (Status: pending)
+        BE->>DB: INSERT INTO orders (Status: pending)
+        BE-->>FE: HTTP 201 (Order ID)
+    else Meja Penuh
+        DB-->>BE: Conflict Found
+        BE-->>FE: HTTP 400 (Meja sudah dipesan)
+    end
 
-    Note over User, DB: SIMULASI UPDATE INSTAN (FITUR TESTER)
-    Frontend->>Backend: GET /api/payments/status/:id?simulate=true
-    Backend->>DB: UPDATE orders SET status='paid'
-    Backend->>DB: UPDATE reservations SET status='confirmed'
-    DB-->>Backend: Status Diperbarui
-    Backend-->>Frontend: Return Success
-    Frontend->>User: Muncul Notifikasi "Terimakasih / Berhasil"
+    Note over User, PG: TAHAP 3: TRANSAKSI & PEMBAYARAN
+    FE->>BE: POST /api/payments/create-transaction
+    BE->>PG: Request Snap Token (API Request)
+    PG-->>BE: Return Snap Token
+    BE-->>FE: Return Snap Token to Client
+    
+    User->>FE: Klik "Bayar Sekarang"
+    FE->>PG: Open Snap UI (Pop-up)
+    User->>PG: Pilih Metode & Selesaikan Transaksi
+    PG-->>FE: Callback (Transaction Finished)
+
+    Note over User, DB: TAHAP 4: SINKRONISASI STATUS
+    FE->>BE: GET /api/payments/status/:id?simulate=true
+    BE->>DB: UPDATE orders (status: paid)
+    BE->>DB: UPDATE reservations (status: confirmed)
+    DB-->>BE: Update Success
+    BE-->>FE: HTTP 200 (Status Lunas)
+    FE->>User: Tampilkan Modal Sukses & Terimakasih
 ```
 
----
-
-## 2. Flowchart: Alur Pemesanan & Reservasi
-Diagram alir proses dari pemilihan menu hingga selesai.
+## 2. Diagram Alir (Flowchart) Logika Bisnis
+Menjelaskan pengambilan keputusan dalam sistem.
 
 ```mermaid
-graph TD
-    A[Mulai: Pilih Menu] --> B{Buka Keranjang}
-    B --> C[Isi Data Reservasi]
-    C --> D[Klik Checkout]
-    D --> E[Simpan Data ke Database]
-    E --> F[Halaman Pembayaran]
-    F --> G[Pilih Metode Bayar di Midtrans]
-    G --> H{Pembayaran Berhasil?}
-    H -- Ya --> I[Status Lunas & Reservasi Konfirmasi]
-    H -- Tidak/Tutup --> J[Tetap Simulasikan Lunas - Mode Tester]
-    I --> K[Selesai: Muncul Modal Sukses]
-    J --> K
+flowchart TD
+    Start([Mulai]) --> Login[Login User]
+    Login --> Browse[Pilih Menu & Meja]
+    Browse --> Check{Meja Tersedia?}
+    
+    Check -- Tidak --> Browse
+    Check -- Ya --> CreateOrder[Buat Pesanan & Reservasi]
+    
+    CreateOrder --> Payment[Proses Pembayaran Midtrans]
+    Payment --> Confirm{Status Pembayaran}
+    
+    Confirm -- Lunas --> Success[Update DB: Paid & Confirmed]
+    Confirm -- Pending/Gagal --> MyOrder[Masuk ke Menu 'Pesanan Saya']
+    
+    Success --> Done([Selesai: Muncul Notifikasi Berhasil])
 ```
 
----
-
-## Cara Melihat Diagram Ini:
-1. Di **VS Code**: Tekan `Ctrl + Shift + V` saat membuka file ini untuk melihat preview diagramnya.
-2. Di **GitHub**: File ini akan otomatis berubah menjadi gambar diagram yang rapi.
+## 3. Komponen Teknologi (Stack)
+- **Frontend**: React.js (Vite), TailwindCSS.
+- **Backend**: Node.js, Express.js.
+- **Database**: MySQL (Aiven Cloud / Local).
+- **Payment Gateway**: Midtrans Snap API.
+- **Security**: JSON Web Token (JWT).
