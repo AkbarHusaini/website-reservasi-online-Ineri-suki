@@ -467,23 +467,24 @@ function Reservation() {
           </div>
         </div>
 
-        {/* Grill Experience */}
+        {/* Pengalaman Suki & Grill */}
         <div className="mt-24">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-outline-variant/20 to-transparent mb-16" />
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="flex-1 order-2 md:order-1">
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tighter mb-4">The Grill Experience</h2>
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tighter mb-4">Pengalaman Suki & Grill Terbaik</h2>
               <p className="text-on-surface-variant leading-relaxed mb-6 font-light text-sm">
-                Our charcoal-fired robata grill and hand-selected Wagyu cuts await your arrival.
-                Each table is positioned to provide an intimate view of our open kitchen theater.
+                Nikmati sensasi memanggang daging pilihan dan hangatnya kuah suki dengan resep otentik kami. 
+                Suasana resto yang estetik dan nyaman di Jember, cocok untuk momen spesial bersama teman dan 
+                keluarga dengan harga yang tetap ramah di kantong.
               </p>
-              <Link to="/menu" className="text-tertiary uppercase text-xs font-bold tracking-widest border-b border-tertiary/30 pb-1 hover:border-tertiary transition-all">View Full Menu →</Link>
+              <Link to="/menu" className="text-tertiary uppercase text-xs font-bold tracking-widest border-b border-tertiary/30 pb-1 hover:border-tertiary transition-all">Lihat Semua Menu →</Link>
             </div>
             <div className="flex-1 order-1 md:order-2 relative">
               <div className="absolute -inset-4 bg-tertiary/10 blur-3xl opacity-20 rounded-3xl" />
               <img className="w-full h-64 md:h-80 object-cover rounded-2xl shadow-2xl relative z-10 border border-white/5"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtiZaPq-tHhpJ9MXIDo0YSgNs7Wm-pC68GKxjO1bkwtO1zgosFuG5p7IgiZlybypo9Z8lArWYsRsbX-3nZ4upBwoQDqocdWESUtZmf7kUBnlQzGz-NVR7Dw7sYDEAAFsD7L0Iq4X0Mry7rYZ9GA8xAXa4wZGb-VbTgYQcYvFWfZDtagxQOfE5D6coy2SQHyaGrpbZVtcswhImiVVz4abSw-2DAjIpE6M2ZFxL8IsStPuMAAXGPgEGnlkz9Z1ALK45SjiOtiYxmvTri"
-                alt="Restaurant interior" />
+                src="/images/ineri_suki_grill_ambiance.png"
+                alt="Suasana Ineri Suki & Grill" />
             </div>
           </div>
         </div>
