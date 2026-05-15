@@ -153,25 +153,31 @@ function OrderModal({ item, onClose, onSave }) {
                 </div>
               </div>
 
-              {/* Data Rekening Pelanggan */}
-              {item.refund_status !== 'none' && (
+              {/* Data Rekening Pelanggan (Smart Detection from Notes) */}
+              {(item.refund_status !== 'none' || (item.notes && item.notes.includes('[REFUND REQUEST]'))) && (
                 <div className="mt-6 pt-4 border-t border-red-500/20">
                   <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#ffb59a] mb-3">Rekening Tujuan (Manual)</h4>
                   <div className="bg-black/20 p-3 rounded-lg space-y-1">
-                    <p className="text-xs text-slate-400">Bank: <span className="text-white font-bold">{item.refund_bank_name}</span></p>
-                    <p className="text-xs text-slate-400">No. Rek: <span className="text-white font-bold">{item.refund_account_number}</span></p>
-                    <p className="text-xs text-slate-400">Atas Nama: <span className="text-white font-bold">{item.refund_account_name}</span></p>
+                    {item.notes && item.notes.includes('[REFUND REQUEST]') ? (
+                       <p className="text-xs text-yellow-200 italic font-medium">{item.notes.split('\n').find(l => l.includes('[REFUND REQUEST]'))}</p>
+                    ) : (
+                      <>
+                        <p className="text-xs text-slate-400">Bank: <span className="text-white font-bold">{item.refund_bank_name}</span></p>
+                        <p className="text-xs text-slate-400">No. Rek: <span className="text-white font-bold">{item.refund_account_number}</span></p>
+                        <p className="text-xs text-slate-400">Atas Nama: <span className="text-white font-bold">{item.refund_account_name}</span></p>
+                      </>
+                    )}
                   </div>
-                  {item.refund_status === 'pending' && (
+                  {(item.refund_status === 'pending' || (item.notes && item.notes.includes('[REFUND REQUEST]'))) && !item.notes?.includes('[REFUND PROCESSED]') && (
                     <button 
                       onClick={() => onSave(item.id, 'refund_processed')}
-                      className="w-full mt-3 py-2 bg-[#ffb59a] text-[#5b1b00] rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all">
-                      Tandai Refund Selesai (Manual)
+                      className="w-full mt-3 py-2 bg-green-500 text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-green-600 transition-all">
+                      Konfirmasi Refund Selesai
                     </button>
                   )}
-                  {item.refund_status === 'processed' && (
-                    <div className="mt-3 py-2 bg-green-500/20 text-green-400 text-center rounded-lg text-[10px] font-black uppercase tracking-widest">
-                      Refund Sudah Dikirim
+                  {(item.refund_status === 'processed' || (item.notes && item.notes.includes('[REFUND PROCESSED]'))) && (
+                    <div className="mt-3 py-2 bg-green-500/20 text-green-400 text-center rounded-lg text-[10px] font-black uppercase tracking-widest border border-green-500/30">
+                      Refund Sudah Diproses
                     </div>
                   )}
                 </div>
@@ -292,7 +298,14 @@ export default function AdminOrderManagement() {
     navigate('/login', { replace: true });
   }
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status, notes) => {
+    if (status === 'cancelled' && notes && notes.includes('[REFUND REQUEST]')) {
+      return <span className="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase border border-amber-500/30">Refund Pending</span>;
+    }
+    if (status === 'cancelled' && notes && notes.includes('[REFUND PROCESSED]')) {
+      return <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase border border-green-500/30">Refunded</span>;
+    }
+
     switch(status) {
       case 'paid': return <span className="bg-green-500/10 text-green-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Paid</span>;
       case 'served': return <span className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Served</span>;
@@ -382,7 +395,7 @@ export default function AdminOrderManagement() {
                           <p className="text-sm font-bold text-[#e5e2e1]">{dateStr}</p>
                         </td>
                         <td className="px-6 py-4">
-                          {getStatusBadge(o.status)}
+                          {getStatusBadge(o.status, o.notes)}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2" onClick={e => e.stopPropagation()}>

@@ -63,11 +63,14 @@ function MyOrders() {
     return timeString.substring(0, 5); // Ambil HH:mm saja
   };
 
-  const getStatusBadge = (status, refund_status) => {
-    if (status === 'cancelled' && refund_status === 'pending') {
+  const getStatusBadge = (status, refund_status, notes) => {
+    const isRefundPending = refund_status === 'pending' || (notes && notes.includes('[REFUND REQUEST]'));
+    const isRefundProcessed = refund_status === 'processed' || (notes && notes.includes('[REFUND PROCESSED]'));
+
+    if (status === 'cancelled' && isRefundPending) {
       return <span className="px-3 py-1 bg-amber-500/20 text-amber-500 text-xs rounded-full uppercase tracking-wider font-bold">Refund Diproses</span>;
     }
-    if (status === 'cancelled' && refund_status === 'processed') {
+    if (status === 'cancelled' && isRefundProcessed) {
       return <span className="px-3 py-1 bg-emerald-500/20 text-emerald-500 text-xs rounded-full uppercase tracking-wider font-bold">Refund Selesai</span>;
     }
 
@@ -239,7 +242,7 @@ function MyOrders() {
                     <div>
                       <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
                         <h2 className="text-lg md:text-xl font-black text-on-surface tracking-tighter uppercase">ORDER #{order.id}</h2>
-                        <div className="scale-90 origin-left">{getStatusBadge(order.status, order.refund_status)}</div>
+                        <div className="scale-90 origin-left">{getStatusBadge(order.status, order.refund_status, order.notes)}</div>
                       </div>
                       <p className="text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-widest">
                         {formatDate(order.created_at)}
@@ -261,7 +264,10 @@ function MyOrders() {
                         Bayar Sekarang
                       </Link>
                     )}
-                    {order.status === 'cancelled' && order.refund_status === 'none' && order.was_paid === 1 && (
+                    {order.status === 'cancelled' && 
+                     (!order.refund_status || order.refund_status === 'none') && 
+                     (!order.notes || !order.notes.includes('[REFUND REQUEST]')) &&
+                     order.was_paid === 1 && (
                       <button
                         onClick={() => setSelectedRefundOrder(order)}
                         className="mt-3 bg-rose-500 text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20"
