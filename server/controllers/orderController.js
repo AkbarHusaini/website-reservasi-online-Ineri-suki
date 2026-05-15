@@ -172,13 +172,13 @@ exports.updateOrderAdmin = async (req, res) => {
   const { status, refund_status } = req.body;
   try {
     if (status) {
-      await pool.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
+      await pool.query('UPDATE `orders` SET `status` = ? WHERE `id` = ?', [status, id]);
 
       // Sinkronisasi status ke tabel reservations
       if (status === 'cancelled') {
-        await pool.query('UPDATE reservations SET status = "cancelled" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [id]);
+        await pool.query('UPDATE `reservations` SET `status` = "cancelled" WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
       } else if (status === 'paid' || status === 'served') {
-        await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [id]);
+        await pool.query('UPDATE `reservations` SET `status` = "confirmed" WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
       }
     }
 
@@ -186,20 +186,22 @@ exports.updateOrderAdmin = async (req, res) => {
       try {
         await pool.query('UPDATE `orders` SET `refund_status` = ? WHERE `id` = ?', [refund_status, id]);
       } catch (sqlErr) {
-        // Fallback: Jika kolom refund_status tidak ada, tandai di notes
+        // Fallback: Jika kolom refund_status tidak ada, tandai di notes via JS
         if (refund_status === 'processed') {
-          await pool.query(
-            'UPDATE `orders` SET `notes` = REPLACE(`notes`, "[REFUND REQUEST]", "[REFUND PROCESSED]") WHERE `id` = ?',
-            [id]
-          );
+          const [orderRows] = await pool.query('SELECT `notes` FROM `orders` WHERE `id` = ?', [id]);
+          if (orderRows.length > 0) {
+            const currentNotes = orderRows[0].notes || '';
+            const newNotes = currentNotes.replace('[REFUND REQUEST]', '[REFUND PROCESSED]');
+            await pool.query('UPDATE `orders` SET `notes` = ? WHERE `id` = ?', [newNotes, id]);
+          }
         }
       }
     }
 
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, error: 'Server error' });
+    console.error('UPDATE_ADMIN_ORDER_ERROR:', err.message);
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
