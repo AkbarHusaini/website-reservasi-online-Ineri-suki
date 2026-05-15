@@ -128,12 +128,11 @@ function AdminDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {[
               { label: 'Total Menu', value: '124', icon: 'restaurant_menu', sub: '+4 minggu ini', color: 'text-[#adcbda]' },
               { label: 'Reservasi Hari Ini', value: '18', icon: 'event_seat', sub: '3 pending', color: 'text-[#ffb59a]' },
               { label: 'Order Aktif', value: '7', icon: 'receipt_long', sub: '2 belum diproses', color: 'text-[#ffb59a]' },
-              { label: 'Stok Habis', value: '3', icon: 'warning', sub: 'Perlu diperbarui', color: 'text-[#ffb4ab]' },
             ].map((stat) => (
               <div key={stat.label} className="bg-[#1c1b1b] p-5 rounded-xl border border-[#42474b]/15">
                 <div className="flex items-center justify-between mb-3">
