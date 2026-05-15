@@ -176,9 +176,9 @@ exports.updateOrderAdmin = async (req, res) => {
 
       // Sinkronisasi status ke tabel reservations
       if (status === 'cancelled') {
-        await pool.query('UPDATE `reservations` SET `status` = "cancelled" WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
+        await pool.query('UPDATE `reservations` SET `status` = \'cancelled\' WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
       } else if (status === 'paid' || status === 'served') {
-        await pool.query('UPDATE `reservations` SET `status` = "confirmed" WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
+        await pool.query('UPDATE `reservations` SET `status` = \'confirmed\' WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
       }
     }
 
