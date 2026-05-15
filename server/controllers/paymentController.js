@@ -147,15 +147,33 @@ exports.checkTransactionStatus = async (req, res) => {
     const { simulate } = req.query;
 
     try {
-        // Jika ada flag simulate=true (dipanggil dari tombol Bayar Sekarang), langsung lunasin untuk testing
+        console.log(`Checking status for Order ID: ${orderId}, Simulate: ${simulate}`);
+
+        // Jika ada flag simulate=true, langsung lunasin untuk testing
         if (simulate === 'true') {
-            await pool.query('UPDATE orders SET status = "paid" WHERE id = ?', [orderId]);
-            await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)', [orderId]);
-            return res.json({
-                success: true,
-                message: 'Status updated to PAID (Simulated)',
-                newStatus: 'paid'
-            });
+            console.log('SIMULATION MODE ACTIVE');
+            
+            // 1. Dapatkan reservation_id dulu
+            const [orderRows] = await pool.query('SELECT reservation_id FROM orders WHERE id = ?', [orderId]);
+            if (orderRows.length > 0) {
+                const resId = orderRows[0].reservation_id;
+                
+                // 2. Update status order
+                await pool.query('UPDATE orders SET status = "paid" WHERE id = ?', [orderId]);
+                
+                // 3. Update status reservasi jika ada
+                if (resId) {
+                    await pool.query('UPDATE reservations SET status = "confirmed" WHERE id = ?', [resId]);
+                }
+                
+                return res.json({
+                    success: true,
+                    message: 'Status updated to PAID (Simulated)',
+                    newStatus: 'paid'
+                });
+            } else {
+                return res.status(404).json({ success: false, message: 'Order tidak ditemukan' });
+            }
         }
 
         // 1. Dapatkan midtrans_order_id dari database
@@ -220,8 +238,13 @@ exports.checkTransactionStatus = async (req, res) => {
         }
 
     } catch (err) {
-        console.error('Check Status Error:', err);
-        res.status(500).json({ success: false, message: 'Gagal memperbarui status' });
+        console.error('CRITICAL Check Status Error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Gagal memperbarui status',
+            error: err.message,
+            stack: err.stack 
+        });
     }
 };
 
