@@ -89,11 +89,11 @@ export default function PaymentPage() {
                 // Tampilkan modal sukses langsung
                 setShowSuccess(true);
             } else {
-                setError("Gagal memproses pembayaran instan.");
+                setError(`Gagal: ${data.message || 'Unknown error'} ${data.error ? '('+data.error+')' : ''}`);
             }
         } catch (e) {
             console.error("Gagal update status simulasi", e);
-            setError("Terjadi kesalahan koneksi.");
+            setError("Terjadi kesalahan koneksi ke server. Pastikan database cloud aktif.");
         } finally {
             setLoading(false);
         }
