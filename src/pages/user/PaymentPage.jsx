@@ -10,39 +10,6 @@ export default function PaymentPage() {
     const [loading, setLoading] = useState(true);
     const [snapToken, setSnapToken] = useState(null);
     const [error, setError] = useState(null);
-    const [timeLeft, setTimeLeft] = useState(null);
-
-    useEffect(() => {
-        if (order && order.created_at && order.status === 'pending') {
-            const createdAt = new Date(order.created_at).getTime();
-            const expiryTime = createdAt + (10 * 60 * 1000);
-            console.log("Timer Init - Created At:", order.created_at, "Now:", new Date().toISOString());
-
-            const timer = setInterval(() => {
-                const now = new Date().getTime();
-                const diff = expiryTime - now;
-
-                if (diff <= 0) {
-                    setTimeLeft(0);
-                    clearInterval(timer);
-                    setError("Waktu pembayaran telah habis. Silakan buat pesanan baru.");
-                } else {
-                    setTimeLeft(diff);
-                }
-            }, 1000);
-
-            return () => clearInterval(timer);
-        }
-    }, [order]);
-
-    const formatTimeLeft = (ms) => {
-        if (ms === null) return '--:--';
-        if (ms <= 0) return '00:00';
-        const totalSec = Math.floor(ms / 1000);
-        const mins = Math.floor(totalSec / 60);
-        const secs = totalSec % 60;
-        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    };
 
     useEffect(() => {
         fetchOrderDetails();
@@ -208,25 +175,15 @@ export default function PaymentPage() {
                         </div>
 
                         <div className="bg-surface-container-low border border-outline-variant/10 rounded-3xl p-6 space-y-6 backdrop-blur-md">
-                                <div className="flex justify-between items-center mb-2">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 bg-tertiary/10 rounded-2xl flex items-center justify-center">
-                                            <span className="material-symbols-outlined text-tertiary">shopping_bag</span>
-                                        </div>
-                                        <div>
-                                            <p className="text-[10px] font-bold uppercase tracking-widest text-tertiary">Order ID</p>
-                                            <p className="text-lg font-black text-white">#ORD-{orderId}</p>
-                                        </div>
-                                    </div>
-                                    {order?.status === 'pending' && (
-                                        <div className="text-right bg-black/20 p-3 rounded-2xl border border-tertiary/20">
-                                            <p className="text-[10px] text-tertiary uppercase tracking-widest font-black mb-1">Sisa Waktu</p>
-                                            <div className={`text-xl font-mono font-black ${timeLeft < 60000 ? 'text-error animate-pulse' : 'text-white'}`}>
-                                                {formatTimeLeft(timeLeft)}
-                                            </div>
-                                        </div>
-                                    )}
+                            <div className="flex items-center gap-4 border-b border-outline-variant/10 pb-4">
+                                <div className="w-12 h-12 bg-tertiary/10 rounded-2xl flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-tertiary">shopping_bag</span>
                                 </div>
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-tertiary">Order ID</p>
+                                    <p className="text-lg font-black text-white">#ORD-{orderId}</p>
+                                </div>
+                            </div>
 
                             <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                                 {order?.items && order.items.map((item, idx) => (
@@ -266,23 +223,11 @@ export default function PaymentPage() {
                             <div className="absolute -top-24 -right-24 w-48 h-48 bg-tertiary/20 rounded-full blur-3xl group-hover:bg-tertiary/30 transition-all duration-700"></div>
 
                             <div className="relative z-10">
-                                <div className="flex justify-between items-end mb-8">
-                                    <div>
-                                        <p className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-black mb-1">Total Pembayaran</p>
-                                        <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter">
-                                            <span className="text-lg font-medium text-on-surface-variant mr-2 italic">IDR</span>
-                                            {grandTotal.toLocaleString('id-ID')}
-                                        </h2>
-                                    </div>
-                                    {order?.status === 'pending' && (
-                                        <div className="text-right">
-                                            <p className="text-[10px] text-tertiary uppercase tracking-widest font-black mb-1">Sisa Waktu</p>
-                                            <div className={`text-2xl font-mono font-black ${timeLeft < 60000 ? 'text-error animate-pulse' : 'text-white'}`}>
-                                                {formatTimeLeft(timeLeft)}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                                <p className="text-[10px] text-on-surface-variant uppercase tracking-[0.2em] font-black mb-1">Total Pembayaran</p>
+                                <h2 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-tighter">
+                                    <span className="text-lg font-medium text-on-surface-variant mr-2 italic">IDR</span>
+                                    {grandTotal.toLocaleString('id-ID')}
+                                </h2>
 
                                 {error && (
                                     <div className="mb-6 p-4 bg-error-container/20 border border-error/30 rounded-2xl flex items-center gap-3 animate-shake">

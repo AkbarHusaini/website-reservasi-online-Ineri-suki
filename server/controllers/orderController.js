@@ -23,22 +23,6 @@ exports.getMyOrders = async (req, res) => {
       console.error('Image lookup failed, continuing without fallback:', imgErr.message);
     }
 
-    // LOGIKA AUTO-CANCEL: Cek jika ada pesanan pending yang sudah > 10 menit
-    const now = new Date();
-    const tenMinutesInMs = 10 * 60 * 1000;
-    
-    for (const order of orders) {
-        if (order.status === 'pending') {
-            const createdAt = new Date(order.created_at);
-            if (now - createdAt > tenMinutesInMs) {
-                // Update status ke cancelled di DB
-                await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [order.id]);
-                await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
-                order.status = 'cancelled'; // Update local object agar UI langsung berubah
-            }
-        }
-    }
-
     const formattedOrders = orders.map(order => {
       let items = [];
       try {

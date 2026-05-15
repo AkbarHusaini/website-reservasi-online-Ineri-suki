@@ -158,8 +158,8 @@ exports.checkTransactionStatus = async (req, res) => {
             if (orderRows.length > 0) {
                 const resId = orderRows[0].reservation_id;
                 
-                // 2. Update status order & payment method
-                await pool.query("UPDATE orders SET status = 'paid', payment_method = 'Simulated' WHERE id = ?", [orderId]);
+                // 2. Update status order
+                await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
                 
                 // 3. Update status reservasi jika ada
                 if (resId) {
