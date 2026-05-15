@@ -133,25 +133,48 @@ function OrderModal({ item, onClose, onSave }) {
                 <span className="material-symbols-outlined text-[#ffb4ab] text-sm">receipt_long</span>
                 <h4 className="text-xs font-bold uppercase tracking-widest text-[#ffb4ab]">Rincian Pengembalian Dana</h4>
               </div>
-              <p className="text-xs text-slate-300 mb-4 leading-relaxed">
-                Uang paket makanan dikembalikan kepada pelanggan, namun <strong className="text-white">uang reservasi Rp 5.000 hangus</strong> karena pembatalan/tidak hadir.
-              </p>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between items-center text-slate-400">
-                  <span>Total Pembayaran Awal</span>
-                  <span>Rp {Number(item?.total_price || 0).toLocaleString('id-ID')}</span>
-                </div>
-                <div className="flex justify-between items-center text-red-400">
-                  <span>Potongan Reservasi (Hangus)</span>
-                  <span>- Rp 5.000</span>
-                </div>
-                <div className="flex justify-between items-center pt-2 border-t border-[#42474b]/30 font-bold">
-                  <span className="text-[#e5e2e1]">Total yang di-Refund</span>
-                  <span className="text-green-400 text-lg">
-                    Rp {Math.max(0, Number(item?.total_price || 0) - 5000).toLocaleString('id-ID')}
-                  </span>
-                </div>
-              </div>
+              
+              {item.reservation_id ? (
+                <>
+                  <p className="text-xs text-slate-300 mb-4 leading-relaxed">
+                    Uang paket makanan dikembalikan kepada pelanggan, namun <strong className="text-white">uang reservasi Rp 5.000 hangus</strong> karena pembatalan/tidak hadir.
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center text-slate-400">
+                      <span>Total Pembayaran Awal</span>
+                      <span>Rp {Number(item?.total_price || 0).toLocaleString('id-ID')}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-red-400">
+                      <span>Potongan Reservasi (Hangus)</span>
+                      <span>- Rp 5.000</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-[#42474b]/30 font-bold">
+                      <span className="text-[#e5e2e1]">Total yang di-Refund</span>
+                      <span className="text-green-400 text-lg">
+                        Rp {Math.max(0, Number(item?.total_price || 0) - 5000).toLocaleString('id-ID')}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs text-slate-300 mb-4 leading-relaxed">
+                    Pesanan makanan/paket dibatalkan. Dana dikembalikan <strong className="text-white">penuh 100%</strong> kepada pelanggan.
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center text-slate-400">
+                      <span>Total Pembayaran Awal</span>
+                      <span>Rp {Number(item?.total_price || 0).toLocaleString('id-ID')}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-[#42474b]/30 font-bold">
+                      <span className="text-[#e5e2e1]">Total yang di-Refund (Full)</span>
+                      <span className="text-green-400 text-lg">
+                        Rp {Number(item?.total_price || 0).toLocaleString('id-ID')}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Data Rekening Pelanggan (Smart Detection from Notes) */}
               {(item.refund_status !== 'none' || (item.notes && item.notes.includes('[REFUND REQUEST]'))) && (
