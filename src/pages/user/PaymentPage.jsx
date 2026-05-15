@@ -16,6 +16,7 @@ export default function PaymentPage() {
         if (order && order.created_at && order.status === 'pending') {
             const createdAt = new Date(order.created_at).getTime();
             const expiryTime = createdAt + (10 * 60 * 1000);
+            console.log("Timer Init - Created At:", order.created_at, "Now:", new Date().toISOString());
 
             const timer = setInterval(() => {
                 const now = new Date().getTime();
