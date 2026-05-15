@@ -261,7 +261,7 @@ function MyOrders() {
                         Bayar Sekarang
                       </Link>
                     )}
-                    {order.status === 'cancelled' && order.refund_status === 'none' && (
+                    {order.status === 'cancelled' && order.refund_status === 'none' && order.payment_method && (
                       <button
                         onClick={() => setSelectedRefundOrder(order)}
                         className="mt-3 bg-rose-500 text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-rose-500/20"
