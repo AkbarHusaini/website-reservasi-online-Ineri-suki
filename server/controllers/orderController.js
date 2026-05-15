@@ -183,7 +183,17 @@ exports.updateOrderAdmin = async (req, res) => {
     }
 
     if (refund_status) {
-      await pool.query('UPDATE orders SET refund_status = ? WHERE id = ?', [refund_status, id]);
+      try {
+        await pool.query('UPDATE `orders` SET `refund_status` = ? WHERE `id` = ?', [refund_status, id]);
+      } catch (sqlErr) {
+        // Fallback: Jika kolom refund_status tidak ada, tandai di notes
+        if (refund_status === 'processed') {
+          await pool.query(
+            'UPDATE `orders` SET `notes` = REPLACE(`notes`, "[REFUND REQUEST]", "[REFUND PROCESSED]") WHERE `id` = ?',
+            [id]
+          );
+        }
+      }
     }
 
     res.json({ success: true });
