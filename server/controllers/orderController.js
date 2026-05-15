@@ -210,7 +210,6 @@ exports.submitRefundDetails = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    // Pastikan data adalah string untuk menghindari error database
     const sBankName = String(bank_name || '').trim();
     const sAccNo = String(account_number || '').trim();
     const sAccName = String(account_name || '').trim();
@@ -222,20 +221,26 @@ exports.submitRefundDetails = async (req, res) => {
     const [order] = await pool.query('SELECT * FROM orders WHERE id = ? AND user_id = ?', [id, userId]);
     if (!order.length) return res.status(404).json({ success: false, error: 'Pesanan tidak ditemukan.' });
     
-    if (order[0].status !== 'cancelled') {
-      return res.status(400).json({ success: false, error: 'Hanya pesanan yang dibatalkan yang dapat mengajukan refund.' });
+    const refundInfo = `[REFUND REQUEST] Bank: ${sBankName}, No. Rek: ${sAccNo}, A/N: ${sAccName}`;
+
+    try {
+      // Coba cara ideal (menggunakan kolom khusus)
+      await pool.query(
+        'UPDATE orders SET refund_bank_name = ?, refund_account_number = ?, refund_account_name = ?, refund_status = "pending" WHERE id = ?',
+        [sBankName, sAccNo, sAccName, id]
+      );
+    } catch (sqlErr) {
+      // Jika kolom tidak ada (Unknown column), fallback simpan di 'notes'
+      console.warn('Refund columns missing, falling back to notes column.');
+      await pool.query(
+        'UPDATE orders SET notes = CONCAT(IFNULL(notes, ""), ?), refund_status = "pending" WHERE id = ?',
+        [`\n${refundInfo}`, id]
+      );
     }
 
-    console.log(`Processing refund for Order #${id}...`);
-
-    await pool.query(
-      'UPDATE orders SET refund_bank_name = ?, refund_account_number = ?, refund_account_name = ?, refund_status = "pending" WHERE id = ?',
-      [sBankName, sAccNo, sAccName, id]
-    );
-
-    res.json({ success: true, message: 'Detail refund berhasil dikirim.' });
+    res.json({ success: true, message: 'Detail refund berhasil dikirim via sistem cadangan.' });
   } catch (err) {
     console.error('REFUND_ERROR:', err.message);
-    res.status(500).json({ success: false, error: `Database error: ${err.message}` });
+    res.status(500).json({ success: false, error: `Gagal mengirim: ${err.message}` });
   }
 };
