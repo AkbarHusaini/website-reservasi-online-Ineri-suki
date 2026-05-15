@@ -60,7 +60,7 @@ function Register() {
         <div className="flex justify-between items-center px-12 py-4 max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-3">
             <img 
-              src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+              src="/images/logo.png" 
               alt="Ineri Suki & Grill Logo" 
               className="w-8 h-8 rounded-full border border-white/10"
             />
@@ -84,7 +84,7 @@ function Register() {
           <div className="relative z-10 self-end p-20 max-w-xl">
             <div className="w-20 h-20 mb-8 rounded-full border-2 border-tertiary overflow-hidden shadow-2xl">
               <img 
-                src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+                src="/images/logo.png" 
                 alt="Ineri Suki & Grill Logo" 
                 className="w-full h-full object-cover"
               />

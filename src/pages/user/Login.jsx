@@ -51,7 +51,7 @@ function Login() {
             <div className="inline-flex items-center justify-center mb-6">
               <div className="w-24 h-24 bg-tertiary-container flex items-center justify-center rounded-full shadow-2xl shadow-black/60 border border-white/5 overflow-hidden">
                 <img 
-                  src="https://lookaside.fbsbx.com/lookaside/crawler/instagram/inerisuki.jember/profile_pic.jpg" 
+                  src="/images/logo.png" 
                   alt="Ineri Suki & Grill Logo" 
                   className="w-full h-full object-cover"
                 />
