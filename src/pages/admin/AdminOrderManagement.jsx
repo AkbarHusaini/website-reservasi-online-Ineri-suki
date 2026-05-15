@@ -134,7 +134,8 @@ function OrderModal({ item, onClose, onSave }) {
                 <h4 className="text-xs font-bold uppercase tracking-widest text-[#ffb4ab]">Rincian Pengembalian Dana</h4>
               </div>
               
-              {item.reservation_id ? (
+              {/* Cek apakah ada Booking Fee di dalam item pesanan */}
+              {itemsArr.some(it => it.name && it.name.includes('Booking Fee')) ? (
                 <>
                   <p className="text-xs text-slate-300 mb-4 leading-relaxed">
                     Uang paket makanan dikembalikan kepada pelanggan, namun <strong className="text-white">uang reservasi Rp 5.000 hangus</strong> karena pembatalan/tidak hadir.
