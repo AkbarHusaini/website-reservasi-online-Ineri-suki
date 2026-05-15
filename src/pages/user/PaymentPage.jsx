@@ -82,42 +82,23 @@ export default function PaymentPage() {
         if (!snapToken) return;
 
         window.snap.pay(snapToken, {
-            onSuccess: async function (result) {
-                console.log('Midtrans Success:', result);
-                await updateStatusInstantly();
+            onSuccess: function (result) {
+                console.log('success', result);
+                setShowSuccess(true);
             },
-            onPending: async function (result) {
-                console.log('Midtrans Pending:', result);
-                await updateStatusInstantly();
+            onPending: function (result) {
+                console.log('pending', result);
+                navigate('/my-orders');
             },
             onError: function (result) {
-                console.error('Midtrans Error:', result);
-                setError("Pembayaran gagal. Silaka coba lagi.");
+                console.log('error', result);
+                setError("Pembayaran gagal. Silakan coba lagi.");
             },
-            onClose: async function () {
-                console.log('Midtrans Popup Closed');
-                // Tetap update status ke lunas saat ditutup (permintaan simulasi instan)
-                await updateStatusInstantly();
+            onClose: function () {
+                console.log('customer closed the popup without finishing the payment');
+                navigate('/my-orders');
             }
         });
-    };
-
-    const updateStatusInstantly = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`/api/payments/status/${orderId}?simulate=true`);
-            const data = await res.json();
-            if (data.success) {
-                setShowSuccess(true);
-            } else {
-                setError(`Gagal memperbarui status: ${data.message}`);
-            }
-        } catch (e) {
-            console.error("Gagal update status simulasi", e);
-            setError("Gagal sinkronisasi status. Silakan cek menu Pesanan Saya.");
-        } finally {
-            setLoading(false);
-        }
     };
 
     if (loading) return (
