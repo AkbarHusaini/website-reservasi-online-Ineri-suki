@@ -1,6 +1,6 @@
 # Dokumentasi Arsitektur Sistem Ineri Suki & Grill (Versi Skripsi)
 
-Dokumentasi ini dirancang untuk memenuhi standar teknis karya ilmiah/skripsi, menjelaskan interaksi antar komponen sistem secara mendalam.
+Dokumentasi ini dirancang untuk memenuhi standar teknis karya ilmiah/skripsi, menjelaskan interaksi antar komponen sistem secara mendalam termasuk fitur **Batas Waktu Pembayaran 15 Menit**.
 
 ---
 
@@ -20,7 +20,7 @@ graph LR
         UC4(Melakukan Pembayaran)
         UC5(Melihat Riwayat Pesanan)
         UC6(Mengelola Menu CRUD)
-        UC7(Mengelola Pesanan)
+        UC7(Mengelola Pesanan & Pembatalan)
         UC8(Dashboard Laporan)
     end
 
@@ -42,8 +42,8 @@ graph LR
 
 ---
 
-## 2. Activity Diagram: Alur Reservasi & Pembayaran
-Menjelaskan aliran aktivitas user dari mulai memilih menu hingga pembayaran selesai.
+## 2. Activity Diagram: Alur Reservasi & Pembayaran (Update: Timer 15 Menit)
+Menjelaskan aliran aktivitas user termasuk penanganan kedaluwarsa pesanan.
 
 ```mermaid
 flowchart TD
@@ -52,22 +52,27 @@ flowchart TD
     Browse --> Check{Meja Tersedia?}
     
     Check -- Tidak --> Browse
-    Check -- Ya --> Create[Buat Pesanan & Reservasi]
+    Check -- Ya --> Create[Buat Pesanan & Simpan Waktu Buat]
     
-    Create --> Pay[Proses Bayar - Midtrans Snap]
-    Pay --> Result{Status Transaksi}
+    Create --> Timer[Mulai Timer 15 Menit]
+    Timer --> Pay[Proses Bayar - Midtrans Snap]
     
-    Result -- Sukses/Ditutup --> Update[Update DB: Lunas & Konfirmasi]
-    Result -- Gagal --> MyOrder[Masuk Menu Pesanan Saya]
+    Pay --> ExpireCheck{Waktu Habis?}
+    ExpireCheck -- Ya --> Cancel[Status Otomatis: Dibatalkan]
+    ExpireCheck -- Tidak --> Result{Transaksi Sukses?}
     
+    Result -- Ya --> Update[Update DB: Lunas & Konfirmasi]
+    Result -- Tidak/Tutup --> MyOrder[Masuk Menu Pesanan Saya]
+    
+    Cancel --> End([Selesai])
     Update --> SuccessModal[Muncul Modal Terimakasih]
-    SuccessModal --> End([Selesai])
+    SuccessModal --> End
 ```
 
 ---
 
-## 3. Sequence Diagram: Alur Utama Sistem (End-to-End)
-Diagram ini mencakup proses Autentikasi, Reservasi, Cek Ketersediaan, hingga Pembayaran.
+## 3. Sequence Diagram: Alur Utama dengan Pengecekan Expiry
+Diagram ini mencakup validasi waktu 15 menit di sisi Backend.
 
 ```mermaid
 sequenceDiagram
@@ -75,54 +80,39 @@ sequenceDiagram
     actor User
     participant FE as Frontend (React.js)
     participant BE as Backend (Node.js/Express)
-    participant JWT as Middleware (Auth)
     participant DB as MySQL Database
     participant PG as Midtrans Snap API
 
-    Note over User, DB: TAHAP 1: AUTENTIKASI
-    User->>FE: Input Email & Password
-    FE->>BE: POST /api/login
-    BE->>DB: Query User Match?
-    DB-->>BE: User Data Found
-    BE->>BE: Generate JWT Token
-    BE-->>FE: HTTP 200 (JWT Token)
-    FE->>FE: Simpan Token di LocalStorage
+    Note over User, DB: TAHAP 1: PEMESANAN
+    User->>FE: Klik Checkout
+    FE->>BE: POST /api/orders
+    BE->>DB: INSERT orders (created_at: NOW)
+    DB-->>BE: Order ID: 59
+    BE-->>FE: HTTP 201 (Order Created)
 
-    Note over User, DB: TAHAP 2: RESERVASI & PEMESANAN
-    User->>FE: Pilih Menu & Pilih Meja (Tanggal/Jam)
-    FE->>BE: POST /api/orders (Data Keranjang + Meja)
-    BE->>JWT: Validasi JWT Token
-    JWT-->>BE: Authorized (User ID)
-    
-    BE->>DB: SELECT * FROM reservations (Cek Konflik Meja)
-    alt Meja Tersedia
-        DB-->>BE: No Conflict
-        BE->>DB: INSERT INTO reservations (Status: pending)
-        BE->>DB: INSERT INTO orders (Status: pending)
-        BE-->>FE: HTTP 201 (Order ID)
-    else Meja Penuh
-        DB-->>BE: Conflict Found
-        BE-->>FE: HTTP 400 (Meja sudah dipesan)
-    end
-
-    Note over User, PG: TAHAP 3: TRANSAKSI & PEMBAYARAN
+    Note over User, DB: TAHAP 2: PEMBAYARAN & TIMER
+    FE->>FE: Jalankan Countdown Timer (15:00)
     FE->>BE: POST /api/payments/create-transaction
-    BE->>PG: Request Snap Token (API Request)
+    BE->>PG: Request Snap Token (expiry: 15m)
     PG-->>BE: Return Snap Token
-    BE-->>FE: Return Snap Token to Client
-    
-    User->>FE: Klik "Bayar Sekarang"
-    FE->>PG: Open Snap UI (Pop-up)
-    User->>PG: Pilih Metode & Selesaikan Transaksi
-    PG-->>FE: Callback (Transaction Finished)
+    BE-->>FE: Return Snap Token
 
-    Note over User, DB: TAHAP 4: SINKRONISASI STATUS
+    Note over User, DB: TAHAP 3: VALIDASI KEDALUWARSA
+    User->>FE: Klik "Bayar Sekarang"
     FE->>BE: GET /api/payments/status/:id?simulate=true
-    BE->>DB: UPDATE orders (status: paid)
-    BE->>DB: UPDATE reservations (status: confirmed)
-    DB-->>BE: Update Success
-    BE-->>FE: HTTP 200 (Status Lunas)
-    FE->>User: Tampilkan Modal Sukses & Terimakasih
+    
+    BE->>DB: SELECT created_at FROM orders
+    DB-->>BE: 2024-05-15 12:00:00
+    
+    alt Jika Waktu > 15 Menit
+        BE->>DB: UPDATE orders SET status='cancelled'
+        BE-->>FE: Error (Waktu Habis)
+        FE->>User: Tampilkan Pesan Pesanan Dibatalkan
+    else Jika Waktu < 15 Menit
+        BE->>DB: UPDATE orders SET status='paid'
+        BE-->>FE: Success (Lunas)
+        FE->>User: Muncul Modal Terimakasih
+    end
 ```
 
 ---
@@ -131,5 +121,5 @@ sequenceDiagram
 - **Frontend**: React.js (Vite), TailwindCSS.
 - **Backend**: Node.js, Express.js.
 - **Database**: MySQL (Aiven Cloud / Local).
-- **Payment Gateway**: Midtrans Snap API.
+- **Payment Gateway**: Midtrans Snap API (dengan Expiry Parameter).
 - **Security**: JSON Web Token (JWT).
