@@ -147,6 +147,25 @@ exports.checkTransactionStatus = async (req, res) => {
     const { simulate } = req.query;
 
     try {
+        // Jika ada flag simulate=true, langsung lunasin untuk testing
+        if (simulate === 'true') {
+            const [orderRows] = await pool.query('SELECT reservation_id FROM orders WHERE id = ?', [orderId]);
+            if (orderRows.length > 0) {
+                const resId = orderRows[0].reservation_id;
+                await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
+                if (resId) {
+                    await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = ?", [resId]);
+                }
+                return res.json({
+                    success: true,
+                    message: 'Status updated to PAID (Simulated)',
+                    newStatus: 'paid'
+                });
+            } else {
+                return res.status(404).json({ success: false, message: 'Order tidak ditemukan' });
+            }
+        }
+
         // 1. Dapatkan midtrans_order_id dari database
         const [rows] = await pool.query('SELECT midtrans_order_id, status FROM orders WHERE id = ?', [orderId]);
         const order = rows[0];

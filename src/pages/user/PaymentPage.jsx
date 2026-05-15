@@ -82,23 +82,41 @@ export default function PaymentPage() {
         if (!snapToken) return;
 
         window.snap.pay(snapToken, {
-            onSuccess: function (result) {
+            onSuccess: async function (result) {
                 console.log('success', result);
-                setShowSuccess(true);
+                await updateStatusInstantly();
             },
-            onPending: function (result) {
+            onPending: async function (result) {
                 console.log('pending', result);
-                navigate('/my-orders');
+                await updateStatusInstantly();
             },
             onError: function (result) {
                 console.log('error', result);
                 setError("Pembayaran gagal. Silakan coba lagi.");
             },
-            onClose: function () {
-                console.log('customer closed the popup without finishing the payment');
-                navigate('/my-orders');
+            onClose: async function () {
+                console.log('customer closed the popup');
+                await updateStatusInstantly();
             }
         });
+    };
+
+    const updateStatusInstantly = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/payments/status/${orderId}?simulate=true`);
+            const data = await res.json();
+            if (data.success) {
+                setShowSuccess(true);
+            } else {
+                setError(`Gagal sinkronisasi status: ${data.message}`);
+            }
+        } catch (e) {
+            console.error("Gagal update status simulasi", e);
+            setError("Gagal memperbarui status secara instan.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading) return (
