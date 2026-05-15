@@ -165,7 +165,7 @@ exports.checkTransactionStatus = async (req, res) => {
                 }
 
                 const resId = order.reservation_id;
-                await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
+                await pool.query("UPDATE orders SET status = 'paid', was_paid = 1 WHERE id = ?", [orderId]);
                 if (resId) {
                     await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = ?", [resId]);
                 }
@@ -232,7 +232,8 @@ exports.checkTransactionStatus = async (req, res) => {
 
             // 3. Update DB jika ada perubahan status
             if (newStatus !== order.status) {
-                await pool.query('UPDATE orders SET status = ? WHERE id = ?', [newStatus, orderId]);
+                const wasPaidSql = newStatus === 'paid' ? ', was_paid = 1' : '';
+                await pool.query(`UPDATE orders SET status = ? ${wasPaidSql} WHERE id = ?`, [newStatus, orderId]);
                 if (newStatus === 'paid') {
                     await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
                 } else if (newStatus === 'cancelled') {

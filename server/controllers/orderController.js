@@ -5,7 +5,7 @@ exports.getMyOrders = async (req, res) => {
   const userId = req.user.id;
   try {
     const [orders] = await pool.query(
-      `SELECT o.id, o.status, o.total_price, o.payment_method, o.notes, o.created_at, o.items_json, o.refund_status,
+      `SELECT o.id, o.status, o.total_price, o.payment_method, o.notes, o.created_at, o.items_json, o.refund_status, o.was_paid,
               r.reservation_date, r.start_time, r.guest_count,
               r.table_ids as table_number
        FROM orders o
