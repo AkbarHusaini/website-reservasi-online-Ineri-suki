@@ -189,13 +189,6 @@ function OrderModal({ item, onClose, onSave }) {
         <div className="flex gap-3 px-6 py-4 border-t border-[#42474b]/15 shrink-0 bg-[#1c1b1b] rounded-b-2xl">
           <button onClick={onClose} className="flex-1 py-3 rounded-lg bg-[#201f1f] text-slate-400 text-sm font-semibold hover:bg-[#2a2a2a]">Tutup</button>
           
-          {item.status === 'cancelled' && item.payment_method !== 'cash' && (
-            <button onClick={() => onSave(item.id, 'refund')} disabled={saving}
-              className="flex-1 py-3 rounded-lg bg-green-700 hover:bg-green-600 text-white text-sm font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-sm">payments</span>
-              {saving ? 'Memproses...' : 'Proses Refund Dana'}
-            </button>
-          )}
 
           <button onClick={handleSave} disabled={saving}
             className="flex-1 py-3 rounded-lg bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] text-sm font-bold transition-all disabled:opacity-50">
