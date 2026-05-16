@@ -28,8 +28,13 @@ export default function PaymentPage() {
             });
             const data = await res.json();
             if (data.success) {
-                const found = data.data.find(o => o.id === parseInt(orderId));
-                if (found) {
+                // Sort ascending to calculate correct sequence (rank)
+                const sorted = data.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                const foundIndex = sorted.findIndex(o => o.id === parseInt(orderId));
+
+                if (foundIndex !== -1) {
+                    const found = sorted[foundIndex];
+                    found.user_order_seq = foundIndex + 1; // #1 for first order, etc.
                     setOrder(found);
                     createMidtransToken(found);
                 } else {
@@ -204,7 +209,7 @@ export default function PaymentPage() {
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold uppercase tracking-widest text-tertiary">Order ID</p>
-                                    <p className="text-lg font-black text-white">#ORD-{orderId}</p>
+                                    <p className="text-lg font-black text-white">#ORD-{order?.user_order_seq || orderId}</p>
                                 </div>
                             </div>
 
