@@ -29,7 +29,9 @@ function MyOrders() {
         const data = await response.json();
 
         if (data.success) {
-          setOrders(data.data);
+          // Sort newest first to ensure sequence calculation (length - idx) works correctly
+          const sorted = data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          setOrders(sorted);
         } else {
           setError(data.error || 'Gagal mengambil data pesanan.');
         }
@@ -231,7 +233,7 @@ function MyOrders() {
           </div>
         ) : (
           <div className="grid gap-8">
-            {orders.map((order) => (
+            {orders.map((order, idx) => (
               <div key={order.id} className="bg-surface-container-low rounded-[32px] overflow-hidden border border-outline-variant/10 shadow-2xl transition-all hover:translate-y-[-4px] group">
                 {/* Order Header */}
                 <div className="bg-surface-container/50 p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-outline-variant/10">
@@ -241,7 +243,7 @@ function MyOrders() {
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-1">
-                        <h2 className="text-lg md:text-xl font-black text-on-surface tracking-tighter uppercase">ORDER #{order.id}</h2>
+                        <h2 className="text-lg md:text-xl font-black text-on-surface tracking-tighter uppercase">ORDER #{orders.length - idx}</h2>
                         <div className="scale-90 origin-left">{getStatusBadge(order.status, order.refund_status, order.notes)}</div>
                       </div>
                       <p className="text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-widest">

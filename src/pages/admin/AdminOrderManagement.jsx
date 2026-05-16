@@ -66,7 +66,7 @@ function OrderModal({ item, onClose, onSave }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-[#1c1b1b] rounded-2xl border border-[#42474b]/20 w-full max-w-lg mx-4 shadow-2xl flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#42474b]/15 shrink-0">
-          <h3 className="font-bold text-sm text-[#e5e2e1]">Detail Order #{item?.id}</h3>
+          <h3 className="font-bold text-sm text-[#e5e2e1]">Detail Order #{item?.id} {item?.user_order_seq && <span className="text-[#ffb59a] ml-1">(User Order #{item.user_order_seq})</span>}</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined text-lg">close</span></button>
         </div>
         
@@ -254,7 +254,17 @@ export default function AdminOrderManagement() {
           setNewOrderAlert(true);
           setTimeout(() => setNewOrderAlert(false), 5000);
         }
-        setOrders(data.data);
+        
+        // Calculate per-user sequence
+        const sortedAsc = [...data.data].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        const userCounters = {};
+        const enriched = sortedAsc.map(o => {
+          const userId = o.user_id || o.customer_phone || 'guest';
+          userCounters[userId] = (userCounters[userId] || 0) + 1;
+          return { ...o, user_order_seq: userCounters[userId] };
+        });
+        
+        setOrders(enriched.reverse()); // newest first for display
         prevCount.current = data.data.length;
       }
     } catch { /* silent */ }
@@ -398,7 +408,10 @@ export default function AdminOrderManagement() {
                     return (
                       <tr key={o.id} className="hover:bg-[#2a2a2a]/50 transition-colors group cursor-pointer" onClick={() => setModal(o)}>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-slate-400">#ORD-{o.id}</span>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-[#e5e2e1]">#ORD-{o.id}</span>
+                            {o.user_order_seq && <span className="text-[10px] font-bold text-[#ffb59a] uppercase">Order ke-{o.user_order_seq}</span>}
+                          </div>
                         </td>
                         <td className="px-6 py-4">
                           <p className="font-bold text-sm text-[#e5e2e1]">{o.customer_name}</p>
