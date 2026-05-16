@@ -171,10 +171,7 @@ function Home() {
                   <span className="material-symbols-outlined">play_circle</span>
                   Lihat Menu
                 </Link>
-                <Link to="/special" className="flex items-center gap-2 text-tertiary font-semibold hover:text-white transition-colors pl-2 sm:pl-0">
-                  <span className="material-symbols-outlined animate-bounce">magic_button</span>
-                  Special Magic
-                </Link>
+
               </div>
               <div className="flex gap-3 pt-4">
                 {slides.map((_, i) => (
