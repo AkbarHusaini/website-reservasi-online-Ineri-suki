@@ -28,7 +28,7 @@ function AdminDashboard() {
 
       {/* Sidebar */}
       <aside className="h-screen w-64 fixed left-0 top-0 bg-[#0e0e0e] flex flex-col border-r border-[#42474b]/15 z-50">
-        <div className="p-8">
+        <div className="p-6">
           <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Ineri Admin</span>
           <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Ineri Suki & Grill</p>
         </div>
@@ -36,42 +36,42 @@ function AdminDashboard() {
         <nav className="flex-1 px-4 space-y-1 mt-2">
           <Link
             to="/admin/dashboard"
-            className="flex items-center gap-3 px-4 py-3 bg-[#3e5b68]/20 text-[#ffb59a] border-r-2 border-[#ffb59a] text-sm tracking-wide transition-colors rounded-sm"
+            className="flex items-center gap-3 px-4 py-2.5 bg-[#3e5b68]/20 text-[#ffb59a] border-r-2 border-[#ffb59a] text-sm tracking-wide transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">dashboard</span>
             Dashboard
           </Link>
           <Link
             to="/admin/menu"
-            className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
+            className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">restaurant_menu</span>
             Menu Management
           </Link>
           <Link
             to="/admin/categories"
-            className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
+            className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">category</span>
             Categories
           </Link>
           <Link
             to="/admin/reservations"
-            className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
+            className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">event_seat</span>
             Reservations
           </Link>
           <Link
             to="/admin/orders"
-            className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
+            className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">receipt_long</span>
             Orders
           </Link>
           <Link
             to="/admin/tables"
-            className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
+            className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">table_restaurant</span>
             Table Management
@@ -80,13 +80,13 @@ function AdminDashboard() {
 
         {/* Bottom */}
         <div className="p-4 border-t border-[#42474b]/15">
-          <div className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors cursor-pointer rounded-sm">
+          <div className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors cursor-pointer rounded-sm">
             <span className="material-symbols-outlined text-base">settings</span>
             Settings
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-[#ffb4ab] text-sm tracking-wide hover:bg-red-900/10 transition-colors rounded-sm"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-[#ffb4ab] text-sm tracking-wide hover:bg-red-900/10 transition-colors rounded-sm"
           >
             <span className="material-symbols-outlined text-base">logout</span>
             Sign Out
@@ -116,11 +116,11 @@ function AdminDashboard() {
         </header>
 
         {/* Content */}
-        <div className="p-8">
+        <div className="p-6">
           {/* Hero */}
           <div className="flex justify-between items-end mb-10">
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight text-[#e5e2e1] leading-tight">
+              <h1 className="text-3xl font-extrabold tracking-tight text-[#e5e2e1] leading-tight">
                 Admin <span className="text-[#ffb59a]">Dashboard</span>
               </h1>
               <p className="text-slate-400 mt-2 font-medium">Kelola operasional Ineri Suki & Grill dari sini.</p>

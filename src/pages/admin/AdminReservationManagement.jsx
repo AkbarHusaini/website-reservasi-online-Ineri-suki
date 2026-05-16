@@ -15,14 +15,14 @@ function AdminSidebar({ active, onLogout, admin }) {
   ];
   return (
     <aside className="h-screen w-64 fixed left-0 top-0 bg-[#0e0e0e] flex flex-col border-r border-[#42474b]/15 z-50">
-      <div className="p-8">
+      <div className="p-6">
         <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Ineri Admin</span>
         <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Ineri Suki & Grill</p>
       </div>
       <nav className="flex-1 px-4 space-y-1 mt-2">
         {nav.map(n => (
           <Link key={n.label} to={n.to}
-            className={`flex items-center gap-3 px-4 py-3 text-sm tracking-wide transition-colors rounded-sm ${
+            className={`flex items-center gap-3 px-4 py-2.5 text-sm tracking-wide transition-colors rounded-sm ${
               active === n.label
                 ? 'bg-[#3e5b68]/20 text-[#ffb59a] border-r-2 border-[#ffb59a]'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-[#3e5b68]/10'
@@ -33,7 +33,7 @@ function AdminSidebar({ active, onLogout, admin }) {
         ))}
       </nav>
       <div className="p-4 border-t border-[#42474b]/15">
-        <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-[#ffb4ab] text-sm hover:bg-red-900/10 transition-colors rounded-sm">
+        <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-[#ffb4ab] text-sm hover:bg-red-900/10 transition-colors rounded-sm">
           <span className="material-symbols-outlined text-base">logout</span>Sign Out
         </button>
       </div>
@@ -61,12 +61,12 @@ function ReservationModal({ item, onClose, onSave, tables }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-[#1c1b1b] rounded-2xl border border-[#42474b]/20 w-full max-w-md mx-4 shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#42474b]/15">
-          <h3 className="font-bold text-[#e5e2e1]">Update Reservasi #{item?.id}</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined">close</span></button>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#42474b]/15">
+          <h3 className="font-bold text-sm text-[#e5e2e1]">Update Reservasi #{item?.id}</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined text-lg">close</span></button>
         </div>
         
-        <div className="p-6 space-y-6">
+        <div className="p-5 space-y-5">
           <div className="bg-[#201f1f] p-4 rounded-xl space-y-2 text-sm border border-[#42474b]/10">
             <p className="text-slate-400">Customer: <span className="text-[#e5e2e1] font-bold">{item?.customer_name}</span> ({item?.customer_phone})</p>
             <p className="text-slate-400">Tanggal: <span className="text-[#e5e2e1] font-bold">{dateStr}</span></p>
@@ -82,7 +82,7 @@ function ReservationModal({ item, onClose, onSave, tables }) {
                 <input
                   type="text" value={form.table_ids} placeholder="Contoh: T1, T2"
                   onChange={e => setForm(p => ({ ...p, table_ids: e.target.value }))}
-                  className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-3 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a] placeholder:text-slate-600"
+                  className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-2.5 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a] placeholder:text-slate-600"
                 />
                 <p className="text-[10px] text-slate-500 mt-1">Pisahkan dengan koma jika lebih dari satu meja.</p>
               </div>
@@ -91,7 +91,7 @@ function ReservationModal({ item, onClose, onSave, tables }) {
             <div>
               <label className="text-[10px] font-bold uppercase tracking-widest text-[#ffb59a] mb-2 block">Status Reservasi</label>
               <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}
-                className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-3 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a]">
+                className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-2.5 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a]">
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="completed">Completed</option>
@@ -114,9 +114,9 @@ function ReservationModal({ item, onClose, onSave, tables }) {
         </div>
         
         <div className="flex gap-3 px-6 pb-6">
-          <button onClick={onClose} className="flex-1 py-3 rounded-lg bg-[#201f1f] text-slate-400 text-sm font-semibold hover:bg-[#2a2a2a]">Batal</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-lg bg-[#201f1f] text-slate-400 text-sm font-semibold hover:bg-[#2a2a2a]">Batal</button>
           <button onClick={handleSave} disabled={saving}
-            className="flex-1 py-3 rounded-lg bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] text-sm font-bold transition-all disabled:opacity-50">
+            className="flex-1 py-2.5 rounded-lg bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] text-sm font-bold transition-all disabled:opacity-50">
             {saving ? 'Menyimpan...' : 'Update Reservasi'}
           </button>
         </div>
@@ -212,11 +212,11 @@ export default function AdminReservationManagement() {
           <h2 className="text-sm font-bold tracking-widest uppercase text-slate-500">Reservation Management</h2>
         </header>
 
-        <div className="p-8 flex-1 flex flex-col overflow-hidden">
+        <div className="p-6 flex-1 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="flex justify-between items-end mb-8 shrink-0">
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight leading-tight">
+              <h1 className="text-3xl font-extrabold tracking-tight leading-tight">
                 Reservation <span className="text-[#ffb59a]">Management</span>
               </h1>
               <p className="text-slate-400 mt-1 text-sm">Kelola jadwal dan meja pelanggan Ineri Suki & Grill.</p>

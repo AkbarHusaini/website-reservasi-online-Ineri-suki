@@ -15,14 +15,14 @@ function AdminSidebar({ active, onLogout, admin }) {
   ];
   return (
     <aside className="h-screen w-64 fixed left-0 top-0 bg-[#0e0e0e] flex flex-col border-r border-[#42474b]/15 z-50">
-      <div className="p-8">
+      <div className="p-6">
         <span className="text-xl font-bold tracking-tighter text-[#ffb59a]">Ineri Admin</span>
         <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Ineri Suki & Grill</p>
       </div>
       <nav className="flex-1 px-4 space-y-1">
         {nav.map(n => (
           <Link key={n.label} to={n.to}
-            className={`flex items-center gap-3 px-4 py-3 text-sm tracking-wide transition-colors rounded-sm ${
+            className={`flex items-center gap-3 px-4 py-2.5 text-sm tracking-wide transition-colors rounded-sm ${
               active === n.label
                 ? 'bg-[#3e5b68]/20 text-[#ffb59a] border-r-2 border-[#ffb59a]'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-[#3e5b68]/10'
@@ -33,10 +33,10 @@ function AdminSidebar({ active, onLogout, admin }) {
         ))}
       </nav>
       <div className="p-4 border-t border-[#42474b]/15">
-        <div className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-slate-100 text-sm hover:bg-[#3e5b68]/10 transition-colors cursor-pointer rounded-sm">
+        <div className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm hover:bg-[#3e5b68]/10 transition-colors cursor-pointer rounded-sm">
           <span className="material-symbols-outlined text-base">settings</span>Settings
         </div>
-        <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-[#ffb4ab] text-sm hover:bg-red-900/10 transition-colors rounded-sm">
+        <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-[#ffb4ab] text-sm hover:bg-red-900/10 transition-colors rounded-sm">
           <span className="material-symbols-outlined text-base">logout</span>Sign Out
         </button>
         <div className="mt-4 flex items-center gap-3 px-4 py-2 bg-[#1c1b1b] rounded-xl">
@@ -79,14 +79,14 @@ function MenuItemModal({ item, categories, onClose, onSave }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-[#1c1b1b] rounded-2xl border border-[#42474b]/20 w-full max-w-lg mx-4 shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-[#42474b]/15">
-          <h3 className="font-bold text-[#e5e2e1]">{item ? 'Edit Menu Item' : 'Add New Item'}</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined">close</span></button>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#42474b]/15">
+          <h3 className="font-bold text-sm text-[#e5e2e1]">{item ? 'Edit Menu Item' : 'Add New Item'}</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white"><span className="material-symbols-outlined text-lg">close</span></button>
         </div>
-        <div className="p-6 space-y-4">
+        <div className="p-5 space-y-3.5">
           {err && <p className="text-[#ffb4ab] text-sm bg-red-900/20 px-4 py-2 rounded-lg">{err}</p>}
           {/* Image Preview Area */}
-          <div className="w-full h-40 rounded-xl bg-[#201f1f] border border-[#42474b]/15 overflow-hidden flex items-center justify-center relative group">
+          <div className="w-full h-32 rounded-xl bg-[#201f1f] border border-[#42474b]/15 overflow-hidden flex items-center justify-center relative group">
             {form.image_url ? (
               <img 
                 src={form.image_url} 
@@ -118,14 +118,14 @@ function MenuItemModal({ item, categories, onClose, onSave }) {
               <input
                 type={f.type} value={form[f.key]} placeholder={f.placeholder}
                 onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
-                className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-3 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a] placeholder:text-slate-600"
+                className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-2.5 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a] placeholder:text-slate-600"
               />
             </div>
           ))}
           <div>
             <label className="text-[10px] font-bold uppercase tracking-widest text-[#ffb59a] mb-1 block">Kategori</label>
             <select value={form.category_id} onChange={e => setForm(p => ({ ...p, category_id: e.target.value }))}
-              className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-3 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a]">
+              className="w-full bg-[#201f1f] text-[#e5e2e1] px-4 py-2.5 rounded-lg text-sm border-none focus:ring-1 focus:ring-[#ffb59a]">
               <option value="">-- Pilih Kategori --</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
             </select>
@@ -138,9 +138,9 @@ function MenuItemModal({ item, categories, onClose, onSave }) {
           </div>
         </div>
         <div className="flex gap-3 px-6 pb-6">
-          <button onClick={onClose} className="flex-1 py-3 rounded-lg bg-[#201f1f] text-slate-400 text-sm font-semibold hover:bg-[#2a2a2a]">Batal</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-lg bg-[#201f1f] text-slate-400 text-sm font-semibold hover:bg-[#2a2a2a]">Batal</button>
           <button onClick={handleSave} disabled={saving}
-            className="flex-1 py-3 rounded-lg bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] text-sm font-bold transition-all disabled:opacity-50">
+            className="flex-1 py-2.5 rounded-lg bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] text-sm font-bold transition-all disabled:opacity-50">
             {saving ? 'Menyimpan...' : 'Simpan'}
           </button>
         </div>
@@ -247,18 +247,18 @@ export default function AdminMenuManagement() {
           </div>
         </header>
 
-        <div className="p-8 flex-1 flex flex-col">
+        <div className="p-6 flex-1 flex flex-col">
           {/* Header */}
           <div className="flex justify-between items-end mb-8">
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight leading-tight">
+              <h1 className="text-3xl font-extrabold tracking-tight leading-tight">
                 Menu <span className="text-[#ffb59a]">Management</span>
               </h1>
               <p className="text-slate-400 mt-1 text-sm">Curate the culinary experience of Ineri Suki & Grill.</p>
             </div>
             <button
               onClick={() => setModal('add')}
-              className="bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] px-5 py-3 rounded-lg flex items-center gap-2 font-bold text-sm transition-all active:scale-95 shadow-lg">
+              className="bg-[#9c3400] hover:bg-[#ffb59a] hover:text-[#5b1b00] text-[#ffbea7] px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold text-sm transition-all active:scale-95 shadow-lg">
               <span className="material-symbols-outlined text-lg">add_circle</span>Add New Item
             </button>
           </div>
