@@ -15,8 +15,7 @@ sequenceDiagram
     User->>Frontend: Klik tombol Checkout / Buat Pesanan
     Frontend->>Backend: POST /api/orders (Items, Notes, ReservationData)
     
-    rect rgb(240, 248, 255)
-        note right of Backend: Proses Pembuatan Order
+    opt Proses Pembuatan Order
         Backend->>DB: INSERT INTO reservations (jika ada data reservasi)
         DB-->>Backend: Kembalikan Reservation ID
         Backend->>DB: INSERT INTO orders (items_json, total_price, status='pending')
@@ -27,8 +26,7 @@ sequenceDiagram
     
     Frontend->>Backend: POST /api/payments (Order ID, Total Amount)
     
-    rect rgb(255, 248, 240)
-        note right of Backend: Inisiasi Transaksi Midtrans
+    opt Inisiasi Transaksi Midtrans
         Backend->>DB: SELECT * FROM orders WHERE id = Order ID
         DB-->>Backend: Data Order
         Backend->>Midtrans: Create Snap Transaction (Parameter & Details)
