@@ -168,7 +168,7 @@ sequenceDiagram
     participant BE as Backend (Express)
     participant DB as Database (MySQL)
 
-    ================== ALUR BACA MENU (READ) ==================
+    %% ================== ALUR BACA MENU (READ) ==================
     Admin->>FE: Buka menu "Kelola Menu" (Mengisi search/filter kategori)
     FE->>BE: GET /api/admin/menu?search=suki&category=1&type=menu
     BE->>DB: SELECT i.*, c.label AS category_name FROM menu_items i LEFT JOIN categories c ON i.category_id = c.id WHERE i.name LIKE '%suki%' AND i.category_id = 1 AND i.type = 'menu'
@@ -178,7 +178,7 @@ sequenceDiagram
     BE-->>FE: Response (200, success: true, data: List, total: X, categories: Y)
     FE-->>Admin: Tampilkan tabel interaktif kelola menu
 
-    ================== ALUR TAMBAH MENU (CREATE) ==================
+    %% ================== ALUR TAMBAH MENU (CREATE) ==================
     Admin->>FE: Mengisi Form Menu Baru & klik "Simpan"
     FE->>BE: POST /api/admin/menu (name, description, price, category_id, image_url, is_available, type, badge)
     opt Pengecekan Field Wajib
@@ -189,7 +189,7 @@ sequenceDiagram
     BE-->>FE: Response (200, success: true, id)
     FE-->>Admin: Tampilkan toast "Menu Baru Berhasil Ditambahkan!"
 
-    ================== ALUR PERBARUI MENU (UPDATE) ==================
+    %% ================== ALUR PERBARUI MENU (UPDATE) ==================
     Admin->>FE: Edit field menu / ubah tombol toggle "Tersedia"
     FE->>BE: PUT /api/admin/menu/:id (Data Update)
     BE->>DB: UPDATE menu_items SET name=?, description=?, price=?, category_id=?, image_url=?, is_available=?, type=?, badge=? WHERE id=?
@@ -197,7 +197,7 @@ sequenceDiagram
     BE-->>FE: Response (200, success: true)
     FE-->>Admin: Tampilkan toast "Menu Berhasil Diperbarui!"
 
-    ================== ALUR HAPUS MENU (DELETE) ==================
+    %% ================== ALUR HAPUS MENU (DELETE) ==================
     Admin->>FE: Klik ikon "Hapus" pada salah satu menu
     FE->>BE: DELETE /api/admin/menu/:id
     BE->>DB: DELETE FROM menu_items WHERE id = ?
