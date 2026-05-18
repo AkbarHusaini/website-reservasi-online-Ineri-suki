@@ -1,20 +1,23 @@
 # Sequence Diagram: Proses Refund (Admin & User)
 
-Berikut adalah *sequence diagram* yang menggambarkan alur proses pengajuan refund oleh pelanggan (User) dan pemrosesan refund oleh Admin, baik secara otomatis melalui API Midtrans maupun manual.
+Dokumen ini berisi *sequence diagram* yang menggambarkan alur proses pengajuan refund oleh pelanggan (User) dan pemrosesan refund oleh Admin, baik secara otomatis melalui API Midtrans maupun manual. 
+
+Diagram ini dibagi menjadi dua bagian agar lebih mudah dibaca dan menghindari error *parsing* pada renderer Markdown.
+
+---
+
+## 1. Fase 1: Pengajuan Refund oleh Pelanggan (User)
+
+Fase ini menjelaskan bagaimana pelanggan mengajukan pengembalian dana melalui halaman riwayat pesanan mereka dengan memasukkan detail rekening bank tujuan.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User as Pelanggan (User)
-    actor Admin as Admin
     participant UserFE as User Frontend
-    participant AdminFE as Admin Dashboard
     participant Backend as Backend (Node.js/Express)
     participant DB as Database (MySQL)
-    participant Midtrans as Midtrans Gateway
 
-    ================== FASE 1: PENGAJUAN REFUND OLEH USER ==================
-    
     User->>UserFE: Masuk ke Riwayat Pesanan
     User->>UserFE: Klik "Refund" & Isi Detail Rekening (Bank, No. Rek, A/N)
     UserFE->>Backend: POST /api/orders/:id/submit-refund
@@ -33,8 +36,22 @@ sequenceDiagram
     
     Backend-->>UserFE: Response (success, "Detail refund berhasil dikirim")
     UserFE-->>User: Tampilkan Status "Refund Pending"
+```
 
-    ================== FASE 2: PEMROSESAN REFUND OLEH ADMIN ==================
+---
+
+## 2. Fase 2: Pemrosesan Refund oleh Admin
+
+Fase ini menjelaskan bagaimana Admin mengelola permintaan refund melalui dashboard, baik menggunakan **API Refund otomatis dari Midtrans** maupun **Transfer Manual**.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Admin
+    participant AdminFE as Admin Dashboard
+    participant Backend as Backend (Node.js/Express)
+    participant DB as Database (MySQL)
+    participant Midtrans as Midtrans Gateway
 
     Admin->>AdminFE: Buka Halaman Kelola Order
     AdminFE->>Backend: GET /api/admin/orders
@@ -56,8 +73,7 @@ sequenceDiagram
         Backend->>DB: UPDATE reservations SET status='cancelled'
         DB-->>Backend: Konfirmasi DB Update
         
-        rect rgb(40, 40, 40)
-            note right of Backend: Hubungi API Midtrans Refund
+        opt Hubungi API Midtrans Refund
             Backend->>Midtrans: POST snap.transaction.refund(midtrans_order_id, refund_amount)
             
             alt Midtrans Refund Berhasil
@@ -65,7 +81,7 @@ sequenceDiagram
                 Backend-->>AdminFE: Response (success, "Refund berhasil diproses via Midtrans")
             else Midtrans Refund Gagal (Metode tidak didukung / Sandbox limit)
                 Midtrans-->>Backend: Response Gagal (Error)
-                Backend-->>AdminFE: Response (success, "Status DB dibatalkan, namun Refund otomatis gagal. Silakan lakukan refund manual di dashboard Midtrans.")
+                Backend-->>AdminFE: Response (success, "Status DB dibatalkan, namun Refund otomatis gagal...")
             end
         end
 
@@ -86,13 +102,9 @@ sequenceDiagram
     end
 ```
 
-### Penjelasan Alur Refund:
+---
 
-1. **Pengajuan oleh User (Fase 1)**:
-   - Penganggan yang telah membayar pesanan (status `paid`) dapat mengajukan refund dengan mengisi informasi bank (Nama Bank, Nomor Rekening, atas nama).
-   - Backend memvalidasi pesanan dan menyimpannya di DB dengan status refund `pending` (atau disimpan sebagai teks `[REFUND REQUEST]` di kolom `notes` jika migrasi kolom baru belum lengkap).
-
-2. **Pemrosesan oleh Admin (Fase 2)**:
-   - Admin melihat pengajuan refund melalui Admin Dashboard.
-   - **Pilihan A (Otomatis)**: Backend akan mengurangi total pembayaran dengan **Rp 5.000** (potongan biaya pemesanan meja/booking fee yang tidak dapat di-refund). Backend langsung mengubah status order & reservasi menjadi `cancelled` di database dan melakukan pemanggilan API Refund Midtrans. Jika API Midtrans berhasil, uang akan kembali ke pembeli. Jika gagal (misalnya karena metode pembayaran tertentu di sandbox), admin diberikan petunjuk untuk memprosesnya secara manual di Dashboard Midtrans.
-   - **Pilihan B (Manual)**: Digunakan jika admin melakukan transfer manual ke bank pelanggan secara langsung. Admin menekan tombol konfirmasi manual untuk memperbarui status refund di database menjadi `processed` (atau mengganti teks di kolom `notes` menjadi `[REFUND PROCESSED]`).
+### Penjelasan Singkat Alur:
+- **Fase 1**: Pelanggan mengirimkan rincian akun bank mereka untuk pengembalian dana. Data tersebut disimpan di database dengan status refund `pending`.
+- **Fase 2 (Pilihan A)**: Memanfaatkan API Midtrans secara otomatis untuk mengembalikan dana pelanggan setelah dikurangi booking fee Rp 5.000.
+- **Fase 2 (Pilihan B)**: Jika pemrosesan otomatis tidak memungkinkan (misalnya karena limitasi sandbox/metode pembayaran tertentu), Admin dapat mentransfer secara manual kemudian menandai transaksi tersebut selesai di dashboard.
