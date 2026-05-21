@@ -16,25 +16,29 @@ function Menu() {
   // State untuk data dari database
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch categories & menu dari API
+  // Fetch categories, menu & packages dari API
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const [catRes, menuRes] = await Promise.all([
+        const [catRes, menuRes, pkgRes] = await Promise.all([
           fetch('/api/categories'),
           fetch('/api/menu'),
+          fetch('/api/packages'),
         ]);
 
         const catData = await catRes.json();
         const menuData = await menuRes.json();
+        const pkgData = await pkgRes.json();
 
         if (catData.success) setCategories(catData.data);
         if (menuData.success) setMenuItems(menuData.data);
+        if (pkgData.success) setPackages(pkgData.data);
       } catch (err) {
         console.error(err);
         setError('Gagal memuat data menu. Periksa koneksi server.');
@@ -46,13 +50,35 @@ function Menu() {
     fetchData();
   }, []);
 
-  // Daftar tab kategori: "All" + kategori dari DB
-  const categoryTabs = [{ id: 0, slug: 'all', label: 'All' }, ...categories];
+  // Daftar tab kategori: "All" + kategori dari DB + "Paket"
+  const categoryTabs = [
+    { id: 0, slug: 'all', label: 'All' },
+    ...categories,
+    { id: 'packages', slug: 'packages', label: 'Paket' }
+  ];
+
+  // Menggabungkan menu dan paket untuk difilter
+  const allItems = [
+    ...menuItems,
+    ...packages.map(pkg => ({
+      ...pkg,
+      category_id: 'packages',
+      type: 'package'
+    }))
+  ];
 
   // Filter berdasarkan kategori aktif & search
-  const filtered = menuItems.filter((item) => {
-    const cat = categories.find((c) => c.id === item.category_id);
-    const matchesCategory = activeCategory === 'all' || (cat && cat.slug === activeCategory);
+  const filtered = allItems.filter((item) => {
+    let matchesCategory = false;
+    if (activeCategory === 'all') {
+      matchesCategory = true;
+    } else if (activeCategory === 'packages') {
+      matchesCategory = item.category_id === 'packages';
+    } else {
+      const cat = categories.find((c) => c.id === item.category_id);
+      matchesCategory = cat && cat.slug === activeCategory;
+    }
+
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -71,6 +97,7 @@ function Menu() {
       price: Number(item.price),
       img: item.image_url,
       alt: item.name,
+      type: item.type || 'menu',
     });
   };
 
