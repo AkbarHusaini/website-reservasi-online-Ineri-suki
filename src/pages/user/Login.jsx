@@ -86,10 +86,7 @@ function Login() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-end px-1">
-                  <label className="text-xs font-bold uppercase tracking-widest text-tertiary">Password</label>
-                  <a className="text-xs font-medium text-on-surface-variant hover:text-tertiary transition-colors" href="#">Forgot Password?</a>
-                </div>
+                <label className="text-xs font-bold uppercase tracking-widest text-tertiary px-1">Password</label>
                 <input
                   className="w-full bg-surface-container-highest border-none focus:ring-0 text-on-surface px-4 py-4 rounded-lg placeholder:text-on-surface-variant/40 transition-all border-b-2 border-transparent focus:border-tertiary"
                   placeholder="••••••••"

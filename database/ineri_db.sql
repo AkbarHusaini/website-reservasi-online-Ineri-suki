@@ -89,7 +89,13 @@ INSERT INTO menu_items (category_id, name, description, price, img_path, badge, 
 (3, 'Beef Pastry Roll',       'Pastri renyah berisi daging sapi, disajikan dengan saus tomat dan mayo.',20000,'/gambar/menu15.jpeg', NULL, NULL, 17),
 -- Drinks
 (4, 'Matcha Latte Ice',       'Minuman matcha premium yang creamy dengan lapisan susu segar.',         18000, '/gambar/minum1.jpeg', NULL, NULL, 18),
-(4, 'Nanas Squash',           'Kesegaran nanas asli dipadu soda berkarbonasi.',                        15000, '/gambar/minum2.jpeg', NULL, NULL, 19);
+(4, 'Nanas Squash',           'Kesegaran nanas asli dipadu soda berkarbonasi.',                        15000, '/gambar/minum2.jpeg', NULL, NULL, 19),
+-- Menus added from @inerisuki.jember Instagram analysis
+(2, 'Bento Deluxe Premium',   'Set Bento premium lengkap dengan Chicken/Beef Teriyaki, Tori No Teba, Chicken Tulip, Egg Roll, salad segar, dan nasi putih.', 35000, '/gambar/menu16.jpeg', 'Premium', 'bg-yellow-600 text-white', 20),
+(2, 'Beef Enoki Ricebowl',    'Irisan daging sapi tipis gurih yang dibalut jamur enoki segar dengan saus spesial di atas nasi hangat.', 19500, '/gambar/menu12.jpeg', 'Popular', 'bg-tertiary text-on-tertiary', 21),
+(3, 'Ceker Pedas Ala Ineri',  'Ceker ayam super empuk berlumur bumbu sambal rempah super pedas dan gurih khas Ineri.', 17500, '/gambar/menu8.jpeg', 'Pedas', 'bg-red-600 text-white', 22),
+(4, 'Yakult Series Leci',     'Kesegaran minuman Yakult dingin berpadu dengan sirup leci premium dan buah leci asli.', 13000, '/gambar/minum1.jpeg', 'Refreshing', 'bg-blue-600 text-white', 23),
+(3, 'Dimsum Chicken Gyoza',   'Gyoza isi daging ayam cincang gurih dan sayuran segar, disajikan dengan chili oil khas Ineri.', 18500, '/gambar/menu8.jpeg', 'Best Seller', 'bg-orange-600 text-white', 24);
 
 -- ============================================================
 -- 4. TABEL: packages
