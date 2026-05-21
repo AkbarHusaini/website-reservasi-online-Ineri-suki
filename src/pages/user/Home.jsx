@@ -224,7 +224,7 @@ function Home() {
         <section className="py-32 bg-surface relative overflow-hidden">
           <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-tertiary/5 to-transparent opacity-50"></div>
           <div className="max-w-7xl mx-auto px-12 relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+            <div className="reveal-on-scroll flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-tertiary">
                   <span className="w-12 h-px bg-tertiary"></span>
@@ -238,7 +238,7 @@ function Home() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {specials.map((item, idx) => (
-                <div key={item.id || idx} className="group relative flex flex-col h-full bg-surface-container-low rounded-[2rem] overflow-hidden border border-white/5 transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
+                <div key={item.id || idx} className="reveal-on-scroll group relative flex flex-col h-full bg-surface-container-low rounded-[2rem] overflow-hidden border border-white/5 transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
                   <div className="relative h-[420px] overflow-hidden">
                     <img alt={item.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.image_url} />
                     <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent opacity-80"></div>
@@ -267,7 +267,7 @@ function Home() {
         {/* Reservasi Meja Layout/Floor Plan */}
         <section className="py-32 bg-surface-container-low relative" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M50 0v100M10 0v100M90 0v100\' stroke=\'%23ffffff\' stroke-width=\'0.5\' fill=\'none\' opacity=\'0.05\'/%3E%3Cpath d=\'M0 50h100M0 10h100M0 90h100\' stroke=\'%23ffffff\' stroke-width=\'0.2\' fill=\'none\' opacity=\'0.03\'/%3E%3C/svg%3E")' }}>
           <div className="max-w-7xl mx-auto px-12 relative z-10">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="reveal-on-scroll flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
               <div className="space-y-4">
                 <h2 className="text-4xl font-black tracking-tighter uppercase text-on-surface">Pilih Meja Favorit Anda</h2>
                 <div className="h-1 w-24 bg-tertiary"></div>
@@ -293,7 +293,7 @@ function Home() {
                 { id:'T10', label:'VIP Lounge',    icon:'star'             },
               ].map(table => (
                 <Link key={table.id} to="/reservation"
-                  className="group cursor-pointer bg-surface p-6 rounded-2xl border border-outline-variant/10 hover:border-tertiary/50 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 flex flex-col items-center gap-4">
+                  className="reveal-on-scroll group cursor-pointer bg-surface p-6 rounded-2xl border border-outline-variant/10 hover:border-tertiary/50 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 flex flex-col items-center gap-4">
                   <div className="flex justify-between items-center w-full">
                     <span className="text-xl font-black text-outline-variant group-hover:text-tertiary/60 transition-colors">{table.id}</span>
                     <span className="bg-green-500/10 text-green-500 px-2 py-0.5 rounded text-[9px] font-bold tracking-widest uppercase">Available</span>
@@ -314,7 +314,7 @@ function Home() {
         {/* Digital Menu Carousel */}
         <section className="py-32 bg-surface overflow-hidden">
           <div className="max-w-7xl mx-auto px-12">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-6">
+            <div className="reveal-on-scroll flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-6">
               <div className="space-y-2">
                 <h2 className="text-5xl font-black tracking-tighter uppercase text-on-surface">Digital Menu</h2>
                 <p className="text-tertiary font-medium tracking-widest uppercase text-sm">Pesan lebih awal, nikmati lebih cepat</p>
@@ -349,7 +349,7 @@ function Home() {
               className="flex gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory py-4 px-12 scroll-smooth"
             >
               {slides.map((item, index) => (
-                <div key={item.id || index} className="min-w-[320px] md:min-w-[420px] snap-center group/card relative bg-surface-container-low rounded-2xl overflow-hidden border border-outline-variant/10 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/60">
+                <div key={item.id || index} className="reveal-on-scroll min-w-[320px] md:min-w-[420px] snap-center group/card relative bg-surface-container-low rounded-2xl overflow-hidden border border-outline-variant/10 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/60">
                   <div className="relative h-72 overflow-hidden">
                     <img alt={item.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-1000" src={item.cardImg} />
                     {item.badge && <div className={`absolute top-4 right-4 ${item.badge_class || 'bg-tertiary text-on-tertiary-fixed'} px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase`}>{item.badge}</div>}
