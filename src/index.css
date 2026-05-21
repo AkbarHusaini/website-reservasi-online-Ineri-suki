@@ -76,20 +76,16 @@
   background: var(--tertiary);
 }
 
-/* Scroll-Driven Reveal Animations */
-@keyframes reveal-appear {
-  from {
-    opacity: 0;
-    transform: translateY(60px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+/* Scroll Reveal Animations (High Performance & Universal Support) */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
 }
 
-.reveal-on-scroll {
-  animation: reveal-appear linear both;
-  animation-timeline: view();
-  animation-range: entry 10% cover 30%;
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
+
