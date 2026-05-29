@@ -331,14 +331,14 @@ function MyOrders() {
                           <img
                             src={
                               item.image_url || 
-                              (item.item_name?.includes('Booking Fee') ? '/images/booking_fee.png' :
-                               item.item_name?.includes('Grill Berdua') ? '/images/paket_grill_berdua.png' :
-                               item.item_name?.includes('Pahlawan') ? '/images/paket_pahlawan.png' :
-                               '/images/booking_fee.png')
+                              (item.item_name?.includes('Booking Fee') ? '/images/booking_fee.webp' :
+                               item.item_name?.includes('Grill Berdua') ? '/images/paket_grill_berdua.webp' :
+                               item.item_name?.includes('Pahlawan') ? '/images/paket_pahlawan.webp' :
+                               '/images/booking_fee.webp')
                             }
                             alt={item.item_name}
                             className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                            onError={(e) => { e.target.src = '/images/booking_fee.png'; }}
+                            onError={(e) => { e.target.src = '/images/booking_fee.webp'; }}
                           />
                         </div>
                         <div className="flex-1 min-w-0">

@@ -9,8 +9,70 @@ import '../../index.css';
 function Home() {
   const { user, logout } = useAuth();
   const { cartItems, cartCount, addToCart } = useCart();
-  const [slides, setSlides] = useState([]);
-  const [specials, setSpecials] = useState([]);
+  const [slides, setSlides] = useState([
+    {
+      id: 'default-1',
+      bg: '/gambar/slide1.webp',
+      cardImg: '/gambar/slide1.webp',
+      title: 'Premium Grill Selection',
+      desc: 'Daging sapi premium pilihan dengan marinasi khas Ineri yang meresap sempurna.',
+      price: 'Rp 88k',
+      rawPrice: 88000,
+      badge: 'Best Seller',
+      badge_class: 'bg-tertiary text-on-tertiary-fixed'
+    },
+    {
+      id: 'default-2',
+      bg: '/gambar/slide2.webp',
+      cardImg: '/gambar/slide2.webp',
+      title: 'Authentic Suki Soup',
+      desc: 'Kuah Kaldu Gurih & Tomyam Khas Ineri dengan pilihan sayuran segar dan bakso berkualitas.',
+      price: 'Rp 65k',
+      rawPrice: 65000,
+      badge: 'Chef Choice',
+      badge_class: 'bg-primary text-on-primary-fixed'
+    },
+    {
+      id: 'default-3',
+      bg: '/gambar/slide4.webp',
+      cardImg: '/gambar/slide4.webp',
+      title: 'Paket Grill Berdua',
+      desc: 'Nikmati kebersamaan dengan paket grill lengkap untuk berdua dengan harga lebih hemat.',
+      price: 'Rp 149k',
+      rawPrice: 149000,
+      badge: 'Special Promo',
+      badge_class: 'bg-secondary text-on-secondary-fixed'
+    }
+  ]);
+  const [specials, setSpecials] = useState([
+    {
+      id: 'special-1',
+      name: 'Paket Grill Berdua Premium',
+      description: 'Kombinasi daging sapi iris berkualitas, ayam marinasi, dan sosis premium lengkap dengan sayuran segar dan saus cocolan khas Ineri.',
+      image_url: '/gambar/paket3.webp',
+      price: 149000,
+      badge: 'Paket Hemat',
+      badge_class: 'bg-tertiary text-on-tertiary-fixed'
+    },
+    {
+      id: 'special-2',
+      name: 'Paket Pahlawan Keluarga',
+      description: 'Pesta grill lengkap untuk keluarga dengan porsi ekstra daging premium, suki plate melimpah, dan kuah tomyam segar.',
+      image_url: '/gambar/paket1.webp',
+      price: 249000,
+      badge: 'Family Package',
+      badge_class: 'bg-primary text-on-primary-fixed'
+    },
+    {
+      id: 'special-3',
+      name: 'Booking Fee Spesial Event',
+      description: 'Reservasi meja khusus untuk perayaan hari spesial, rapat bisnis, atau makan malam romantis dengan dekorasi standar.',
+      image_url: '/gambar/menu1.webp',
+      price: 50000,
+      badge: 'Popular',
+      badge_class: 'bg-secondary text-on-secondary-fixed'
+    }
+  ]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -29,8 +91,8 @@ function Home() {
         if (menuData.success) {
           const mappedSlides = menuData.data.map(item => ({
             id: item.id,
-            bg: item.image_url,
-            cardImg: item.image_url,
+            bg: item.image_url?.replace(/\.(png|jpe?g)$/i, '.webp'),
+            cardImg: item.image_url?.replace(/\.(png|jpe?g)$/i, '.webp'),
             title: item.name,
             desc: item.description,
             price: `Rp ${Math.floor(item.price / 1000)}k`,
@@ -107,7 +169,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (loading) return;
+
 
     const observerOptions = {
       root: null,
@@ -159,13 +221,7 @@ function Home() {
 
   const slide = slides[currentIdx] || { bg: '', cardImg: '', title: 'Loading...', desc: '', price: '' };
 
-  if (loading && slides.length === 0) {
-    return (
-      <div className="bg-background min-h-screen flex items-center justify-center">
-        <div className="text-tertiary animate-pulse text-2xl font-bold uppercase tracking-tighter">Ineri Suki & Grill</div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="bg-background text-on-surface font-body selection:bg-tertiary/30">
@@ -272,7 +328,7 @@ function Home() {
               {specials.map((item, idx) => (
                 <div key={item.id || idx} className="reveal-on-scroll group relative flex flex-col h-full bg-surface-container-low rounded-[2rem] overflow-hidden border border-white/5 transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
                   <div className="relative h-[420px] overflow-hidden">
-                    <img alt={item.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.image_url} />
+                    <img loading="lazy" alt={item.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.image_url} />
                     <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent opacity-80"></div>
                     <div className="absolute top-6 left-6 flex flex-col gap-2">
                       {item.badge && <span className={`${item.badge_class || 'bg-tertiary text-on-tertiary-fixed'} px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg`}>{item.badge}</span>}
@@ -383,7 +439,7 @@ function Home() {
               {slides.map((item, index) => (
                 <div key={item.id || index} className="reveal-on-scroll min-w-[320px] md:min-w-[420px] snap-center group/card relative bg-surface-container-low rounded-2xl overflow-hidden border border-outline-variant/10 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/60">
                   <div className="relative h-72 overflow-hidden">
-                    <img alt={item.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-1000" src={item.cardImg} />
+                    <img loading="lazy" alt={item.title} className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-1000" src={item.cardImg} />
                     {item.badge && <div className={`absolute top-4 right-4 ${item.badge_class || 'bg-tertiary text-on-tertiary-fixed'} px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase`}>{item.badge}</div>}
                   </div>
                   <div className="p-8 space-y-6">

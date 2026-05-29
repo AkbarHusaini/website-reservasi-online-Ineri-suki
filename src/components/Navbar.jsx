@@ -20,7 +20,7 @@ function Navbar({ activePage }) {
       <div className="flex justify-between items-center px-6 md:px-12 py-4 max-w-screen-2xl mx-auto">
         <Link to="/" className="flex items-center gap-2 md:gap-3 group">
           <img 
-            src="/images/logo.png" 
+            src="/images/logo.webp" 
             alt="Ineri Suki & Grill Logo" 
             className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/10 shadow-lg group-hover:scale-105 transition-transform"
           />

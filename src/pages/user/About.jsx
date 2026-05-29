@@ -18,7 +18,7 @@ function About() {
           <img 
             alt="Suki and Grill" 
             className="absolute inset-0 w-full h-full object-cover opacity-30" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgKAOzBaUVcmpYxQoihpdqJdx7KxNA7JWmbM1ef6sAuUpJhM9Cm1lSQZSNDLYzlcHMMjEFFABXVtA-tmV-8i8OmSeMJW49osuspjFxlsfFe0BzDzMRF9JFn6iMhSPWNBgec4OS923lJjs-UKFBtontRDjaUqpO48JTVQa2qbEGScMaDMoyfj1HT4zcM5yoONjPjA83Jsnnh9qVRG6avW_CSJgSl2Iss3UqL_vE6wOvPMUlMYp-bkEfHVYPbI_NwZJ0V6dCjQpn11d8" 
+            src="/gambar/about-hero.webp" 
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#131313]"></div>
           <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
@@ -53,9 +53,10 @@ function About() {
             <div className="md:w-1/2 relative group">
               <div className="absolute inset-0 bg-[#ffb59a] blur-[100px] opacity-20 group-hover:opacity-40 transition-opacity duration-1000"></div>
               <img 
+                loading="lazy"
                 className="w-full rounded-3xl relative z-10 border border-[#42474b]/30 shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]" 
                 alt="Grill and Suki experience" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuubmmh6cjl6mQPSmYs2R3K9tN66aYHsPFO2W6QX4H5py72NK7B5FNH5Mc0BRxQBNIX7PWrE2BF64UOx_zSUd4dm11tXladzVYgh0XVFE70LaRyy7ZWIn1ZfnAM-bTr2PR0CAg7o5KIKgB3GFJwwylKB9Swz20vzYrqTR1a_kKFOOMqnar98-WUA1TTJc0Rsr64Re09nn8sD1dPVGV51Oq32t9mgMSe5CX7MUGr_aVclnii2S6y9-6RVGoTV8BRitpxA1LuYjFMr8K" 
+                src="/gambar/about-story.webp" 
               />
             </div>
           </div>

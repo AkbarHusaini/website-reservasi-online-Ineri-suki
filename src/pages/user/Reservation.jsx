@@ -109,7 +109,7 @@ function Reservation() {
         name: `Booking Fee - Meja ${tableId}`,
         price: BOOKING_FEE_PER_TABLE,
         description: `Biaya reservasi untuk Meja ${tableId}`,
-        img: '/images/booking_fee.png',
+        img: '/images/booking_fee.webp',
         alt: `Booking Fee Meja ${tableId}`,
         type: 'booking_fee'
       });

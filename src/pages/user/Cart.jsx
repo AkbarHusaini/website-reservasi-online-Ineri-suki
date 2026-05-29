@@ -132,14 +132,14 @@ function Cart() {
                       <img
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         src={
-                          item.type === 'booking_fee' || item.name?.includes('Booking Fee') ? '/images/booking_fee.png' :
-                          item.name?.includes('Grill Berdua') ? '/images/paket_grill_berdua.png' :
-                          item.name?.includes('Pahlawan') ? '/images/paket_pahlawan.png' :
-                          (item.img || '/images/booking_fee.png')
+                          item.type === 'booking_fee' || item.name?.includes('Booking Fee') ? '/images/booking_fee.webp' :
+                          item.name?.includes('Grill Berdua') ? '/images/paket_grill_berdua.webp' :
+                          item.name?.includes('Pahlawan') ? '/images/paket_pahlawan.webp' :
+                          (item.img || '/images/booking_fee.webp')
                         }
                         alt={item.alt}
                         onError={(e) => {
-                          e.target.src = '/images/booking_fee.png'; // Global fallback for broken images
+                          e.target.src = '/images/booking_fee.webp'; // Global fallback for broken images
                         }}
                       />
                       <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.4)] pointer-events-none rounded-xl" />
