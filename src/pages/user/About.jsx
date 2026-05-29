@@ -19,6 +19,7 @@ function About() {
             alt="Suki and Grill" 
             className="absolute inset-0 w-full h-full object-cover opacity-30" 
             src="/gambar/about-hero.webp" 
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#131313]"></div>
           <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
