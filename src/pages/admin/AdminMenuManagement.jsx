@@ -89,7 +89,7 @@ function MenuItemModal({ item, categories, onClose, onSave }) {
           <div className="w-full h-32 rounded-xl bg-[#201f1f] border border-[#42474b]/15 overflow-hidden flex items-center justify-center relative group">
             {form.image_url ? (
               <img 
-                src={form.image_url} 
+                src={form.image_url?.replace(/\.(png|jpe?g)$/i, '.webp')} 
                 alt="Preview" 
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => { 
@@ -304,7 +304,7 @@ export default function AdminMenuManagement() {
                         <div className="w-20 h-14 rounded-lg overflow-hidden bg-[#201f1f] relative">
                           {item.image_url || item.img_path ? (
                             <img 
-                              src={item.image_url || item.img_path} 
+                              src={(item.image_url || item.img_path)?.replace(/\.(png|jpe?g)$/i, '.webp')} 
                               alt={item.name} 
                               className="w-full h-full object-cover"
                               onError={(e) => {

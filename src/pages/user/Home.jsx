@@ -327,9 +327,9 @@ function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {specials.map((item, idx) => (
                 <div key={item.id || idx} className="reveal-on-scroll group relative flex flex-col h-full bg-surface-container-low rounded-[2rem] overflow-hidden border border-white/5 transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]">
-                  <div className="relative h-[420px] overflow-hidden">
-                    <img loading="lazy" alt={item.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.image_url} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent opacity-80"></div>
+                  <div className="relative h-48 md:h-56 overflow-hidden rounded-t-2xl">
+                    <img loading="lazy" alt={item.name} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src={item.image_url?.replace(/\.(png|jpe?g)$/i, '.webp')} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a2e] to-transparent opacity-80"></div>
                     <div className="absolute top-6 left-6 flex flex-col gap-2">
                       {item.badge && <span className={`${item.badge_class || 'bg-tertiary text-on-tertiary-fixed'} px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg`}>{item.badge}</span>}
                     </div>

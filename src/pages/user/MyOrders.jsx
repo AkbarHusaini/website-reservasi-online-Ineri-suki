@@ -330,7 +330,7 @@ function MyOrders() {
                         <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-surface-container-highest overflow-hidden flex-shrink-0 shadow-lg">
                           <img
                             src={
-                              item.image_url || 
+                              item.image_url?.replace(/\.(png|jpe?g)$/i, '.webp') || 
                               (item.item_name?.includes('Booking Fee') ? '/images/booking_fee.webp' :
                                item.item_name?.includes('Grill Berdua') ? '/images/paket_grill_berdua.webp' :
                                item.item_name?.includes('Pahlawan') ? '/images/paket_pahlawan.webp' :

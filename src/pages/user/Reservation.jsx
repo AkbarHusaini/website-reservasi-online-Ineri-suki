@@ -121,7 +121,7 @@ function Reservation() {
         name: selectedPkg.name,
         price: Number(selectedPkg.price),
         description: selectedPkg.description,
-        img: selectedPkg.image_url,
+        img: selectedPkg.image_url?.replace(/\.(png|jpe?g)$/i, '.webp'),
         alt: selectedPkg.name,
         type: 'package'
       });
@@ -305,7 +305,7 @@ function Reservation() {
                     return (
                       <button key={pkg.id} onClick={() => setSelectedPkg(isSel ? null : pkg)}
                         className={`flex gap-4 p-4 rounded-xl text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] border ${isSel ? 'bg-tertiary-container border-tertiary shadow-lg shadow-tertiary/20' : 'bg-surface-container-high border-transparent hover:border-outline-variant/20'}`}>
-                        <img src={pkg.image_url} alt={pkg.name} className="w-20 h-20 object-cover rounded-lg shrink-0" onError={e => e.target.style.display='none'} />
+                        <img src={pkg.image_url?.replace(/\.(png|jpe?g)$/i, '.webp')} alt={pkg.name} className="w-20 h-20 object-cover rounded-lg shrink-0" onError={e => e.target.style.display='none'} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <p className={`font-bold text-sm leading-tight ${isSel ? 'text-on-tertiary-container' : 'text-on-surface'}`}>{pkg.name}</p>
