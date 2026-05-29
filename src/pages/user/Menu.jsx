@@ -233,7 +233,7 @@ function Menu() {
                 <div className="aspect-square overflow-hidden relative">
                   <img
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    src={item.image_url}
+                    src={item.image_url?.replace(/\.(png|jpe?g)$/i, '.webp')}
                     alt={item.name}
                     onError={(e) => { e.target.src = 'https://placehold.co/400x400/1a1a2e/c9a96e?text=Ineri'; }}
                   />
