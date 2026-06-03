@@ -45,10 +45,8 @@ exports.createTransaction = async (req, res) => {
         // Add Tax and Service Fee as item details if they are part of the gross_amount
         // Note: The total gross_amount MUST match the sum of item_details
         const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const tax = Math.round(subtotal * 0.1);
         const serviceFee = Math.round(subtotal * 0.05);
         
-        if (tax > 0) items.push({ id: 'TAX-10', price: tax, quantity: 1, name: 'Pajak (10%)' });
         if (serviceFee > 0) items.push({ id: 'SRV-5', price: serviceFee, quantity: 1, name: 'Biaya Layanan (5%)' });
 
         const finalGrossAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
