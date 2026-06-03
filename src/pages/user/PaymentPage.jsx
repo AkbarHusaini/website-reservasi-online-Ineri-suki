@@ -170,9 +170,8 @@ export default function PaymentPage() {
     );
 
     const subtotal = Number(order?.total_price) || 0;
-    const tax = Math.round(subtotal * 0.1);
     const serviceFee = Math.round(subtotal * 0.05);
-    const grandTotal = subtotal + tax + serviceFee;
+    const grandTotal = subtotal + serviceFee;
 
     const SuccessModal = () => (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
@@ -246,10 +245,7 @@ export default function PaymentPage() {
                                     <span>Subtotal</span>
                                     <span>Rp {subtotal.toLocaleString('id-ID')}</span>
                                 </div>
-                                <div className="flex justify-between text-xs text-on-surface-variant">
-                                    <span>Pajak (10%)</span>
-                                    <span>Rp {tax.toLocaleString('id-ID')}</span>
-                                </div>
+
                                 <div className="flex justify-between text-xs text-on-surface-variant">
                                     <span>Biaya Layanan (5%)</span>
                                     <span>Rp {serviceFee.toLocaleString('id-ID')}</span>

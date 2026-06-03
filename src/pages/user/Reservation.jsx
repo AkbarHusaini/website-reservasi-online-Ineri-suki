@@ -7,7 +7,7 @@ import Footer from '../../components/Footer';
 import '../../index.css';
 
 const MAX_PER_TABLE = 4;
-const BOOKING_FEE_PER_TABLE = 10000;
+const BOOKING_FEE_PER_TABLE = 5000;
 
 
 
@@ -444,7 +444,7 @@ function Reservation() {
 
                 <div className="bg-surface-container-low p-3 rounded-lg mb-5">
                   <p className="text-[10px] text-on-surface-variant leading-relaxed uppercase tracking-wider">
-                    Booking fee Rp 10.000/meja dipotong dari tagihan akhir. Pembatalan perlu pemberitahuan 24 jam.
+                    Booking fee Rp 5.000/meja dipotong dari tagihan akhir. Pembatalan perlu pemberitahuan 24 jam.
                   </p>
                 </div>
 

@@ -17,9 +17,8 @@ function Cart() {
   const navigate = useNavigate();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const tax = Math.round(subtotal * 0.1);
   const serviceFee = Math.round(subtotal * 0.05);
-  const grandTotal = subtotal + tax + serviceFee;
+  const grandTotal = subtotal + serviceFee;
 
   const handleCheckout = async () => {
     const token = localStorage.getItem('Ineri_token') || localStorage.getItem('IneriToken');
@@ -222,10 +221,7 @@ function Cart() {
                   <span>Subtotal</span>
                   <span className="font-medium text-on-surface">IDR {formatIDR(subtotal)}</span>
                 </div>
-                <div className="flex justify-between items-center text-on-surface-variant">
-                  <span>Pajak (10%)</span>
-                  <span className="font-medium text-on-surface">IDR {formatIDR(tax)}</span>
-                </div>
+
                 <div className="flex justify-between items-center text-on-surface-variant">
                   <span>Biaya Layanan (5%)</span>
                   <span className="font-medium text-on-surface">IDR {formatIDR(serviceFee)}</span>
