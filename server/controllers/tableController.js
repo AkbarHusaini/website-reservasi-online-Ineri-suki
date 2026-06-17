@@ -1,20 +1,15 @@
-const pool = require('../config/db');
-
-// Helper untuk deteksi nama tabel (tables atau dining_tables)
-async function getTableName() {
-  try {
-    await pool.query('SELECT 1 FROM tables LIMIT 1');
-    return 'tables';
-  } catch (e) {
-    return 'dining_tables';
-  }
-}
+const { Table } = require('../models');
+const { Sequelize } = require('sequelize');
 
 exports.getAllTables = async (req, res) => {
   try {
-    const tableName = await getTableName();
-    const [rows] = await pool.query(`SELECT * FROM ${tableName} ORDER BY CAST(SUBSTRING(id, 2) AS UNSIGNED)`);
-    res.json({ success: true, data: rows });
+    // MySQL specific order by casting substring
+    const tables = await Table.findAll({
+      order: [
+        [Sequelize.literal('CAST(SUBSTRING(id, 2) AS UNSIGNED)'), 'ASC']
+      ]
+    });
+    res.json({ success: true, data: tables });
   } catch (err) {
     console.error('Error fetching tables:', err);
     res.status(500).json({ success: false, error: 'Server error' });
@@ -27,17 +22,16 @@ exports.createTable = async (req, res) => {
     return res.status(400).json({ success: false, error: 'ID meja dan kapasitas wajib diisi.' });
   }
   try {
-    const tableName = await getTableName();
-    // Cek apakah ID sudah ada
-    const [existing] = await pool.query(`SELECT id FROM ${tableName} WHERE id = ?`, [id]);
-    if (existing.length > 0) {
+    const existing = await Table.findByPk(id);
+    if (existing) {
       return res.status(400).json({ success: false, error: 'ID meja sudah terdaftar.' });
     }
     
-    await pool.query(
-      `INSERT INTO ${tableName} (id, capacity, status) VALUES (?, ?, ?)`,
-      [id, capacity, status || 'available']
-    );
+    await Table.create({
+      id,
+      capacity,
+      status: status || 'available'
+    });
     res.json({ success: true, id });
   } catch (err) {
     console.error('Error creating table:', err);
@@ -49,11 +43,11 @@ exports.updateTable = async (req, res) => {
   const { id } = req.params;
   const { capacity, status } = req.body;
   try {
-    const tableName = await getTableName();
-    await pool.query(
-      `UPDATE ${tableName} SET capacity = ?, status = ? WHERE id = ?`,
-      [capacity, status, id]
-    );
+    const table = await Table.findByPk(id);
+    if (!table) {
+      return res.status(404).json({ success: false, error: 'Table not found' });
+    }
+    await table.update({ capacity, status });
     res.json({ success: true });
   } catch (err) {
     console.error('Error updating table:', err);
@@ -64,8 +58,10 @@ exports.updateTable = async (req, res) => {
 exports.deleteTable = async (req, res) => {
   const { id } = req.params;
   try {
-    const tableName = await getTableName();
-    await pool.query(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
+    const deleted = await Table.destroy({ where: { id } });
+    if (deleted === 0) {
+      return res.status(404).json({ success: false, error: 'Table not found' });
+    }
     res.json({ success: true });
   } catch (err) {
     console.error('Error deleting table:', err);

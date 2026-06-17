@@ -33,9 +33,6 @@ function AdminSidebar({ active, onLogout, admin }) {
         ))}
       </nav>
       <div className="p-4 border-t border-[#42474b]/15">
-        <div className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm hover:bg-[#3e5b68]/10 transition-colors cursor-pointer rounded-sm">
-          <span className="material-symbols-outlined text-base">settings</span>Settings
-        </div>
         <button onClick={onLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-[#ffb4ab] text-sm hover:bg-red-900/10 transition-colors rounded-sm">
           <span className="material-symbols-outlined text-base">logout</span>Sign Out
         </button>
@@ -242,7 +239,6 @@ export default function AdminMenuManagement() {
             </select>
           </div>
           <div className="flex items-center gap-4">
-            <span className="material-symbols-outlined text-slate-400 hover:text-[#ffb59a] cursor-pointer">notifications</span>
             <span className="material-symbols-outlined text-slate-400 hover:text-[#ffb59a] cursor-pointer">account_circle</span>
           </div>
         </header>

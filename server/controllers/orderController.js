@@ -1,45 +1,39 @@
-const pool = require('../config/db');
+const { Order, Reservation, User, MenuItem } = require('../models');
+const { Sequelize, Op } = require('sequelize');
 
 // Ambil orders milik user
 exports.getMyOrders = async (req, res) => {
   const userId = req.user.id;
   try {
-    let orders;
-    try {
-      [orders] = await pool.query(
-        `SELECT o.*, 
-                r.reservation_date, r.start_time, r.guest_count,
-                r.table_ids as table_number
-         FROM orders o
-         LEFT JOIN reservations r ON o.reservation_id = r.id
-         WHERE o.user_id = ?
-         ORDER BY o.created_at DESC`,
-        [userId]
-      );
-    } catch (sqlErr) {
-      console.error('SQL Error in getMyOrders:', sqlErr.message);
-      // Fallback query jika kolom was_paid atau lainnya belum ada
-      [orders] = await pool.query(
-        `SELECT o.id, o.status, o.total_price, o.created_at, o.items_json, o.refund_status,
-                r.reservation_date, r.start_time, r.guest_count,
-                r.table_ids as table_number
-         FROM orders o
-         LEFT JOIN reservations r ON o.reservation_id = r.id
-         WHERE o.user_id = ?
-         ORDER BY o.created_at DESC`,
-        [userId]
-      );
-    }
+    const orders = await Order.findAll({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Reservation,
+          as: 'reservation',
+          attributes: ['reservation_date', 'start_time', 'guest_count', 'table_ids']
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
 
     let imageMap = {};
     try {
-      const [menus] = await pool.query('SELECT name, image_url FROM menus');
+      const menus = await MenuItem.findAll({ attributes: ['name', 'image_url'] });
       menus.forEach(m => imageMap[m.name] = m.image_url);
     } catch (imgErr) {
       console.error('Image lookup failed, continuing without fallback:', imgErr.message);
     }
 
-    const formattedOrders = orders.map(order => {
+    const formattedOrders = orders.map(o => {
+      const order = o.toJSON();
+      if (order.reservation) {
+        order.reservation_date = order.reservation.reservation_date;
+        order.start_time = order.reservation.start_time;
+        order.guest_count = order.reservation.guest_count;
+        order.table_number = order.reservation.table_ids;
+      }
+
       let items = [];
       try {
         if (order.items_json) {
@@ -91,8 +85,6 @@ exports.createOrder = async (req, res) => {
     
     // Create reservation if data exists
     if (reservationData && reservationData.tables && reservationData.tables.length > 0) {
-      // Format time correctly. timeSlots are like "04:00 PM", convert to HH:mm:ss if possible, or just string.
-      // But start_time in DB is TIME. So we need to parse "04:00 PM" -> "16:00:00"
       let timeStr = reservationData.time;
       if (timeStr && (timeStr.includes('PM') || timeStr.includes('AM'))) {
         const [time, period] = timeStr.split(' ');
@@ -103,12 +95,14 @@ exports.createOrder = async (req, res) => {
         timeStr = `${String(hours).padStart(2, '0')}:${minutes}:00`;
       }
 
-      const [conflicts] = await pool.query(
-        `SELECT table_ids FROM reservations 
-         WHERE reservation_date = ? AND status IN ('pending', 'confirmed') 
-         AND (ABS(TIME_TO_SEC(TIMEDIFF(start_time, ?))) / 60 < 120)`,
-        [reservationData.date, timeStr]
-      );
+      const conflicts = await Reservation.findAll({
+        where: {
+          reservation_date: reservationData.date,
+          status: { [Op.in]: ['pending', 'confirmed'] },
+          [Op.and]: Sequelize.literal(`(ABS(TIME_TO_SEC(TIMEDIFF(start_time, '${timeStr}'))) / 60 < 120)`)
+        },
+        attributes: ['table_ids']
+      });
 
       let alreadyBooked = [];
       conflicts.forEach(c => {
@@ -125,19 +119,27 @@ exports.createOrder = async (req, res) => {
         });
       }
 
-      const [resResult] = await pool.query(
-        'INSERT INTO reservations (user_id, table_ids, reservation_date, start_time, guest_count, status) VALUES (?, ?, ?, ?, ?, ?)',
-        [userId, reservationData.tables.join(', '), reservationData.date, timeStr, reservationData.guestCount, 'pending']
-      );
-      reservationId = resResult.insertId;
+      const resResult = await Reservation.create({
+        user_id: userId,
+        table_ids: reservationData.tables.join(', '),
+        reservation_date: reservationData.date,
+        start_time: timeStr,
+        guest_count: reservationData.guestCount,
+        status: 'pending'
+      });
+      reservationId = resResult.id;
     }
 
-    const [result] = await pool.query(
-      'INSERT INTO orders (user_id, reservation_id, items_json, total_price, notes, status) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, reservationId, JSON.stringify(cartItems), totalAmount, notes || null, 'pending']
-    );
+    const newOrder = await Order.create({
+      user_id: userId,
+      reservation_id: reservationId,
+      items_json: JSON.stringify(cartItems),
+      total_price: totalAmount,
+      notes: notes || null,
+      status: 'pending'
+    });
     
-    res.json({ success: true, orderId: result.insertId });
+    res.json({ success: true, orderId: newOrder.id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Failed to process order' });
@@ -149,17 +151,38 @@ exports.createOrder = async (req, res) => {
 // Ambil semua orders
 exports.getAllOrdersAdmin = async (req, res) => {
   try {
-    const [orders] = await pool.query(
-      `SELECT o.id, o.status, o.total_price, o.payment_method, o.notes, o.created_at, o.items_json,
-              o.refund_bank_name, o.refund_account_number, o.refund_account_name, o.refund_status,
-              u.name AS customer_name, u.email AS customer_email, u.phone AS customer_phone,
-              r.reservation_date, r.start_time, r.table_ids as table_number
-       FROM orders o
-       LEFT JOIN users u ON o.user_id = u.id
-       LEFT JOIN reservations r ON o.reservation_id = r.id
-       ORDER BY o.created_at DESC`
-    );
-    res.json({ success: true, data: orders });
+    const orders = await Order.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name', 'email', 'phone']
+        },
+        {
+          model: Reservation,
+          as: 'reservation',
+          attributes: ['reservation_date', 'start_time', 'table_ids']
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
+
+    const formattedOrders = orders.map(o => {
+      const order = o.toJSON();
+      if (order.user) {
+        order.customer_name = order.user.name;
+        order.customer_email = order.user.email;
+        order.customer_phone = order.user.phone;
+      }
+      if (order.reservation) {
+        order.reservation_date = order.reservation.reservation_date;
+        order.start_time = order.reservation.start_time;
+        order.table_number = order.reservation.table_ids;
+      }
+      return order;
+    });
+
+    res.json({ success: true, data: formattedOrders });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Server error' });
@@ -171,29 +194,29 @@ exports.updateOrderAdmin = async (req, res) => {
   const { id } = req.params;
   const { status, refund_status } = req.body;
   try {
-    if (status) {
-      await pool.query('UPDATE `orders` SET `status` = ? WHERE `id` = ?', [status, id]);
+    const order = await Order.findByPk(id);
+    if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
 
-      // Sinkronisasi status ke tabel reservations
-      if (status === 'cancelled') {
-        await pool.query('UPDATE `reservations` SET `status` = \'cancelled\' WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
-      } else if (status === 'paid' || status === 'served') {
-        await pool.query('UPDATE `reservations` SET `status` = \'confirmed\' WHERE `id` = (SELECT `reservation_id` FROM `orders` WHERE `id` = ?)', [id]);
+    if (status) {
+      await order.update({ status });
+
+      if (order.reservation_id) {
+        if (status === 'cancelled') {
+          await Reservation.update({ status: 'cancelled' }, { where: { id: order.reservation_id } });
+        } else if (status === 'paid' || status === 'served') {
+          await Reservation.update({ status: 'confirmed' }, { where: { id: order.reservation_id } });
+        }
       }
     }
 
     if (refund_status) {
       try {
-        await pool.query('UPDATE `orders` SET `refund_status` = ? WHERE `id` = ?', [refund_status, id]);
+        await order.update({ refund_status });
       } catch (sqlErr) {
-        // Fallback: Jika kolom refund_status tidak ada, tandai di notes via JS
         if (refund_status === 'processed') {
-          const [orderRows] = await pool.query('SELECT `notes` FROM `orders` WHERE `id` = ?', [id]);
-          if (orderRows.length > 0) {
-            const currentNotes = orderRows[0].notes || '';
-            const newNotes = currentNotes.replace('[REFUND REQUEST]', '[REFUND PROCESSED]');
-            await pool.query('UPDATE `orders` SET `notes` = ? WHERE `id` = ?', [newNotes, id]);
-          }
+          const currentNotes = order.notes || '';
+          const newNotes = currentNotes.replace('[REFUND REQUEST]', '[REFUND PROCESSED]');
+          await order.update({ notes: newNotes });
         }
       }
     }
@@ -209,10 +232,11 @@ exports.updateOrderAdmin = async (req, res) => {
 exports.deleteOrderAdmin = async (req, res) => {
   const { id } = req.params;
   try {
-    await pool.query('DELETE FROM orders WHERE id = ?', [id]);
+    await Order.destroy({ where: { id } });
     res.json({ success: true });
   } catch (err) {
     console.error(err);
+    res.status(500).json({ success: false, error: 'Server error' });
   }
 };
 
@@ -230,32 +254,24 @@ exports.submitRefundDetails = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Semua data rekening wajib diisi.' });
     }
 
-    const [order] = await pool.query('SELECT * FROM orders WHERE id = ? AND user_id = ?', [id, userId]);
-    if (!order.length) return res.status(404).json({ success: false, error: 'Pesanan tidak ditemukan.' });
+    const order = await Order.findOne({ where: { id, user_id: userId } });
+    if (!order) return res.status(404).json({ success: false, error: 'Pesanan tidak ditemukan.' });
     
     const refundInfo = `[REFUND REQUEST] Bank: ${sBankName}, No. Rek: ${sAccNo}, A/N: ${sAccName}`;
 
     try {
-      // Level 1: Coba cara ideal
-      await pool.query(
-        'UPDATE `orders` SET `refund_bank_name` = ?, `refund_account_number` = ?, `refund_account_name` = ?, `refund_status` = "pending" WHERE `id` = ?',
-        [sBankName, sAccNo, sAccName, id]
-      );
+      await order.update({
+        refund_bank_name: sBankName,
+        refund_account_number: sAccNo,
+        refund_account_name: sAccName,
+        refund_status: 'pending'
+      });
     } catch (sqlErr) {
-      console.warn('Level 1 failed, trying Level 2...');
+      console.warn('Level 1 failed, trying Level 2/3...');
       try {
-        // Level 2: Coba simpan di notes + status refund
-        await pool.query(
-          'UPDATE `orders` SET `notes` = ?, `refund_status` = "pending" WHERE `id` = ?',
-          [refundInfo, id]
-        );
+        await order.update({ notes: refundInfo, refund_status: 'pending' });
       } catch (sqlErr2) {
-        console.warn('Level 2 failed, trying Level 3...');
-        // Level 3: HANYA simpan di notes (Pasti Berhasil)
-        await pool.query(
-          'UPDATE `orders` SET `notes` = ? WHERE `id` = ?',
-          [refundInfo, id]
-        );
+        await order.update({ notes: refundInfo });
       }
     }
 

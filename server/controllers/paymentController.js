@@ -1,7 +1,6 @@
 const midtransClient = require('midtrans-client');
-const pool = require('../config/db');
+const { Order, Reservation } = require('../models');
 
-// Initialize Midtrans Snap client
 // Initialize Midtrans Snap client using environment variables
 const snap = new midtransClient.Snap({
     isProduction: process.env.IS_PRODUCTION === 'true',
@@ -15,16 +14,13 @@ exports.createTransaction = async (req, res) => {
     console.log(`Attempting to create Midtrans transaction for Order #${orderId}, Amount: ${amount}`);
 
     try {
-        // 1. Get order details from DB to verify
-        const [rows] = await pool.query('SELECT * FROM orders WHERE id = ?', [orderId]);
-        const order = rows[0];
+        const order = await Order.findByPk(orderId);
 
         if (!order) {
             console.error(`Order #${orderId} not found in database.`);
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
 
-        // 2. Prepare Item Details for Midtrans
         let items = [];
         try {
             if (order.items_json) {
@@ -42,8 +38,6 @@ exports.createTransaction = async (req, res) => {
             console.error('Failed to parse items for Midtrans', e);
         }
 
-        // Add Tax and Service Fee as item details if they are part of the gross_amount
-        // Note: The total gross_amount MUST match the sum of item_details
         const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const serviceFee = Math.round(subtotal * 0.05);
         
@@ -51,7 +45,6 @@ exports.createTransaction = async (req, res) => {
 
         const finalGrossAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-        // 3. Prepare Midtrans parameter
         const midtransOrderId = `Ineri-ORD-${orderId}-${Date.now()}`;
         let parameter = {
             "transaction_details": {
@@ -75,11 +68,9 @@ exports.createTransaction = async (req, res) => {
 
         console.log('Sending parameter to Midtrans:', JSON.stringify(parameter));
 
-        // 4. Create Snap Token
         const transaction = await snap.createTransaction(parameter);
         
-        // Simpan midtrans_order_id ke DB untuk keperluan refund
-        await pool.query('UPDATE orders SET midtrans_order_id = ? WHERE id = ?', [midtransOrderId, orderId]);
+        await order.update({ midtrans_order_id: midtransOrderId });
         
         console.log('Midtrans Snap Token created successfully:', transaction.token);
 
@@ -106,30 +97,34 @@ exports.handleNotification = async (req, res) => {
 
     try {
         const statusResponse = await snap.transaction.notification(notification);
-        const orderIdFull = statusResponse.order_id; // Ineri-ORD-ID-TIMESTAMP
+        const orderIdFull = statusResponse.order_id;
         const orderId = orderIdFull.split('-')[2];
         const transactionStatus = statusResponse.transaction_status;
         const fraudStatus = statusResponse.fraud_status;
 
         console.log(`Transaction notification received. Order ID: ${orderId}. Status: ${transactionStatus}. Fraud: ${fraudStatus}`);
 
+        const order = await Order.findByPk(orderId);
+        if (!order) return res.status(200).send('OK');
+
         if (transactionStatus == 'capture') {
             if (fraudStatus == 'challenge') {
-                // TODO set transaction status on your database to 'challenge'
+                // challenge
             } else if (fraudStatus == 'accept') {
-                // TODO set transaction status on your database to 'success'
-                await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
-                await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
+                await order.update({ status: 'paid' });
+                if (order.reservation_id) {
+                    await Reservation.update({ status: 'confirmed' }, { where: { id: order.reservation_id } });
+                }
             }
         } else if (transactionStatus == 'settlement') {
-            // TODO set transaction status on your database to 'success'
-            await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
-            await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
+            await order.update({ status: 'paid' });
+            if (order.reservation_id) {
+                await Reservation.update({ status: 'confirmed' }, { where: { id: order.reservation_id } });
+            }
         } else if (transactionStatus == 'cancel' || transactionStatus == 'deny' || transactionStatus == 'expire') {
-            // TODO set transaction status on your database to 'failure'
-            await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
+            await order.update({ status: 'cancelled' });
         } else if (transactionStatus == 'pending') {
-            // TODO set transaction status on your database to 'pending'
+            // pending
         }
 
         res.status(200).send('OK');
@@ -145,31 +140,25 @@ exports.checkTransactionStatus = async (req, res) => {
     const { simulate } = req.query;
 
     try {
-        // Jika ada flag simulate=true, langsung lunasin untuk testing
+        const order = await Order.findByPk(orderId);
+
         if (simulate === 'true') {
-            const [orderRows] = await pool.query('SELECT reservation_id, created_at FROM orders WHERE id = ?', [orderId]);
-            if (orderRows.length > 0) {
-                const order = orderRows[0];
+            if (order) {
                 const createdAt = new Date(order.created_at).getTime();
                 const now = new Date().getTime();
                 const diffMinutes = (now - createdAt) / (1000 * 60);
 
                 if (diffMinutes > 15) {
-                    await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
+                    await order.update({ status: 'cancelled' });
                     if (order.reservation_id) {
-                        await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
+                        await Reservation.update({ status: 'cancelled' }, { where: { id: order.reservation_id } });
                     }
                     return res.json({ success: false, message: 'Waktu pembayaran telah habis. Pesanan dibatalkan.', status: 'cancelled' });
                 }
 
-                const resId = order.reservation_id;
-                try {
-                    await pool.query("UPDATE orders SET status = 'paid', was_paid = 1 WHERE id = ?", [orderId]);
-                } catch (e) {
-                    await pool.query("UPDATE orders SET status = 'paid' WHERE id = ?", [orderId]);
-                }
-                if (resId) {
-                    await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = ?", [resId]);
+                await order.update({ status: 'paid', was_paid: true });
+                if (order.reservation_id) {
+                    await Reservation.update({ status: 'confirmed' }, { where: { id: order.reservation_id } });
                 }
                 return res.json({
                     success: true,
@@ -181,23 +170,18 @@ exports.checkTransactionStatus = async (req, res) => {
             }
         }
 
-        // 1. Dapatkan midtrans_order_id dari database
-        const [rows] = await pool.query('SELECT midtrans_order_id, status, created_at, reservation_id FROM orders WHERE id = ?', [orderId]);
-        const order = rows[0];
-
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order tidak ditemukan' });
         }
 
-        // Cek Expiry (15 menit)
         const createdAt = new Date(order.created_at).getTime();
         const now = new Date().getTime();
         const diffMinutes = (now - createdAt) / (1000 * 60);
 
         if (diffMinutes > 15 && order.status === 'pending') {
-            await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
+            await order.update({ status: 'cancelled' });
             if (order.reservation_id) {
-                await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
+                await Reservation.update({ status: 'cancelled' }, { where: { id: order.reservation_id } });
             }
             return res.json({ success: false, message: 'Waktu pembayaran telah habis. Pesanan dibatalkan.', status: 'cancelled' });
         }
@@ -210,7 +194,6 @@ exports.checkTransactionStatus = async (req, res) => {
             });
         }
 
-        // 2. Cek status ke Midtrans secara real
         try {
             const statusResponse = await snap.transaction.status(order.midtrans_order_id);
             const transactionStatus = statusResponse.transaction_status;
@@ -232,18 +215,17 @@ exports.checkTransactionStatus = async (req, res) => {
                 newStatus = 'pending';
             }
 
-            // 3. Update DB jika ada perubahan status
             if (newStatus !== order.status) {
-                try {
-                    const wasPaidSql = newStatus === 'paid' ? ', was_paid = 1' : '';
-                    await pool.query(`UPDATE orders SET status = ? ${wasPaidSql} WHERE id = ?`, [newStatus, orderId]);
-                } catch (e) {
-                    await pool.query(`UPDATE orders SET status = ? WHERE id = ?`, [newStatus, orderId]);
-                }
                 if (newStatus === 'paid') {
-                    await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
-                } else if (newStatus === 'cancelled') {
-                    await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = (SELECT reservation_id FROM orders WHERE id = ?)", [orderId]);
+                    await order.update({ status: newStatus, was_paid: true });
+                    if (order.reservation_id) {
+                        await Reservation.update({ status: 'confirmed' }, { where: { id: order.reservation_id } });
+                    }
+                } else {
+                    await order.update({ status: newStatus });
+                    if (newStatus === 'cancelled' && order.reservation_id) {
+                        await Reservation.update({ status: 'cancelled' }, { where: { id: order.reservation_id } });
+                    }
                 }
             }
 
@@ -256,7 +238,6 @@ exports.checkTransactionStatus = async (req, res) => {
 
         } catch (midtransErr) {
             console.error('Midtrans API Status Error:', midtransErr.message);
-            // Jika gagal cek (misal order_id tidak ditemukan di midtrans), kembalikan status DB
             res.json({
                 success: true,
                 message: 'Menggunakan status lokal (Midtrans tidak ditemukan)',
@@ -278,28 +259,26 @@ exports.checkTransactionStatus = async (req, res) => {
 exports.refundOrder = async (req, res) => {
     const { orderId } = req.params;
     try {
-        const [orderRows] = await pool.query('SELECT * FROM orders WHERE id = ?', [orderId]);
-        if (!orderRows.length) return res.status(404).json({ success: false, error: 'Order not found' });
+        const order = await Order.findByPk(orderId);
+        if (!order) return res.status(404).json({ success: false, error: 'Order not found' });
         
-        const order = orderRows[0];
         const midtransOrderId = order.midtrans_order_id;
         
         if (!midtransOrderId) {
             return res.status(400).json({ success: false, error: 'Order ini tidak memiliki ID Midtrans (mungkin dibuat sebelum fitur refund aktif)' });
         }
 
-        // Kalkulasi Refund: Total Harga - Rp 5.000 (Booking Fee Hangus)
         const refundAmount = Math.max(0, Number(order.total_price) - 5000);
 
         if (refundAmount <= 0) {
             return res.status(400).json({ success: false, error: 'Jumlah refund tidak valid' });
         }
 
-        // 1. Update status di DB dulu
-        await pool.query("UPDATE orders SET status = 'cancelled' WHERE id = ?", [orderId]);
-        await pool.query("UPDATE reservations SET status = 'cancelled' WHERE id = ?", [order.reservation_id]);
+        await order.update({ status: 'cancelled' });
+        if (order.reservation_id) {
+            await Reservation.update({ status: 'cancelled' }, { where: { id: order.reservation_id } });
+        }
 
-        // 2. Panggil API Midtrans Refund
         try {
             const parameter = {
                 "refund_key": `refund-${orderId}-${Date.now()}`,
@@ -307,7 +286,6 @@ exports.refundOrder = async (req, res) => {
                 "reason": "Customer No Show / Cancelled by Admin"
             };
             
-            // Catatan: Refund API hanya tersedia untuk beberapa metode pembayaran di Sandbox (Gopay/Card)
             const refundResponse = await snap.transaction.refund(midtransOrderId, parameter);
             
             res.json({

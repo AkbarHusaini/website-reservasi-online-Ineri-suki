@@ -1,0 +1,31 @@
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
+  const Admin = sequelize.define('Admin', {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(150),
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+  }, {
+    tableName: 'admins',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: false,
+  });
+
+  return Admin;
+};

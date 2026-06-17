@@ -1,0 +1,72 @@
+erDiagram
+    USERS ||--o{ ORDERS : "places"
+    USERS ||--o{ RESERVATIONS : "makes"
+    USERS ||--o{ PAYMENTS : "makes"
+    DINING_TABLES ||--o{ ORDERS : "assigned_to"
+    DINING_TABLES ||--o{ RESERVATIONS : "booked_for"
+    ORDERS ||--|{ ORDER_ITEMS : "contains"
+    ITEMS ||--o{ ORDER_ITEMS : "included_in"
+    ORDERS ||--o| PAYMENTS : "paid_via"
+
+    USERS {
+        int id PK
+        string username
+        string email
+        string password
+        string role
+        datetime created_at
+    }
+
+    ITEMS {
+        int id PK
+        string name
+        string description
+        float price
+        string category
+        string image_url
+        boolean is_available
+    }
+
+    DINING_TABLES {
+        int id PK
+        int table_number
+        int capacity
+        string status
+    }
+
+    ORDERS {
+        int id PK
+        int user_id FK
+        int table_id FK
+        float total_price
+        string status
+        datetime order_date
+    }
+
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int item_id FK
+        int quantity
+        float price
+    }
+
+    RESERVATIONS {
+        int id PK
+        int user_id FK
+        int table_id FK
+        date reservation_date
+        time reservation_time
+        int number_of_people
+        string status
+    }
+
+    PAYMENTS {
+        int id PK
+        int order_id FK
+        int user_id FK
+        float amount
+        string payment_method
+        string status
+        datetime payment_date
+    }
