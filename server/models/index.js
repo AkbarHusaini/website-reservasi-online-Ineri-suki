@@ -1,25 +1,28 @@
 const { Sequelize } = require('sequelize');
 const process = require('process');
 
+const isLocalhost = !process.env.DB_HOST || process.env.DB_HOST === 'localhost' || process.env.DB_HOST === '127.0.0.1';
+
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'Ineri_db',
   process.env.DB_USER || 'root',
   process.env.DB_PASS || '',
   {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
+    port: parseInt(process.env.DB_PORT) || 3306,
     dialect: 'mysql',
-    dialectOptions: {
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : 
-           (process.env.DB_HOST === 'localhost' || !process.env.DB_HOST) ? null : { rejectUnauthorized: false },
+    dialectOptions: isLocalhost ? {} : {
+      ssl: {
+        rejectUnauthorized: false,
+      },
     },
     pool: {
-      max: 10,
+      max: 5,
       min: 0,
-      acquire: 30000,
+      acquire: 60000,
       idle: 10000
     },
-    logging: false, // set to console.log to see SQL queries
+    logging: false,
   }
 );
 
