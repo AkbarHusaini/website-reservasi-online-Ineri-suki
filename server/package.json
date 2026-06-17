@@ -14,7 +14,7 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "midtrans-client": "^1.4.3",
-    "mysql2": "^3.22.5",
+    "mysql2": "^3.9.8",
     "sequelize": "^6.37.8"
   },
   "devDependencies": {
