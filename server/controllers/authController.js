@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const pool = require('../config/db');
 const { authenticateToken } = require('../middleware/auth');
 const JWT_SECRET = process.env.JWT_SECRET || 'Ineri_secret_key_2024';
 
@@ -17,17 +17,18 @@ exports.register = async (req, res) => {
   }
   
   try {
-    const existing = await User.findOne({ where: { email } });
-    if (existing) {
+    const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (existing.length > 0) {
       return res.status(400).json({ success: false, error: 'Email sudah terdaftar.' });
     }
     
     const hash = await bcrypt.hash(password, 10);
-    const result = await User.create({
-      name, email, phone, password: hash, role: 'customer'
-    });
+    const [result] = await pool.query(
+      'INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)',
+      [name, email, phone, hash, 'customer']
+    );
     
-    const newUser = { id: result.id, name, email, phone, role: 'customer' };
+    const newUser = { id: result.insertId, name, email, phone, role: 'customer' };
     const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, { expiresIn: '1d' });
     
     res.json({
@@ -48,24 +49,24 @@ exports.login = async (req, res) => {
   }
   
   try {
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
+    const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
       return res.status(401).json({ success: false, error: 'Email atau password salah.' });
     }
     
+    const user = users[0];
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ success: false, error: 'Email atau password salah.' });
     }
     
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
-    const userResponse = user.toJSON();
-    delete userResponse.password;
+    delete user.password;
     
     res.json({
       success: true,
       token,
-      user: userResponse
+      user
     });
   } catch (err) {
     console.error(err);
@@ -79,18 +80,18 @@ exports.adminLogin = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Email dan password wajib diisi.' });
   }
   try {
-    const user = await User.findOne({ where: { email: username, role: 'admin' } });
-    if (!user) {
+    const [users] = await pool.query('SELECT * FROM users WHERE email = ? AND role = "admin"', [username]);
+    if (users.length === 0) {
       return res.status(401).json({ success: false, error: 'Kredensial admin tidak valid atau akses ditolak.' });
     }
+    const user = users[0];
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ success: false, error: 'Kredensial admin tidak valid.' });
     }
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '12h' });
-    const userResponse = user.toJSON();
-    delete userResponse.password;
-    res.json({ success: true, token, user: userResponse });
+    delete user.password;
+    res.json({ success: true, token, user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: 'Server error' });

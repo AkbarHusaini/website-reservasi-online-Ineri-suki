@@ -80,6 +80,10 @@ function AdminDashboard() {
 
         {/* Bottom */}
         <div className="p-4 border-t border-[#42474b]/15">
+          <div className="flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-slate-100 text-sm tracking-wide hover:bg-[#3e5b68]/10 transition-colors cursor-pointer rounded-sm">
+            <span className="material-symbols-outlined text-base">settings</span>
+            Settings
+          </div>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-400 hover:text-[#ffb4ab] text-sm tracking-wide hover:bg-red-900/10 transition-colors rounded-sm"
@@ -105,6 +109,8 @@ function AdminDashboard() {
         <header className="sticky top-0 h-16 bg-[#131313]/80 backdrop-blur-xl flex items-center justify-between px-8 z-40 border-b border-[#42474b]/15">
           <h2 className="text-sm font-bold tracking-widest uppercase text-slate-500">Admin Dashboard</h2>
           <div className="flex items-center gap-4">
+            <span className="material-symbols-outlined text-slate-400 hover:text-[#ffb59a] cursor-pointer transition-colors">notifications</span>
+            <span className="material-symbols-outlined text-slate-400 hover:text-[#ffb59a] cursor-pointer transition-colors">help</span>
             <span className="text-xs text-slate-500 font-medium">Selamat datang, <span className="text-[#ffb59a] font-bold">{admin.name}</span></span>
           </div>
         </header>
