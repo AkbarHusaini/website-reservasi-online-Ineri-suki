@@ -49,12 +49,22 @@ exports.login = async (req, res) => {
   }
   
   try {
+    let user;
     const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (users.length === 0) {
+    if (users.length > 0) {
+      user = users[0];
+    } else {
+      const [admins] = await pool.query('SELECT * FROM admins WHERE email = ?', [email]);
+      if (admins.length > 0) {
+        user = admins[0];
+        user.role = 'admin';
+      }
+    }
+
+    if (!user) {
       return res.status(401).json({ success: false, error: 'Email atau password salah.' });
     }
     
-    const user = users[0];
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ success: false, error: 'Email atau password salah.' });
