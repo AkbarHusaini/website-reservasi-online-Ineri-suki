@@ -318,7 +318,7 @@ function Home() {
                   <span className="w-12 h-px bg-tertiary"></span>
                   <span className="text-xs font-black tracking-[0.3em] uppercase">Limited Edition</span>
                 </div>
-                <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase text-on-surface leading-tight">Chef's Specials <br />&amp; <span className="text-gradient-ember">Seasonal Offers</span></h2>
+                <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase text-on-surface leading-tight">Paket Menu <br /><span className="text-gradient-ember">Spesial</span></h2>
               </div>
               <p className="text-on-surface-variant max-w-sm text-lg font-light leading-relaxed">
                 Cita rasa musiman yang dikurasi khusus oleh Chef kami untuk memberikan pengalaman kuliner yang tak terlupakan bulan ini.
