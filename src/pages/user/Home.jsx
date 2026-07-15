@@ -371,14 +371,14 @@ function Home() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {[
-                { id:'T1',  label:'Window Side',   icon:'table_restaurant' },
-                { id:'T2',  label:'Garden View',   icon:'table_restaurant' },
-                { id:'T3',  label:'Bar Counter',   icon:'table_restaurant' },
-                { id:'T4',  label:'Center Hall',   icon:'table_restaurant' },
-                { id:'T5',  label:'Grill Central', icon:'outdoor_grill'    },
-                { id:'T7',  label:'Cozy Corner',   icon:'table_restaurant' },
-                { id:'T8',  label:'Open Terrace',  icon:'table_restaurant' },
-                { id:'T10', label:'VIP Lounge',    icon:'star'             },
+                { id:'T1',   icon:'table_restaurant' },
+                { id:'T2',   icon:'table_restaurant' },
+                { id:'T3',   icon:'table_restaurant' },
+                { id:'T4',   icon:'table_restaurant' },
+                { id:'T5', icon:'outdoor_grill'    },
+                { id:'T7',   icon:'table_restaurant' },
+                { id:'T8',  icon:'table_restaurant' },
+                { id:'T10',    icon:'star'             },
               ].map(table => (
                 <Link key={table.id} to="/reservation"
                   className="reveal-on-scroll group cursor-pointer bg-surface p-6 rounded-2xl border border-outline-variant/10 hover:border-tertiary/50 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 flex flex-col items-center gap-4">
